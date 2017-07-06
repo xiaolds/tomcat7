@@ -21,20 +21,8 @@ public class DecryptClassLoader extends WebappClassLoader {
 	/** 自定义加密文件尾缀 **/
 	private static final String CLASS_SUFFIX = ".enclass";
 	/** 自定义文件根目录**/
-	private static final String DEFAULT_WEB_PATH = System.getProperty("user.dir")
-			+ "/webapps/Test/WEB-INF/classes/";
+	private static final String DEFAULT_WEB_PATH = "";
 	
-	
-	
-	
-	public DecryptClassLoader() {
-		super();
-	}
-
-	public DecryptClassLoader(ClassLoader parent) {
-		super(parent);
-	}
-
 	/**
 	 * 
 	 * 通过包名+类名查找Class文件
@@ -43,7 +31,6 @@ public class DecryptClassLoader extends WebappClassLoader {
 	 */
 	@Override
 	public Class<?> findClass(String name) throws ClassNotFoundException {
-		
 		// 1. get file name
 		String className = getName(name);
 		

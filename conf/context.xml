@@ -31,6 +31,5 @@
     <!--
     <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
     -->
-    <Loader loaderClass="com.datasure.catalina.loader.DecryptClassLoader" delegate="true"></Loader> 
 
 </Context>
