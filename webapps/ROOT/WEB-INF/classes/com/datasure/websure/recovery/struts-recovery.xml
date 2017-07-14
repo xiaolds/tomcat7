@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "struts-2.1.dtd">
+<struts>
+
+	<package name="struts-recovery" extends="struts-base" namespace="/recovery">
+       <action name="recoveryAction" class="recoveryAction"  ></action>
+       <action name="mountAction" class="mountAction"  ></action>
+       <action name="tostorageAction" class="storageAction"  ></action>
+    </package> 
+	
+</struts>    

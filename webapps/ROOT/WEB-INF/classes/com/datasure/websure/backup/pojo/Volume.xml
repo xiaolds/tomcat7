@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+	<resultMap id="VolumeDetailMap" type="Volume">
+		<result property="volumeId" column="volume_id"/>
+		<result property="volumeHarddiskId" column="volume_harddisk_id"/>
+		<result property="diskcloneId" column="diskclone_id"/>
+		<result property="volumeIndex" column="volume_index"/>
+		<result property="deviceIsStandby" column="device_is_standby"/>
+		<result property="deviceStandbyVolumeId" column="device_standby_volume_id"/>
+		<result property="volumeStartSector" column="volume_start_sector"/>
+		<result property="volumeTotalSectors" column="volume_total_sectors"/>
+		<result property="volumeOnline" column="volume_online"/>
+		<result property="volumeName" column="volume_name"/>
+		<result property="volumeUuid" column="volume_uuid"/>
+		<result property="volumeFilesystem" column="volume_filesystem"/>
+		<result property="segmentInfo" column="segment_info"/>
+		<result property="mapInfo" column="map_info"/>
+		<result property="volumeRemark" column="volume_remark"/>
+		<result property="volumeRunstate" column="volume_runstate"/>
+		<result property="volumeNeedbackup" column="volume_needbackup"/>
+		<result property="volumeStandbyModel" column="volume_standby_model"/>
+	</resultMap>
+	
+	<select id="select-volume-by-harddisk-and-type" parameterType="int" resultMap="VolumeDetailMap">
+		select 
+		   volume_id,
+		   volume_harddisk_id,
+		   diskclone_id,
+		   volume_index ,
+		   device_is_standby,
+		   device_standby_volume_id,
+		   volume_start_sector,
+		   volume_total_sectors,
+		   volume_online,
+		   volume_name,
+		   volume_uuid,
+		   volume_filesystem,
+		   segment_info,
+		   map_info,
+		   volume_remark,
+		   volume_runstate,
+		   volume_needbackup,
+		   volume_standby_model
+		from 
+			t_volume
+		where 
+			volume_harddisk_id = #{hardDiskId}
+		AND 
+			volume_online = 1
+	</select>
+	<select id="select-volume-by-harddisk-and-index" parameterType="Map" resultMap="VolumeDetailMap">
+		select 
+		   volume_id,
+		   volume_harddisk_id,
+		   diskclone_id,
+		   volume_index ,
+		   device_is_standby,
+		   device_standby_volume_id,
+		   volume_start_sector,
+		   volume_total_sectors,
+		   volume_online,
+		   volume_name,
+		   volume_uuid,
+		   volume_filesystem,
+		   segment_info,
+		   map_info,
+		   volume_remark,
+		   volume_runstate,
+		   volume_needbackup,
+		   volume_standby_model
+		from 
+			t_volume
+		where 
+			volume_harddisk_id = #{hardDiskId}
+		AND 
+			volume_online = 1
+		AND volume_index=#{index}
+	</select>
+	<select id="select-volume-by-id" parameterType="int" resultMap="VolumeDetailMap">
+		select 
+		   volume_id,
+		   volume_harddisk_id,
+		   diskclone_id,
+		   volume_index ,
+		   device_is_standby,
+		   device_standby_volume_id,
+		   volume_start_sector,
+		   volume_total_sectors,
+		   volume_online,
+		   volume_name,
+		   volume_uuid,
+		   volume_filesystem,
+		   segment_info,
+		   map_info,
+		   volume_remark,
+		   volume_runstate,
+		   volume_needbackup,
+		   volume_standby_model
+		from 
+			t_volume
+		where 
+			volume_id = #{id}
+	</select>
+	<select id="select-volumes-by-diskcloneid" parameterType="int" resultMap="VolumeDetailMap">
+		SELECT 
+		   volume_id,
+		   volume_harddisk_id,
+		   diskclone_id,
+		   volume_index ,
+		   device_is_standby,
+		   device_standby_volume_id,
+		   volume_start_sector,
+		   volume_total_sectors,
+		   volume_online,
+		   volume_name,
+		   volume_uuid,
+		   volume_filesystem,
+		   segment_info,
+		   map_info,
+		   volume_remark,
+		   volume_runstate,
+		   volume_needbackup,
+		   volume_standby_model
+		FROM
+		  t_volume
+		WHERE volume_online = 1 
+		  AND diskclone_id IN 
+		  (SELECT 
+		    diskclone_id 
+		  FROM
+		    t_diskclone 
+		  WHERE diskclone_id = #{value} 
+  		  )
+	</select>
+	<select id="select-volumes-by-volumesid" parameterType="List" resultMap="VolumeDetailMap">
+		select 
+		   volume_id,
+		   volume_harddisk_id,
+		   diskclone_id,
+		   volume_index ,
+		   device_is_standby,
+		   device_standby_volume_id,
+		   volume_start_sector,
+		   volume_total_sectors,
+		   volume_online,
+		   volume_name,
+		   volume_uuid,
+		   volume_filesystem,
+		   segment_info,
+		   map_info,
+		   volume_remark,
+		   volume_runstate,
+		   volume_needbackup,
+		   volume_standby_model
+		from 
+			t_volume
+		 where volume_id in
+		 <foreach collection="list" item="classIdList"  open="(" separator="," close=")">  
+        	#{classIdList}  
+     	</foreach>  
+	</select>
+	
+	<select id="select-volume-info-by-deviceid-and-volumeinfo" parameterType="Map" resultMap="VolumeDetailMap">
+		select 
+		   volume_id,
+		   volume_harddisk_id,
+		   diskclone_id,
+		   volume_index ,
+		   device_is_standby,
+		   device_standby_volume_id,
+		   volume_start_sector,
+		   volume_total_sectors,
+		   volume_online,
+		   volume_name,
+		   volume_uuid,
+		   volume_filesystem,
+		   segment_info,
+		   map_info,
+		   volume_remark,
+		   volume_runstate,
+		   volume_needbackup,
+		   volume_standby_model
+		from 
+			t_volume 
+		where 
+			volume_harddisk_id in(
+				SELECT
+					harddisk_id
+				FROM 
+					t_harddisk
+				WHERE 
+					device_id = #{deviceId}
+			) 
+		<if test="letter !=null and letter !='' " >
+			 	And volume_name = #{letter}
+		</if>
+		<if test="fileSys !=null and fileSys !='' " >
+			 	And volume_filesystem = #{fileSys}
+		</if>
+		And volume_online = 1
+	</select>
+	
+	<select id="select-volume-by-harddisklist" parameterType="List" resultMap="VolumeDetailMap">
+		select 
+		   volume_id,
+		   volume_harddisk_id,
+		   diskclone_id,
+		   volume_index ,
+		   device_is_standby,
+		   device_standby_volume_id,
+		   volume_start_sector,
+		   volume_total_sectors,
+		   volume_online,
+		   volume_name,
+		   volume_uuid,
+		   volume_filesystem,
+		   segment_info,
+		   map_info,
+		   volume_remark,
+		   volume_runstate,
+		   volume_needbackup,
+		   volume_standby_model
+		from 
+			t_volume where volume_harddisk_id in
+		 <foreach collection="list" item="hardDiskList"  open="(" separator="," close=")">  
+        	#{hardDiskList.hardDiskid}  
+     	</foreach>  
+	</select>
+	
+	<select id="select-volume-letter-by-runstate" parameterType="int" resultType="String">
+		select 
+			volume_name
+		from 
+			t_volume 
+		where 
+			diskclone_id in(
+				SELECT
+					diskclone_id
+				FROM 
+					t_diskclone
+				WHERE 
+					device_id = #{deviceId}
+				AND
+					diskclone_is_online = 1	
+			) 
+			And 
+				volume_online = 1
+			AND 
+				volume_runstate = 1
+			AND
+				volume_harddisk_id 
+				IN (
+				SELECT 
+				harddisk_id 
+				FROM t_harddisk 
+				WHERE device_id = #{deviceId}
+				AND harddisk_cluster_type = 0
+				)
+	</select>
+	
+	<update id="update-volume-needback-by-deviceId" parameterType="list">
+	        update t_volume 
+			<set>
+				volume_needbackup = 0
+			</set>	
+          	where volume_harddisk_id in
+          	(
+          		select harddisk_id from t_harddisk where harddisk_is_online=1 AND device_id in
+	          	<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+	         	 	#{item}
+	         	</foreach>
+         	)
+	</update>
+	
+	<update id="update-needback-by-volumeId" parameterType="list">
+	        update t_volume 
+			<set>
+				volume_needbackup = 1
+			</set>	
+          	where volume_id in 
+          	<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+         	 	#{item}
+         	</foreach>
+	</update>
+	
+	<update id="update-runstate-by-volumeId" parameterType="list">
+            update t_volume 
+            <set>
+                volume_runstate = 0
+            </set>  
+            where volume_id in 
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+    </update>
+	
+	<update id="update-standby-volumelist" parameterType="java.util.Map">
+		<foreach collection="volumeList" item="item" index="index" open="" close="" separator=";">
+	        update t_volume
+			<set>
+				device_standby_volume_id = #{item.deviceStandbyVolumeId},
+				volume_standby_model = #{item.volumeStandbyModel},
+				device_is_standby = 1
+			</set>	
+          	where 
+          		volume_id = #{item.volumeId}
+         </foreach>
+	</update>
+	
+	<update id="update-standby-by-volumeList-cancel" parameterType="Map">
+		<foreach collection="volumeList" item="item" index="index" open="" close="" separator=";">
+	        update t_volume 
+			<set>
+				device_is_standby = 2,
+				volume_standby_model = 0,
+				device_standby_volume_id = null
+			</set>	
+          	where volume_id = #{item.volumeId}
+         </foreach>
+	</update>
+	
+	<update id="update-needback-by-volumeslist" parameterType="java.util.Map">
+		<foreach collection="volumesList" item="item" index="index" open="" close="" separator=";">
+	        update t_volume
+			<set>
+				volume_needbackup = #{item.volumeNeedbackup}
+			</set>	
+          	where 
+          		volume_id = #{item.volumeId}
+         </foreach>
+	</update>
+	
+	<select id="select-volumes-by-volumeidList" parameterType="list" resultMap="VolumeDetailMap">
+		select 
+		   volume_id,
+		   volume_harddisk_id,
+		   diskclone_id,
+		   volume_index ,
+		   device_is_standby,
+		   device_standby_volume_id,
+		   volume_start_sector,
+		   volume_total_sectors,
+		   volume_online,
+		   volume_name,
+		   volume_uuid,
+		   volume_filesystem,
+		   segment_info,
+		   map_info,
+		   volume_remark,
+		   volume_runstate,
+		   volume_needbackup,
+		   volume_standby_model
+		from 
+			t_volume 
+		where 
+			volume_id in
+		 <foreach collection="list" item="volumesIdList"  open="(" separator="," close=")">  
+        	#{volumesIdList}  
+     	</foreach>  
+	</select>
+	
+	<update id="update-needback-by-volumeid-to-yes" parameterType="list">
+        update 
+        	t_volume 
+			<set>
+				volume_needbackup = 1
+			</set>	
+         	where 
+         		volume_id in
+          	<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+         	 	#{item}
+         	</foreach>
+	</update>
+	
+	<update id="update-needback-by-volumeid-to-no" parameterType="list">
+        update 
+        	t_volume 
+			<set>
+				volume_needbackup = 0
+			</set>	
+         	where 
+         		volume_id in
+          	<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+         	 	#{item}
+         	</foreach>
+	</update>
+	
+	<select id="select-volume-process-count-by-deviceId" parameterType="list" resultType="int">
+		SELECT count(*) 
+		FROM 
+		t_volume 
+		WHERE 
+		diskclone_id IN 
+		(SELECT diskclone_id 
+		FROM t_diskclone 
+		WHERE device_id IN
+		<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+         	 	#{item.deviceId}
+         </foreach>
+		AND diskclone_is_online = 1) 
+		AND volume_runstate IN (1,4)
+	</select>
+	
+</mapper>

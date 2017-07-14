@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure.emergency">
+        
+        <resultMap id="vmSetBaseMap" type="vmManagerSet">
+               <id property="id"  column="id"/>
+               <result property="state"  column="vir_set_state"/>
+               <result property="deviceId"  column="vir_set_device_id"/>
+               <result property="vmManagerId"  column="vir_set_vir_id"/>
+               <result property="abnormalTime"  column="vir_set_abnormal_time"/>
+               <result property="netInterruptMin"  column="vir_set_net_interrupt_min"/>
+               <result property="reserver"  column="vir_set_reserver"/>
+        </resultMap>
+        
+        <resultMap id="VirSetMap" type="VmManagerSet" >
+
+		    <result property="device.ip" column="device_ip"/>  
+		    <result property="device.computerName" column="device_client_computer_name"/>  
+		    <result property="device.status" column="device_state"/>
+		    <result property="device.clientOfflineTime" column="offline_time"/>   
+		    <result property="device.clientOfflineTime" column="offline_time"/> 
+		    <result property="id" column="id"/>  
+		    <result property="state" column="vir_set_state"/> 
+		     <result property="deviceId" column="vir_set_device_id"/> 
+		    <result property="abnormalTime" column="vir_set_abnormal_time"/>
+		    <result property="netInterruptMin" column="vir_set_net_interrupt_min"/> 
+		    <result property="config.id" column="vmid"/>  
+		    <result property="config.vmName" column="vir_name"/>  
+		    <result property="config.vmState" column="vir_state"/>  
+		    <result property="config.vmType" column="vir_type"/>  
+	    </resultMap>
+         
+         <sql id="vmManagerSet_fields">
+              id,
+              vir_set_state,
+              vir_set_device_id,
+              vir_set_vir_id,
+              vir_set_abnormal_time,
+              vir_set_net_interrupt_min,
+              vir_set_reserver
+         </sql>
+         
+         <!-- 删除自动接管配置 -->
+         <delete id="delete-vm-manager-set"  parameterType="int">
+                delete from t_vir_set where vir_set_vir_id=#{vmId}
+         </delete>   
+         
+         <select id="select-vir-set-all" resultMap="VirSetMap">
+	         select  
+		             device.device_ip,
+		             device.device_client_computer_name,
+		             device.device_state,
+		             vir_set.id,
+		             vir_set.vir_set_device_id,
+		             vir_set_state,
+		             vir_set_abnormal_time,
+		             vir_set_net_interrupt_min,
+		             vir_manager.id as vmid,
+		             vir_manager.vir_name,
+		             vir_manager.vir_state,
+		             vir_manager.vir_type
+	           from(
+	           		t_vir_set vir_set 
+	           LEFT JOIN 
+	           		t_device device 
+	           ON  
+	           		vir_set.vir_set_device_id=device.device_id
+	           	)
+		       LEFT JOIN 
+		       		t_vir_manager vir_manager 
+		       ON 
+		       		vir_set.vir_set_vir_id=vir_manager.id
+    </select>    
+      
+    <select id="select-vir-set-all-by-vm-offine" resultMap="VirSetMap">
+		SELECT 
+			device.device_ip,
+			device.device_client_computer_name,
+			device.device_state,
+			device.offline_time,
+			vir_set.id,
+			vir_set.vir_set_device_id,
+			vir_set_state,
+			vir_set_abnormal_time,
+			vir_set_net_interrupt_min,
+			vir_manager.id AS vmid,
+			vir_manager.vir_name,
+			vir_manager.vir_state,
+			vir_manager.vir_type 
+		FROM
+			t_vir_set vir_set 
+		LEFT JOIN 
+			t_device device 
+		ON 
+			vir_set.vir_set_device_id = device.device_id 
+		LEFT JOIN 
+			t_vir_manager vir_manager 
+		ON 
+			vir_set.vir_set_vir_id = vir_manager.id 
+		AND 
+			vir_manager.vir_state = 2 
+		WHERE 
+			vir_set.vir_set_state = 1 
+    </select>
+    <select id="select-vir-set--by-deviceId" resultMap="VirSetMap" parameterType="vmManagerSet">
+		SELECT 
+			<include refid="vmManagerSet_fields" />
+		FROM
+			t_vir_set
+		WHERE 
+			vir_set_device_id =#{deviceId} 
+    </select>
+	<insert id="insert-vmManagerSet" parameterType="vmManagerSet" keyProperty="id"
+		useGeneratedKeys="true">
+		INSERT INTO t_vir_set
+		(vir_set_state,
+		vir_set_device_id,
+		vir_set_vir_id,
+		vir_set_abnormal_time,
+		vir_set_net_interrupt_min,
+		vir_set_reserver
+		
+		)
+		VALUES (
+		#{state},
+		#{deviceId},
+		#{vmManagerId},
+		NOW(),
+		#{netInterruptMin},
+		#{reserver}
+		);
+     </insert>
+     <update id="update-vmManagerSet" parameterType="vmManagerSet">
+		UPDATE t_vir_set
+		SET
+		vir_set_state=#{state},
+		vir_set_vir_id=#{vmManagerId},
+		vir_set_abnormal_time=NOW(),
+		vir_set_net_interrupt_min=#{netInterruptMin},
+		vir_set_reserver=#{reserver}
+		WHERE vir_set_device_id=#{deviceId}
+    </update>
+</mapper>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+	<resultMap id="WarningConfigMap" type="WarningConfig">
+		<id property="id" column="warning_config_id"/>
+		<result property="warningState" column="warning_config_warning_state"/>
+		<result property="clientState" column="warning_config_client_state"/>
+		<result property="bcakupState" column="warning_config_bcakup_state"/>
+		<result property="deviceId" column="device_id"/>
+		<result property="createTime" column="warning_config_create_time"/>
+		<result property="updateTime" column="warning_config_update_time"/>
+		<result property="clientUpdateTime" column="client_update_time"/>
+		<result property="backupUpdateTime" column="backup_update_time"/>
+		<result property="remark" column="remark"/>
+	</resultMap>
+	
+	<sql id="warning-config-column">
+		t_warning_config.warning_config_id,
+		t_warning_config.warning_config_warning_state,
+		t_warning_config.warning_config_client_state,
+		t_warning_config.warning_config_bcakup_state,
+		t_warning_config.device_id,
+		t_warning_config.warning_config_create_time,
+		t_warning_config.warning_config_update_time,
+		t_warning_config.backup_update_time,
+		t_warning_config.client_update_time,
+		t_warning_config.remark
+	</sql>
+	
+	<select id="select-warning-config-by-device-id" parameterType="int" resultMap="WarningConfigMap">
+		SELECT
+			<include refid="warning-config-column"/>
+		FROM t_warning_config
+		WHERE device_id = #{deviceId}
+	</select>
+	
+	<insert id="insert-warning-config" parameterType="WarningConfig">
+		INSERT INTO t_warning_config
+            (
+             warning_config_warning_state,
+             warning_config_client_state,
+             warning_config_bcakup_state,
+             device_id,
+             warning_config_create_time,
+             warning_config_update_time,
+             client_update_time,
+             backup_update_time,
+             remark)
+		VALUES (
+		        #{warningState},
+		        #{clientState},
+		        #{bcakupState},
+		        #{deviceId},
+		        now(),
+		        now(),
+		        now(),
+		        now(),
+		        #{remark});
+		<selectKey resultType="int" keyProperty="id">
+			select @@IDENTITY as id 
+		</selectKey>
+	</insert>
+	
+	<update id="update-warning-config-by-device-id" parameterType="WarningConfig">
+		UPDATE t_warning_config
+			<set>
+				<if test="warningState != 0 and warningState != null">
+					warning_config_warning_state = #{warningState},
+				</if>
+				<if test="clientState != 0 and clientState != null">
+					warning_config_client_state = #{clientState},
+				</if>
+				<if test="bcakupState != 0 and bcakupState != null">
+					warning_config_bcakup_state = #{bcakupState},
+				</if>
+				<if test="remark != null and remark != ''">
+					remark = #{remark},
+				</if>
+				<if test="clientUpdateTime != '' and clientUpdateTime !=null">
+					client_update_time = now(),
+				</if>
+				<if test="backupUpdateTime != '' and backupUpdateTime !=null">
+					backup_update_time = now(),
+				</if>
+				warning_config_update_time = now()
+			</set>
+		WHERE device_id = #{deviceId}
+	</update>
+	
+</mapper>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure.emergency">
+
+	<resultMap id="vmManagerClientMap" type="vmManagerClient">
+		<id property="clientId" column="vir_client_id" />
+		<result property="deviceId" column="vir_client_device_id" />
+		<result property="virId" column="vir_client_vir_id" />
+		<result property="clientToken" column="vir_client_token" />
+		<result property="state" column="vir_client_state" />
+		<result property="createTime" column="vir_client_create_time" />
+		<result property="updateTime" column="vir_client_update_time" />
+		<result property="remark" column="remark" />
+	</resultMap>
+
+	<sql id="vmManagerClient_fields">
+		t_vir_client.vir_client_id,
+		t_vir_client.vir_client_device_id,
+		t_vir_client.vir_client_vir_id,
+		t_vir_client.vir_client_token,
+		t_vir_client.vir_client_state,
+		t_vir_client.vir_client_create_time,
+		t_vir_client.vir_client_update_time,
+		t_vir_client.remark
+    </sql>
+
+	<select id="select-vm-manager-client-by-virId" parameterType="int"
+		resultMap="vmManagerClientMap">
+		select
+		<include refid="vmManagerClient_fields" />
+		from
+		t_vir_client
+		where
+		vir_client_vir_id=#{id}
+		and vir_client_state=1;
+	</select>
+
+	<!-- 增加虚拟网卡 -->
+	<insert id="insert-vmManagerClient" parameterType="vmManagerClient"
+		keyProperty="vir_client_id" useGeneratedKeys="true">
+		insert into t_vir_client
+		(
+			t_vir_client.vir_client_id,
+			t_vir_client.vir_client_device_id,
+			t_vir_client.vir_client_vir_id,
+			t_vir_client.vir_client_token,
+			t_vir_client.vir_client_state,
+			t_vir_client.vir_client_create_time,
+			t_vir_client.vir_client_update_time,
+			t_vir_client.remark
+		)
+		values
+		(
+		#{clientId},
+		#{deviceId},
+		#{virId},
+		#{clientToken},
+		#{state},
+		NOW(),
+		NOW(),
+		#{remark}
+		);
+	 </insert>
+
+</mapper>

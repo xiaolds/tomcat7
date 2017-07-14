@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure.emergency">
+
+        <resultMap id="computeNodesBaseMap"  type="computeNodes" >
+               <id property="nodeId"  column="compute_node_id"/>
+               <result property="nodeUniqueId"  column="compute_node_unique_id"/>
+               <result property="nodeName"  column="compute_node_name"/>
+               <result property="nodeIpLan"  column="compute_node_ip_lan"/>
+               <result property="nodeIpNet"  column="compute_node_ip_net"/>
+               <result property="nodeState"  column="compute_node_state"/>
+               <result property="nodeStoragePort"  column="compute_node_storage_port"/>
+               <result property="nodeLocalPort"  column="compute_node_local_port"/>
+               <result property="nodeMagPort"  column="compute_node_mag_port"/>
+               <result property="nodeMaxManageNum"  column="compute_node_max_manage_num"/>
+               <result property="nodeSystemType"  column="compute_node_os_string"/>
+               <result property="nodeInstallTime"  column="compute_node_install"/>
+               <result property="nodeVersion"  column="compute_node_version"/>
+               <result property="nodeCreateTime"  column="compute_node_create_time"/>
+               <result property="nodeUpdateTime"  column="compute_node_update_time"/>
+               <!--新增计算节点硬件信息 -->
+               <result property="logicCpu"  column="compute_node_cpu_logic_num"/>
+               <result property="coreCpu"  column="compute_node_cpu_core_num"/>
+               <result property="memSize"  column="compute_node_mem_size"/>
+               <result property="remark"  column="remark"/>
+               <result property="license"  column="co_sq_s"/>
+        </resultMap>
+        
+        <resultMap id="nodesAndRunStateMap"  type="computeNodes"  extends="computeNodesBaseMap">
+	     	   <result property="computeNodesRunState.nodeRunStateId"  column="compute_run_state_id"/>
+               <result property="computeNodesRunState.nodeId"  column="compute_nodes_id"/>
+               <result property="computeNodesRunState.nodeRunStateNet"  column="compute_run_state_net"/>
+               <result property="computeNodesRunState.nodeRunStateCpu"  column="compute_run_state_cpu"/>
+               <result property="computeNodesRunState.nodeRunStateMemory"  column="compute_run_state_memory"/>
+               <result property="computeNodesRunState.nodeRunStateUsed"  column="compute_run_state_used"/>
+               <result property="computeNodesRunState.createTime"  column="compute_create_time"/>
+               <result property="computeNodesRunState.updateTime"  column="compute_update_time"/>
+               <result property="computeNodesRunState.nodeRunStateReserver1"  column="compute_run_state_reserver1"/>
+               <result property="computeNodesRunState.nodeRunStateReserver2"  column="compute_run_state_reserver2"/>
+               <result property="computeNodesRunState.nodeRunStateReserver3"  column="compute_run_state_reserver3"/>
+               <result property="computeNodesRunState.nodeRunStateReserver4"  column="compute_run_state_reserver4"/>
+               <result property="computeNodesRunState.nodeRunStateReserver5"  column="compute_run_state_reserver5"/>	   
+	    </resultMap>
+         <sql id="computeNodes_fields">
+                t_compute_nodes.compute_node_id,
+				t_compute_nodes.compute_node_unique_id,
+				t_compute_nodes.compute_node_name,
+				t_compute_nodes.compute_node_ip_lan,
+				t_compute_nodes.compute_node_ip_net,
+				t_compute_nodes.compute_node_state,
+				t_compute_nodes.compute_node_storage_port,
+				t_compute_nodes.compute_node_local_port,
+				t_compute_nodes.compute_node_mag_port,
+				t_compute_nodes.compute_node_max_manage_num,
+				t_compute_nodes.compute_node_os_string,
+				t_compute_nodes.compute_node_install,
+				t_compute_nodes.compute_node_version,
+				t_compute_nodes.compute_node_create_time,
+				t_compute_nodes.compute_node_update_time,
+				t_compute_nodes.compute_node_cpu_logic_num,
+                t_compute_nodes.compute_node_mem_size,
+                t_compute_nodes.compute_node_cpu_core_num
+         </sql>
+        
+        <!-- 查询所有计算节点 -->
+        <select id="select-compute-nodes-by-all"  resultMap="computeNodesBaseMap">
+               select 
+                   <include refid="computeNodes_fields"/>,
+                    t_compute_nodes.co_sq_s
+               from
+                   t_compute_nodes
+               WHERE compute_node_state !=0
+        </select>
+        
+         <!-- 查询所有在线计算节点 -->
+        <select id="select-on-line-compute-nodes-by-all"  resultMap="computeNodesBaseMap">
+               select 
+                   <include refid="computeNodes_fields"/>
+               from
+                   t_compute_nodes
+               WHERE compute_node_state = 1
+        </select>
+                 <!-- 查询所有异常计算节点 -->
+        <select id="select-off-line-compute-nodes-by-all"  resultMap="computeNodesBaseMap">
+               select 
+                   <include refid="computeNodes_fields"/>
+               from
+                   t_compute_nodes
+               WHERE compute_node_state != 1
+        </select>
+        <select id="select-onLine-compute-nodes-by-id"  parameterType="int" resultMap="computeNodesBaseMap">
+               select 
+                   <include refid="computeNodes_fields"/>
+               from
+                   t_compute_nodes
+               where compute_node_id=#{nodeId}
+               and compute_node_state=1
+        </select>
+        <select id="select-onLine-compute-nodes-not-id"  parameterType="int" resultMap="computeNodesBaseMap">
+               select 
+                   <include refid="computeNodes_fields"/>
+               from
+                   t_compute_nodes
+               where compute_node_id!=#{nodeId}
+        </select>
+        <select id="select-compute-nodes-by-id"  parameterType="int" resultMap="computeNodesBaseMap">
+               select 
+                   <include refid="computeNodes_fields"/>
+               from
+                   t_compute_nodes
+               where compute_node_id=#{nodeId}
+        </select>
+        <select id="select-compute-nodes-and-runState"  resultMap="nodesAndRunStateMap">
+               select 
+                   <include refid="computeNodes_fields"/>,
+                   t_compute_nodes_run_state.compute_run_state_id,
+                   t_compute_nodes_run_state.compute_run_state_net,
+                   t_compute_nodes_run_state.compute_run_state_cpu,
+                   t_compute_nodes_run_state.compute_run_state_memory
+               from
+                   t_compute_nodes ,t_compute_nodes_run_state 
+               where t_compute_nodes.compute_node_id=t_compute_nodes_run_state.compute_nodes_id
+        </select>   
+        
+         <select id="select-compute-node-by-vm-id" parameterType="int" resultMap="computeNodesBaseMap">
+        		select
+        		   <include refid="computeNodes_fields"/>
+        		from
+        			t_compute_nodes right join t_vir_manager
+       			on t_compute_nodes.compute_node_id = t_vir_manager.compute_note_id
+       			where t_vir_manager.id = #{vmId}
+        </select>
+        
+        <update id="update-computeNode-By-Id" parameterType="computeNodes" > 
+    		UPDATE t_compute_nodes
+    		SET   
+            	   compute_node_name=#{nodeName},
+            	   compute_node_ip_lan=#{nodeIpLan},
+            	   compute_node_ip_net=#{nodeIpNet},
+            	   compute_node_update_time=NOW()
+    		WHERE compute_node_id=#{nodeId}
+        </update>  
+        
+        <delete id="delete-computeNode-by-id" parameterType="int">
+		     DELETE 
+		     FROM 
+					t_compute_nodes 
+			 WHERE compute_node_id=#{nodeId}
+	    </delete>           
+        
+</mapper>

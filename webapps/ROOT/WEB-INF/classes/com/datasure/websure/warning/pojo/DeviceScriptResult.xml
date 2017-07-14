@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="deviceScriptResultMap" type="deviceScriptResult">
+		<id property="scriptResultId"  column="device_script_result_id"/>            
+		<result property="deviceId"  column="device_id"/>     
+		<result property="scriptName"  column="device_script_name"/>     
+		<result property="deviceResult"  column="device_result"/>     
+		<result property="deviceTime"  column="device_time"/>     
+	</resultMap>
+	
+	<sql id="device-script-result-column">
+		t_device_script_result.device_script_result_id,
+		t_device_script_result.device_id,
+		t_device_script_result.device_script_name,
+		t_device_script_result.device_result,
+		t_device_script_result.device_time
+	</sql>
+	
+	<!-- 根据deviceId 查脚本数据 -->
+	<select id="select-device-script-result-by-device-id" parameterType="int" resultMap="deviceScriptResultMap">
+		SELECT 
+		  <include refid="device-script-result-column"></include>
+		FROM
+		  t_device_script_result 
+		WHERE device_id = #{deviceId}
+	</select>
+	
+	<!-- 根据deviceId和时间 查状态为“失败”的脚本数据 -->
+	<select id="select-device-script-result-by-device-id-and-result" parameterType="map" resultMap="deviceScriptResultMap">
+		SELECT 
+		  <include refid="device-script-result-column"></include>
+		FROM
+		  t_device_script_result 
+		WHERE device_id = (SELECT device_id FROM t_device_main WHERE device_unique_id = #{deviceMac})
+		AND device_result = 0
+		<if test="scriptName != null and scriptName != '' "  >
+		 	AND t_device_script_result.device_script_name = #{scriptName}
+		</if>
+		<if test="beginDate != null and beginDate != '' and endDate == null or endDate == ''  "  >
+		 	AND t_device_script_result.device_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+		</if>
+		<if test="endDate != null and endDate != '' and beginDate == null or beginDate == ''  "  >
+			 AND t_device_script_result.device_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+		</if>
+		<if test="endDate != null and endDate != '' and beginDate != null and beginDate != '' "  >
+			AND t_device_script_result.device_time &gt;  #{beginDate}
+			AND t_device_script_result.device_time &lt;=  #{endDate}
+		</if>
+	</select>
+	
+	<select id="select-device-script-result-max-by-device-mac" parameterType="map" resultMap="deviceScriptResultMap">
+		SELECT 
+			 MAX(device_time) AS device_time,
+			device_result,
+		    device_id
+		FROM
+			 (SELECT 
+			   MAX(device_time) AS device_time,
+				device_result,
+			    device_id
+			  FROM
+			    t_device_script_result 
+			  WHERE device_id = (SELECT device_id FROM t_device_main WHERE device_unique_id = #{deviceMac})
+		 		GROUP BY device_time 
+		  		ORDER BY device_time DESC
+		  	) t_device_script_result
+		
+	</select>
+	
+</mapper>

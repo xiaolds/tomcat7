@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="deviceHwNetInfoMap" type="deviceHwNetInfo">
+		<id property="netInfoId"  column="device_netinfo_id"/>            
+		<result property="deviceId"  column="device_id"/>     
+		<result property="netDescription"  column="device_net_description"/>         
+		<result property="netName" column="device_net_name"/> 
+		<result property="netSpeed" column="device_net_speed"/> 
+		<result property="netMtu" column="device_net_mtu"/> 
+		<result property="netInOctets" column="device_net_InOctets"/> 
+		<result property="netOutOctets" column="device_net_OutOctets"/> 
+		<result property="netUsedRate" column="device_net_UsedRate"/> 
+		<result property="netInBytesInSec" column="device_net_InBytesInSec"/> 
+		<result property="netOutBytesInSec" column="device_net_OutBytesInSec"/> 
+		<result property="deviceTime" column="device_time"/> 
+		<result property="deviceReserver2" column="device_reserver2"/> 
+		<result property="deviceReserver3" column="device_reserver3"/> 
+		<result property="deviceReserver4" column="device_reserver4"/> 
+	</resultMap>
+	
+	<!-- 不包含 t_device_hw_net_info.device_net_UsedRate -->
+	<sql id="device-hw-net-info-column">
+		t_device_hw_net_info.device_netinfo_id,
+		t_device_hw_net_info.device_id,
+		t_device_hw_net_info.device_net_description,
+		t_device_hw_net_info.device_net_name,
+		t_device_hw_net_info.device_net_speed,
+		t_device_hw_net_info.device_net_mtu,
+		t_device_hw_net_info.device_net_InOctets,
+		t_device_hw_net_info.device_net_OutOctets,
+		t_device_hw_net_info.device_net_InBytesInSec,
+		t_device_hw_net_info.device_net_OutBytesInSec,
+		t_device_hw_net_info.device_time
+	</sql>
+	
+	 <select id="select-device-hw-net-info-by-device-id" parameterType="map" resultMap="deviceHwNetInfoMap">
+	 	
+	 	SELECT 
+	 		ROUND(AVG(t_device_hw_net_info.device_net_UsedRate)) AS device_net_UsedRate,
+			<include refid="device-hw-net-info-column"></include>
+	 	FROM t_device_hw_net_info
+		  WHERE device_net_name = 
+		  	(
+		  		SELECT device_net_name FROM t_device_hw_net_info 
+		  		WHERE device_id = #{deviceId} 
+		  		<if test="netName != null and netName != '' ">
+		  			AND device_net_name = #{netName}
+		  		</if>
+		  		GROUP BY device_net_name 
+		  		<if test="netName == null or netName == '' ">
+		  			LIMIT 0,1
+		  		</if>
+		  	)
+		 AND device_id = #{deviceId}
+		 AND t_device_hw_net_info.device_net_UsedRate &lt; #{netThreshold}
+ 		<if test="beginDate != null and beginDate !='' and endDate == null or endDate == '' "  >
+		 	AND device_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+		</if>
+		<if test="endDate != null and endDate !='' and beginDate == null or beginDate == '' "  >
+			 AND device_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND date_format(device_time,#{format}) &gt;= #{beginDate}
+			AND date_format(device_time,#{format}) &lt;= #{endDate}
+		</if>
+		GROUP BY date_format(device_time,#{format})
+		ORDER BY device_time ASC
+	 		
+	 		
+	 	<!-- SELECT 
+	 		MAX(t_device_hw_net_info.device_net_UsedRate)  AS device_net_UsedRate,
+			<include refid="device-hw-net-info-column"></include>
+		FROM
+		  t_device_hw_net_info WHERE 
+		  	device_id = #{deviceId}
+		  	<if test="beginDate != null and beginDate !='' and endDate == null or endDate == '' "  >
+			 	AND device_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+			</if>
+			<if test="endDate != null and endDate !='' and beginDate == null or beginDate == '' "  >
+				 AND device_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+			</if>
+			<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+				AND device_time &gt;= #{beginDate}
+				AND device_time &lt;= #{endDate}
+			</if>
+		GROUP BY date_format(device_time,#{format})
+		ORDER BY device_time ASC -->
+		
+	 </select>  
+	 
+	 <select id="select-device-hw-net-info-by-device-mac" parameterType="map" resultMap="deviceHwNetInfoMap">
+		SELECT 
+			device_net_UsedRate,
+			<include refid="device-hw-net-info-column"></include>
+		FROM
+			t_device_hw_net_info
+		where
+			device_net_UsedRate > #{netThreshold}
+		AND
+			device_id in
+			  (SELECT 
+			    device_id
+			  FROM
+			    t_device_main 
+			  WHERE 
+			  	device_unique_id = #{deviceMac} 
+		)         		
+	 </select>  
+	 
+	 <select id="select-device-hw-net-info-by-device-mac-and-time" parameterType="map" resultMap="deviceHwNetInfoMap">
+	 	SELECT 
+			device_net_UsedRate,
+			<include refid="device-hw-net-info-column"></include>
+		FROM
+			t_device_hw_net_info
+		where
+			device_net_UsedRate > #{netThreshold}
+		AND
+			device_id in
+			(
+				SELECT device_id FROM t_device_main  WHERE device_unique_id = #{deviceMac} 
+			)
+			<if test="beginDate != null and beginDate != '' and endDate == null or endDate == ''  "  >
+			 	AND t_device_hw_net_info.device_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+			</if>
+			<if test="endDate != null and endDate != '' and beginDate == null or beginDate == ''  "  >
+				 AND t_device_hw_net_info.device_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+			</if>
+			<if test="endDate != null and endDate != '' and beginDate != null and beginDate != '' "  >
+				AND DATE_FORMAT(t_device_hw_net_info.device_time,#{format}) &gt;=  #{beginDate}
+				AND DATE_FORMAT(t_device_hw_net_info.device_time,#{format}) &lt;=  #{endDate}
+			</if>
+	 </select>   
+	 
+	 <!-- 暂无用 -->
+	 <select id="select-device-hw-net-info-max-by-device-id" parameterType="map" resultMap="deviceHwNetInfoMap">
+		SELECT 
+			device_id,
+		  	MAX(device_time) AS device_time,
+		  	device_net_UsedRate 
+		FROM
+			(SELECT 
+			    MAX(device_net_UsedRate) AS device_net_UsedRate,
+			    device_time ,
+			    device_id
+			  FROM
+			    t_device_hw_net_info 
+			  WHERE device_id = #{deviceId} 
+			 	 GROUP BY device_time 
+			  	 ORDER BY device_time DESC
+		  ) t_device_hw_net_info 
+	 </select> 
+	 
+	 <select id="select-device-hw-net-info-net-name-by-device-id" parameterType="int" resultMap="deviceHwNetInfoMap">
+	 	SELECT 
+		  device_net_name 
+		FROM
+		  t_device_hw_net_info 
+		WHERE device_id = #{deviceId} 
+		GROUP BY device_net_name
+	 </select>                 		
+	 
+	 <!-- 根据时间删除数据  begin-->
+    <delete id="delete-net-log-by-date" parameterType="map">
+       DELETE FROM
+        t_device_hw_net_info 
+       WHERE device_time &lt;#{time} 
+    </delete>
+    <!-- 根据时间删除数据  end-->
+</mapper>

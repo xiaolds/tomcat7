@@ -1,0 +1,2478 @@
+/**
+ * Created by Nico on 15-11-6
+ *  Version: 6.1-20170414
+ *  Date: 15-11-6
+ */
+* {
+	font-family: "Microsoft Yahei", helvetica, arial, verdana;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	background: #fff;
+	font-size: 14px;
+	font-family: "Microsoft Yahei", helvetica, arial, verdana, sans-serif;
+}
+
+.x-body {
+	background: #fff;
+	font-size: 14px;
+	font-family: "Microsoft Yahei", helvetica, arial, verdana, sans-serif;
+}
+
+.header * {
+	margin: 0;
+	padding: 0;
+}
+
+.x-vml-base {
+	font: 12px "Microsoft Yahei", Arial, Helvetica, sans-serif !important
+}
+
+#msg-div22 {
+	position: absolute;
+	top: 0;
+	width: 400px;
+	margin: 0 auto;
+	z-index: 2222222;
+}
+
+.msg {
+	position: relative;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+	background: #F6F6F6;
+	border: 2px solid #ccc;
+	margin-top: 2px;
+	padding: 10px 25px 10px 15px;
+	color: #555;
+}
+
+.close {
+	position: absolute;
+	right: -20px;
+	top: -36px;
+}
+
+.msg p {
+	position: relative;
+}
+
+.win_state {
+	background: url("/images/backup/warning.png") no-repeat 20px 10px;
+	padding: 0 20px 20px 100px;
+	font-family: "MICROSOFT YAHEI";
+}
+
+.msg_state_t {
+	line-height: 40px;
+	color: #2E3744;
+	font-weight: 600;
+	font-size: 16px;
+}
+
+.msg_state_t span {
+	color: #FFA64D;
+}
+
+.msg_icon {
+	position: relative;
+	top: 3px;
+	display: inline-block;
+	margin: 0 2px;
+	width: 16px;
+	height: 16px;
+	background: url(/images/log/normal.gif) no-repeat 0 0;
+}
+
+.msg_icon_1 {
+	background: url("/images/msgcenter/warning_16.png") no-repeat 0 0;
+}
+
+.msg_icon_2 {
+	background: url("/images/log/error.gif") no-repeat 0 0;
+}
+
+/*
+Header
+*/
+.header {
+	width: 100%;
+	-min-width: 1200px;
+	height: 60px;
+	background: #00aaaa;
+	z-index: 2;
+	position: relative;
+}
+
+.logo {
+	float: left;
+	width: 240px;
+	height: 60px;
+	background: #009999 url("../oem/logo.png") no-repeat 48px 20px;
+}
+
+.nav {
+	position: absolute;
+	top: 0;
+	left: 240px;
+	display: block;
+	float: left;
+	list-style: none;
+}
+
+.nav li {
+	display: block;
+	float: left;
+	margin-right: 6px;
+	height: 60px;
+}
+
+.nav li a {
+	display: block;
+	color: #fff;
+	padding: 0 30px;
+	font-size: 19px;
+	font-weight: 600;
+	line-height: 57px;
+	text-align: center;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.nav li a:hover,.nav li a.active {
+	border-bottom: 3px solid #ffd93e;
+}
+
+.user {
+	float: right;
+	position: relative;
+	height: 60px;
+	line-height: 60px;
+	font-size: 14px;
+	color: #fff;
+}
+
+.user img {
+	position: relative;
+	top: 4px;
+	right: 2px;
+	width: 16px;
+	height: 16px;
+}
+
+.top_help {
+	display: inline-block;
+	padding: 0 8px;
+	cursor: pointer;
+	position: relative;
+	color: #fff;
+	text-decoration: none;
+}
+
+#currentUserName {
+	display: inline-block;
+	margin-left: 8px;
+	min-width: 30px;
+	text-align: center;
+}
+
+.top_info {
+	display: inline-block;
+	padding: 0 8px 0 12px;
+	cursor: pointer;
+	position: relative;
+	color: #fff;
+	text-decoration: none;
+}
+
+.icon_top_help,.icon_top_down {
+	position: relative;
+	top: 22px;
+	margin-right: 2px;
+	display: block;
+	float: left;
+	width: 16px;
+	height: 16px;
+	background: url("/images/login/login_icon.png") no-repeat -109px 0;
+}
+
+.icon_top_down {
+	background: url("/images/login/login_icon.png") no-repeat 0 0;
+}
+
+span.top_a_text {
+	padding: 0 6px 0 8px;
+	display: inline-block;
+}
+
+.top_a_text:hover {
+	-text-decoration: underline;
+	background: #2bbdbd;
+}
+
+.line_hr {
+	position: absolute;
+	top: 0;
+	display: inline-block;
+	width: 0px;
+	height: 60px;
+	border-left: 1px solid #0F9A9F;
+}
+
+.shrink {
+	z-index: 10;
+	width: 56px;
+	height: 146px;
+	background: #DEE4E8;
+	border-left: 1px solid #CFD9E0;
+	cursor: pointer;
+	position: relative;
+}
+
+.shrink img {
+	position: relative;
+	left: 12px;
+	top: 25%;
+}
+
+#DeviceBackup .shrink img,#clusterView .shrink img {
+	top: 54px;
+}
+
+.shrink:hover {
+	background: #f0f3f6;
+}
+
+.iconWidth {
+	background-size: 16px 16px;
+}
+
+/*挂载点样式-start*/
+ul,li {
+	list-style: none;
+	margin: 0;
+}
+
+.line_wrap {
+	min-width: 800px;
+	width: 100%;
+	position: relative;
+}
+
+.propery {
+	width: 100%;
+	min-width: 800px;
+	height: 152px;
+	box-sizing: border-box;
+	padding: 20px;
+	padding-left: 60px;
+	background: #f4f8fb;
+	-position: relative;
+}
+
+.propery h4,.web h4 {
+	-float: left;
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	margin: 0;
+	padding: 0;
+	width: 40px;
+	height: 112px;
+	font-size: 16px;
+	line-height: 112px;
+	color: #343841;
+	text-align: left;
+}
+
+.propery ul,.web ul {
+	float: left;
+	width: 100%;
+	height: 112px;
+	box-sizing: border-box;
+	padding: 6px;
+	background: #fff;
+	border: 3px solid #d3dce1;
+}
+
+.web {
+	margin-top: 35px;
+	width: 100%;
+	height: 152px;
+	box-sizing: border-box;
+	padding: 20px;
+	padding-left: 60px;
+	background: #f4f8fb;
+	-position: relative;
+}
+
+.web h4 {
+	top: 205px;
+}
+
+.propery ul li.server,.propery ul li.server_cluster {
+	display: block;
+	list-style: none;
+	width: 90px;
+	margin-right: 3px;
+	box-sizing: border-box;
+	padding-top: 40px;
+	float: left;
+	height: 100%;
+	background: #6896b0 url("/images/emergency/server_white32.png")
+		no-repeat center 6px;
+	text-align: center;
+	cursor: pointer;
+}
+
+.propery ul li.server_cluster {
+	background: #4D545F url("/images/emergency/cluster_white32.png")
+		no-repeat center 6px;
+}
+
+.propery ul li:last-child {
+	margin-right: 0;
+}
+
+.propery ul li span {
+	display: block;
+	color: #fff;
+	font-size: 12px;
+	line-height: 14px;
+}
+
+.propery ul li span:first-child {
+	line-height: 16px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.propery ul li.server_small,.propery ul a.server_small {
+	width: 24px;
+	padding-top: 40px;
+	margin-right: 3px;
+	cursor: pointer;
+	background: #6896b0 url("/images/emergency/server_white16.png")
+		no-repeat center 10px;
+}
+
+.propery ul .server_small span {
+	display: none;
+}
+
+.propery ul .server_small  span:first-child {
+	display: block;
+	line-height: 14px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/*cluster show*/
+.propery ul li.cluster_show {
+	-width: auto !important;
+	padding-top: 3px;
+	background-image: none;
+	padding-right: 1px;
+}
+
+.propery ul li.cluster_show>span {
+	display: none;
+}
+
+.propery ul li.cluster_show>span.title {
+	display: block;
+	line-height: 20px;
+	width: 100%;
+}
+
+.propery ul .cluster_show .server {
+	margin-left: 1px;
+	margin-right: 0;
+	float: left;
+	display: block;
+	height: 70px;
+	padding-top: 24px;
+	background: #6896b0 url(/images/emergency/server_white16.png) no-repeat
+		center 10px;
+}
+
+.propery ul .cluster_show .server_master {
+	background: #6896b0 url(/images/emergency/server_master16.png) no-repeat
+		center 10px;
+}
+
+.propery ul .cluster_show .server:first-child {
+	margin-left: 3px;
+}
+
+.end {
+	height: 100%;
+	width: auto;
+	list-style: none;
+	line-height: 100px;
+	background: #ececec;
+	color: #000;
+	text-align: center;
+	cursor: default;
+}
+
+.web {
+	text-align: center;
+}
+
+.web ul {
+	height: 100%;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.web ul li {
+	position: relative;
+	display: inline-block;
+	max-width: 145px;
+	min-width: 70px;
+	height: 100%;
+	box-sizing: border-box;
+	padding: 10px 3px;
+	text-align: center;
+	font-size: 12px;
+	border: 2px solid #fff;
+	margin-left: 10px;
+}
+
+.web ul li span {
+	line-height: 20px;
+	display: block;
+	text-align: center;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	cursor: default;
+}
+
+.web ul li.web_vm {
+	border: 2px solid #666;
+	min-width: 40px;
+}
+
+.web ul li.nic_small span {
+	display: none;
+}
+
+.web ul li.nic_small span.name {
+	display: block;
+}
+
+.web ul li.web_vm span:first-child {
+	width: 32px;
+	height: 32px;
+	background: url("/images/emergency/vm.png") no-repeat 0 0;
+}
+
+.vm_hover_bg {
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: #ddd;
+	z-index: 9;
+}
+
+.web_vm:hover .vm_hover_bg {
+	display: block;
+}
+
+.web_vm:hover .icon_edit_vm {
+	display: none;
+}
+
+.icon_edit_vm,.icon_delete_vm {
+	display: block;
+	cursor: pointer;
+}
+
+.icon_edit_vm {
+	background: url(/images/emergency/icon_edit.png) no-repeat center center;
+	width: 100%;
+	height: 100%;
+}
+
+.icon_delete_vm {
+	background: #fff url(/images/emergency/delete_red.png) no-repeat center
+		center;
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	right: 0;
+	top: 0;
+}
+
+.web_vm_add {
+	float: right;
+	width: 85px;
+	background: #6896b0;
+	border: 2px solid #315c75;
+	height: 100%;
+	cursor: pointer;
+}
+
+.web_vm_add.nic_small {
+	width: 40px;
+}
+
+.icon_add {
+	display: block;
+	width: 100%;
+	height: 40px;
+	background: url("/images/emergency/icon_add.png") no-repeat center
+		center;
+}
+
+.web ul li span:first-child {
+	display: block;
+	margin: 0 auto;
+	width: 30px;
+	height: 30px;
+	background: #34cd00;
+}
+
+.name {
+	margin-top: 4px;
+	font-weight: bold;
+}
+
+.x-border-box #line_div *,.x-border-box  .line_div {
+	box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	-ms-box-sizing: content-box;
+	-webkit-box-sizing: content-box
+}
+
+.over {
+	margin-left: 5px;
+	margin-top: -5px;
+}
+
+/*挂载点样式-end*/
+/*去掉tree前面的文件夹图标*/
+.no-icon {
+	display: none;
+}
+
+.treePanel_icon .x-tree-icon-parent,.treePanel_icon .x-grid-tree-node-expanded .x-tree-icon-parent
+	{
+	background-image: url("/images/config/mount.png")
+}
+
+.treePanel_icon .x-tree-icon-leaf {
+	background-image: url("/images/common/green.png")
+}
+
+.treePanel_icon_no .x-tree-icon-parent,.treePanel_icon_no .x-grid-tree-node-expanded .x-tree-icon-parent
+	{
+	width: 0;
+	background: none;
+}
+
+.treePanel_icon_no .x-tree-icon-leaf {
+	background-image: url("/images/common/green.png")
+}
+
+/*backup left tree */
+.x-tree-elbow-img {
+	margin-right: 0;
+}
+
+.bgcolor .x-grid-cell,.bgcolor .x-toolbar-default,.bgcolor .x-toolbar-footer
+	{
+	background-color: #f5f8fa !important;
+}
+
+.bgcolor .x-trigger-cell {
+	padding-top: 3px;
+}
+
+.btn_fbar1 {
+	left: 20px !important;
+	margin-bottom: 30px !important;
+}
+
+.btn_fbar2 {
+	left: 120px !important;
+}
+
+/*大的tab样式*/
+.tab_big .x-tab-bar-plain {
+	padding-left: 20px;
+	height: 44px;
+}
+
+.tab_big .x-tab-bar-plain .x-tab-bar-strip-default-top {
+	display: none;
+}
+
+.tab_big .x-tab-default-top {
+	height: 38px;
+	min-width: 140px;
+	margin-right: 5px;
+	padding: 11px 34px 11px 34px;
+	background: #fff;
+	border: 1px solid #d1dade !important;
+	border-bottom: none !important;
+}
+
+.tab_big_win  .x-tab-default-top {
+	min-width: auto;
+	padding: 11px 4px;
+}
+
+.tab_big .x-tab-default .x-tab-inner {
+	color: #333;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.tab_big .x-tab-bar-body-default-top {
+	padding-bottom: 0px;
+}
+
+.tab_big .x-tab-default-active {
+	border-top: 2px solid #0aa !important;
+}
+
+.tab_big .x-tab-default-active .x-tab-inner {
+	color: #0aa;
+}
+
+/*ie8的兼容tab*/
+.tab_big .x-tab-default-top table {
+	width: 100% \9
+}
+
+.tab_big .x-tab-default-active  .x-frame-mc {
+	background: none;;
+}
+
+.tab_big .x-tab-default-top-mc {
+	background: none\9;
+}
+
+.tab_big>.x-panel-body>.x-tabpanel-child>.x-panel-body-default {
+	border: 0\9;
+}
+
+/*二级tab*/
+/*应急接管样式*/
+.tab_s .x-tab-bar-plain {
+	padding-left: 0px;
+	height: 30px;
+}
+
+.tab_s .x-tab-bar-plain .x-tab-bar-strip-default-top {
+	display: none;
+}
+
+.tab_s .x-tab-default-top {
+	height: 38px;
+	min-width: 140px;
+	margin-right: 5px;
+	padding: 11px 34px 11px 34px;
+	background: #f7f9fb;
+	border: 1px solid #e3eaec;
+	border-bottom: none;
+}
+
+.tab_s .x-tab-default .x-tab-inner {
+	color: #333;
+	font-size: 14px;
+}
+
+.tab_s .x-tab-bar-body-default-top {
+	padding-bottom: 0px;
+}
+
+.tab_s .x-tab-default-active {
+	border: 1px solid #099 !important;
+	background: #0aa !important;
+	border-bottom: none !important;
+}
+
+.tab_s .x-tab-default-active .x-tab-inner {
+	color: #fff !important;
+}
+
+/*left tab*/
+.verticaltab .x-tab-wrap {
+	position: absolute;
+	display: block;
+	padding-left: 10px;
+	transform: rotate(90deg);
+}
+
+.verticaltab .x-tab-button {
+	position: absolute;
+	display: block;
+	padding-left: 0px;
+	padding-top: 2px;
+	top: -18px;
+	left: 35px;
+}
+
+.verticaltab .x-tab-left {
+	width: 30px;
+	height: 95px !important;
+	padding: 0;
+	background: none;
+}
+
+.verticaltab .x-tab-left-active {
+	background: #fff;
+	border: 1px solid #eef2f4 !important;
+}
+
+.verticaltab .x-tab-default .x-tab-inner {
+	font-weight: normal;
+	color: #333 !important;
+}
+
+.verticaltab .x-tab-left-active .x-tab-inner {
+	font-weight: bold;
+}
+
+.verticaltab .x-tab-bar-left {
+	background: #fafbfc;
+	padding: 100px 0 0 21px;
+}
+
+#MonitorConfigWindow .verticaltab .x-tab-bar-left {
+	padding: 20px 0 0 21px;
+}
+
+#calNodeMonitor  .x-tab-bar-left {
+	background: #fafbfc;
+	padding: 40px 0 0 21px;
+}
+
+#storageMonitor .x-tab-bar-left {
+	background: #fafbfc;
+	padding: 50px 0 0 21px;
+}
+
+.verticaltab .x-tab-left .x-tab-default-mc {
+	background: none;
+}
+
+/*ie8兼容*/
+.x-ie9m .x-tab-default-left {
+	filter: none /*progid:DXImageTransform.Microsoft.BasicImage(rotation=4);
+ */
+}
+
+.verticaltab table.x-table-plain .x-tab-wrap {
+	position: relative;
+	display: block;
+	padding-left: 0px;
+	transform: rotate(90deg);
+}
+
+.verticaltab table.x-table-plain  .x-tab-button {
+	position: auto;
+	display: block;
+	width: 40px;
+	padding-left: 0px;
+	padding-top: 0;
+	top: auto;
+	left: auto;
+}
+
+.x-ie9m  .verticaltab  .x-tab-left {
+	width: 96px;
+	height: 30px !important;
+	padding: 0;
+	background: none;
+}
+
+.verticaltab .x-tab-left-active {
+	background: #fff !important;
+	padding-left: 1px;
+	border: 1px solid #eef2f4 !important;
+}
+
+.x-ie9m .verticaltab .x-tab-mc {
+	padding-left: 26px;
+	padding-top: 5px;
+}
+
+.x-ie9m  .verticaltab .x-tab-default .x-tab-inner {
+	display: block; /*
+    text-align:left;
+    */
+	width: 58px !important;
+	font-weight: normal;
+	color: #333;
+}
+
+.verticaltab .x-tab-left .x-tab-default-mc {
+	background: none;
+}
+
+/*预警配置弹窗tab样式*/
+.verticalTab .x-tab-left-active {
+	border-top: 2px solid #0aa !important;
+}
+
+.verticalTab .x-tab-button {
+	left: 10px;
+}
+
+.verticalTab .x-tab-left {
+	height: 120px !important;
+}
+
+.monitorIcon {
+	width: 18px !important;
+	top: 2px !important;
+}
+
+/*window left tab start*/
+.win_ver .x-tab-bar-left {
+	padding: 0;
+}
+
+.win_ver .x-tab-left-active {
+	background: #E4F7F7;
+	padding-left: 0;
+	border: none !important;
+}
+
+.win_ver .x-tab-left {
+	height: 150px !important;
+}
+
+.win_ver .x-tab-bar-body-default-left {
+	padding-right: 0;
+	background: #fafbfc
+}
+
+.win_ver>div.x-panel-body-default {
+	border: none;
+	border-left: 1px solid #d1dade;
+}
+
+.x-ie9m  .win_ver .x-tab-default .x-tab-inner {
+	width: 90px !important;
+	text-align: left;
+}
+
+.x-ie9m  .win_ver .x-left-active .x-tab-inner {
+	font-weight: bold;
+}
+
+.x-ie9m  .win_ver  .x-tab-left {
+	width: 150px;
+}
+
+.x-ie9m  .win_ver  .x-tab-left-active {
+	background: #E4F7F7;
+}
+
+/*window left tab end*/
+.btn_node .x-btn-default-small-icon-text-left .x-btn-icon-el {
+	width: 32px;
+}
+
+.btn_node .x-btn-default-small-icon-text-left .x-btn-inner {
+	padding-left: 38px;
+}
+
+.btn_node .x-btn-default-small-disabled {
+	border: none;
+	filter: progid : DXImageTransform.Microsoft.Alpha ( Opacity = 100 );
+	opacity: 01;
+	background: none
+}
+
+.btn_node .x-btn-default-small {
+	background: none;
+}
+
+.btn_node .active {
+	background: #f0f4f7
+}
+
+.config_font_color {
+	color: #09C;
+}
+
+.tab_title  .x-tab-bar-default,.tab_title .x-tab-bar-body-default-top {
+	background: #fafbfc !important;
+}
+
+.bot_list {
+	height: 36px;
+	line-height: 36px;
+	border-bottom: 1px solid #eef2f4;
+}
+
+.bot_list span {
+	position: relative;
+	display: inline-block;
+	width: 120px;
+	margin-left: 18px;
+	color: #888;
+}
+
+.bot_list a {
+	color: #00aaaa;
+	cursor: pointer;
+	text-decoration: underline;
+	float: right;
+	margin-right: 10px;
+}
+
+/*chart header 颜色*/
+.chart_t .x-panel-header-default {
+	padding-left: 30px;
+	background: none;
+	color: #666;
+}
+
+.chart_t  .x-panel-header-text-container-default {
+	color: #2d3744;
+	font-weight: normal
+}
+
+/*二级菜单，左侧绿色竖杠*/
+.font_t {
+	display: block;
+	height: 25px;
+	line-height: 26px;
+	border-left: 3px solid #0aa;
+	font-size: 14px;
+	color: #2e3744;
+	text-indent: 10px;
+	font-weight: bold;
+}
+
+.font_h1 {
+	font-size: 50px;
+	color: #666;
+	text-align: center;
+}
+
+.font_h22 {
+	font-size: 30px;
+	color: #333;;
+	line-height: 40px;
+	text-align: center;
+}
+
+.font_h3 {
+	font-weight: bold;
+	font-size: 18px;
+	color: #2f3744;
+}
+
+.font_h4 {
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.font_h23 {
+	margin-top: 100px;
+	color: #666;
+	font-size: 14px;
+	text-align: center;
+	padding: 10px;
+}
+
+.font_h2 {
+	font-size: 20px;
+}
+
+.font_30 {
+	font-size: 14px;
+	color: #2db200
+}
+
+.font_50 {
+	font-size: 50px
+}
+
+/*tab位置靠近边框*/
+.tab_1  .x-tab-bar-plain {
+	padding-left: 0;
+}
+
+/*字体颜色*/
+.color_red {
+	color: #ff2626
+}
+
+.color_yellow {
+	color: #ffa54c
+}
+
+.color_green {
+	color: #00aaaa
+}
+
+/*左侧树菜单被选择后，字体颜色*/
+.bgcolor .x-grid-row-selected .x-grid-td .x-tree-node-text,.bgcolor .x-grid-row-focus .x-grid-td .x-tree-node-text,.bgcolor .x-grid-row-over .x-grid-td .x-tree-node-text
+	{
+	color: #0aa;
+	cursor: pointer;
+}
+
+.bgcolor .x-grid-tree-node-expanded .x-grid-td  .x-tree-node-text {
+	color: #000;
+	cursor: default
+}
+
+/*文本垂直居中*/
+.vertical_text>span>div {
+	vertical-align: middle !important;
+}
+
+/*配置页面*/
+.config_div {
+	line-height: 30px; /*
+	background:#fafafa;
+	padding:10px;
+*/
+}
+
+.sys_wrap {
+	padding: 20px;
+}
+
+.config_t {
+	height: 22px;
+	height: auto\9;
+	border-left: 3px solid #00aaaa;
+	text-indent: 10px;
+	line-height: 22px;
+	font-weight: bold;
+	font-size: 15px;
+}
+
+.config_t1 {
+	font-size: 14px;
+	border-left: none !important;
+	text-indent: 13px;
+	margin-top: 10px;
+}
+
+.config_t button {
+	font-weight: normal;
+	font-size: 14px;
+	float: right;
+	width: 100px;
+	height: 30px;
+	text-indent: 0;
+	text-align: center;
+	border: none;
+	color: #0aa;
+	text-decoration: underline;
+	background: none;
+}
+
+/*ie8兼容性*/
+.x-tree-node-text {
+	padding-left: 4px\9;
+}
+
+.x-column-header-align-left {
+	text-align: left\9;
+}
+
+.x-column-header-trigger {
+	position: absolute\9;
+	right: 0\9;
+	top: 0\9;
+}
+
+.x-btn-default-small {
+	border-color: #d1dade\9;
+}
+
+/*.x-btn-icon-text-left .x-btn-icon-el {
+    background-position: 2px 0\9;
+}*/
+.btn_big .x-btn-icon-el {
+	background-position: 0px 1px\9;
+}
+
+.x-btn-default-small-icon-text-left .x-btn-icon-el,.x-btn-default-toolbar-small-icon-text-left .x-btn-icon-el
+	{
+	left: 0\9;;
+}
+
+/*按钮*/
+.x-btn-ml,.x-btn-mr,.x-btn-tc,.x-btn-tl,.x-btn-tr,.x-btn-bl,.x-btn-bc,.x-btn-br
+	{
+	background: #d1dade;
+}
+
+/*toolbar-button鼠标悬浮状态*/
+.x-btn-ml-over,.x-btn-mr-over,.x-btn-tc-over,.x-btn-tl-over,.x-btn-tr-over,.x-btn-bl-over,.x-btn-bc-over,.x-btn-br-over
+	{
+	background: #fff !important;
+}
+
+/*button鼠标悬浮状态-ie8*/
+.x-btn-default-small-over,.x-btn-default-small-focus,.x-btn-default-toolbar-small-pressed,.x-btn-default-toolbar-small-over,.x-btn-default-toolbar-small-focus,.x-btn-default-toolbar-small-pressed
+	{
+	border-color: #0aa;
+	background: #fff;
+}
+
+.x-btn-default-small-over .x-frame-mr,.x-btn-default-small-over .x-frame-ml,.x-btn-default-small-over .x-frame-tl,.x-btn-default-small-over .x-frame-tc,.x-btn-default-small-over .x-frame-tr,.x-btn-default-small-over .x-frame-bl,.x-btn-default-small-over .x-frame-bc,.x-btn-default-small-over .x-frame-br,.x-btn-default-small-pressed .x-frame-mr,.x-btn-default-small-pressed .x-frame-ml,.x-btn-default-small-pressed .x-frame-tl,.x-btn-default-small-pressed .x-frame-tc,.x-btn-default-small-pressed .x-frame-tr,.x-btn-default-small-pressed .x-frame-bl,.x-btn-default-small-pressed .x-frame-bc,.x-btn-default-small-pressed .x-frame-br,.x-btn-default-small-focus .x-frame-mr,.x-btn-default-small-focus .x-frame-ml,.x-btn-default-small-focus .x-frame-tl,.x-btn-default-small-focus .x-frame-tc,.x-btn-default-small-focus .x-frame-tr,.x-btn-default-small-focus .x-frame-bl,.x-btn-default-small-focus .x-frame-bc,.x-btn-default-small-focus .x-frame-br
+	{
+	background: #0aa;
+}
+
+.x-btn-default-toolbar-small-over .x-frame-mr,.x-btn-default-toolbar-small-over .x-frame-ml,.x-btn-default-toolbar-small-over .x-frame-tl,.x-btn-default-toolbar-small-over .x-frame-tc,.x-btn-default-toolbar-small-over .x-frame-tr,.x-btn-default-toolbar-small-over .x-frame-bl,.x-btn-default-toolbar-small-over .x-frame-bc,.x-btn-default-toolbar-small-over .x-frame-br,.x-btn-default-toolbar-small-pressed .x-frame-mr,.x-btn-default-toolbar-small-pressed .x-frame-ml,.x-btn-default-toolbar-small-pressed .x-frame-tl,.x-btn-default-toolbar-small-pressed .x-frame-tc,.x-btn-default-toolbar-small-pressed .x-frame-tr,.x-btn-default-toolbar-small-pressed .x-frame-bl,.x-btn-default-toolbar-small-pressed .x-frame-bc,.x-btn-default-toolbar-small-pressed .x-frame-br,.x-btn-default-toolbar-small-focus .x-frame-mr,.x-btn-default-toolbar-small-focus .x-frame-ml,.x-btn-default-toolbar-small-focus .x-frame-tl,.x-btn-default-toolbar-small-focus .x-frame-tc,.x-btn-default-toolbar-small-focus .x-frame-tr,.x-btn-default-toolbar-small-focus .x-frame-bl,.x-btn-default-toolbar-small-focus .x-frame-bc,.x-btn-default-toolbar-small-focus .x-frame-br
+	{
+	background: #0aa;
+}
+
+.x-btn-default-small-over .x-frame-mc,.x-btn-default-small-pressed .x-frame-mc,.x-btn-default-small-focus .x-frame-mc,.x-btn-default-toolbar-small-over .x-frame-mc,.x-btn-default-toolbar-small-pressed .x-frame-mc,.x-btn-default-toolbar-small-focus .x-frame-mc
+	{
+	background: #fff;
+}
+
+.x-btn-disabled .x-frame-mr,.x-btn-disabled .x-frame-ml,.x-btn-disabled .x-frame-tl,.x-btn-disabled .x-frame-tc,.x-btn-disabled .x-frame-tr,.x-btn-disabled .x-frame-bl,.x-btn-disabled .x-frame-bc,.x-btn-disabled .x-frame-br
+	{
+	background: #d1dade;
+}
+
+/*禁用按钮*/
+.x-btn-default-small-disabled {
+	border-color: #d1dade !important;
+}
+
+.x-box-scroller-top,.x-box-scroller-bottom {
+	display: none;
+}
+
+/* 绿色的大按钮*/
+.btn_big .x-btn-inner {
+	color: #fff;
+}
+
+.btn_big .x-btn-icon-el {
+	top: 2.5px;
+}
+
+.btn_select {
+	border: 0;
+	background: none;
+}
+
+/*ie8*/
+.btn_big  .x-btn-tl,.btn_big  .x-btn-tc,.btn_big  .x-btn-tr,.btn_big  .x-btn-ml,.btn_big  .x-btn-mc,.btn_big  .x-btn-mr,.btn_big  .x-btn-bl,.btn_big  .x-btn-bc,.btn_big  .x-btn-br
+	{
+	background: none;
+}
+
+.btn_big {
+	border: 1px solid #009999 !important;
+}
+
+.x-btn-default-small-icon-text-left-mc,.x-btn-default-toolbar-small-icon-text-left-mc
+	{
+	padding-left: 18px
+}
+
+/*没有框的按钮*/
+.btn_node_active {
+	background: #eee !important;
+}
+
+/*切换s1 s2的小按钮*/
+.tab_storage {
+	display: inline-block;
+	border: 0;
+	background: #D1DADE !important;
+	padding: 6px 20px 1px 20x;
+	height: 30px;
+}
+
+.tab_storage .x-btn-inner {
+	padding: 0;
+	color: #333;
+}
+
+.tab_storage_active {
+	background: #00AAAA !important;
+}
+
+.tab_storage_active .x-btn-inner {
+	color: #fff;
+}
+
+.tab_storage .x-btn-default-small-mc {
+	padding: 6px 10px 1px 10px;
+}
+
+/*ie8 下面按钮兼容*/
+.ie8 .x-btn-tl,.ie8 .x-btn-tc,.ie8 .x-btn-tr,.ie8 .x-btn-ml,.ie8 .x-btn-mc,.ie8 .x-btn-mr,.ie8 .x-btn-bl,.ie8 .x-btn-bc,.ie8 .x-btn-br
+	{
+	background: none;
+}
+
+.x-btn-default-small-focus-tl,.x-btn-default-small-focus-tc,.x-btn-default-small-focus-tr,.x-btn-default-small-focus-ml,.x-btn-default-small-focus-mc,.x-btn-default-small-focus-mr,.x-btn-default-small-focus-bl,.x-btn-default-small-focus-bc,.x-btn-default-small-focus-br
+	{
+	background: none;
+}
+
+/*配置窗口*/
+/*.config .x-btn-default-small .x-btn-inner{padding:0;}*/
+.config .x-grid-row-over .x-grid-td {
+	background-color: #EDF9F9
+}
+
+.config .x-grid-row-selected .x-grid-td {
+	background-color: #E4F7F7;
+}
+
+.left_tree .x-btn {
+	background-color: #E4F7F7;
+	border: none;
+}
+
+.left_tree .x-btn-default-small-disabled {
+	background: none;
+	border: none;
+	opacity: 1;
+}
+
+.config .x-toolbar-footer {
+	background: none;
+	padding: 0;
+}
+
+.x-btn-default-small-menu-active {
+	background-color: #E4E4E4;
+}
+
+.left_btn {
+	background: none !important;
+	border: none !important;
+}
+
+.left_btn_active {
+	background-color: #E4F7F7 !important;
+}
+
+/*弹出窗口ie8兼容性*/
+.x-window-header-tl,.x-window-header-tr,.x-window-header-tc,.x-window-header-ml,.x-window-header-mr,.x-window-header-mc,.x-window-header-bl,.x-window-header-br,.x-window-header-bc,.x-window-ml,.x-window-mr,.x-window-mc,.x-window-bl,.x-window-br,.x-window-bc
+	{
+	background: #26b6b6
+}
+
+/*backup console*/
+/*未配置*/
+.consol_1 {
+	background: #ccc;
+}
+
+/*绿色*/
+.consol_2 {
+	background: #68ba8a;
+}
+
+.consol_3 {
+	background: #68ba8a;
+}
+
+/*故障警告-橙色*/
+.consol_4 {
+	background: #ffa64d;
+}
+
+/*停止，蓝色*/
+.consol_5 {
+	background: #3a7ea5;
+}
+
+.consol_6 {
+	background: #58a6b0;
+}
+
+/*红色*/
+.consol_7 {
+	background: #f75a5c;
+}
+
+/*预警控制台，1未配置未启动 2正常 3异常4.未开启*/
+.warning_console_icon {
+	display: block;
+	width: 100px;
+	height: 100px;
+	background: url("/images/backup/warning_console_icon.png") no-repeat 0 0;
+}
+
+.warning_console_1 .warning_console_icon {
+	background-position: 0 0;
+}
+
+.warning_console_2 .warning_console_icon {
+	background-position: -100px 0;
+}
+
+.warning_console_3 .warning_console_icon {
+	background-position: -200px 0;
+}
+
+.warning_console_4 .warning_console_icon {
+	background-position: -300px 0;
+}
+
+.warning_text span div {
+	font-size: 36px;
+	color: #ccc;
+}
+
+/*内部遮罩层*/
+.x-panel .x-mask {
+	filter: progid : DXImageTransform.Microsoft.Alpha ( Opacity = 35 );
+	opacity: 0.35;
+	background: #fff;
+}
+
+#warningMenu .x-mask {
+	filter: progid : DXImageTransform.Microsoft.Alpha ( Opacity = 35 );
+	opacity: 0.75;
+	background: #fff;
+}
+
+/*表格body border颜色与头部不一致 */
+.x-grid-body,.x-grid-header-ct {
+	border-color: #DBE0E2;
+}
+
+#backupStrategy-body  .x-grid-cell-last a,#backupStrategyId-body  .x-grid-cell-last a,#clusterBackupStrategy .x-grid-cell-last a,.btn_text_a
+	{
+	color: #00aaaa;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+/*小按钮 文字居中*/
+.text-align .x-btn-default-small .x-btn-inner {
+	padding: 0;
+}
+
+/*模拟地址栏鼠标悬停状态*/
+.btn_adr {
+	background: none;
+	border: 1px solid #fff;
+}
+
+.x-btn-adr_over {
+	background: #FAFBFC;
+	border: 1px solid #E3EAEC;
+}
+
+.activeSymbol table {
+	margin-top: -4px;
+}
+
+/*ie8部分字体兼容*/
+.x-fieldset-header-text {
+	font-family: "Microsoft Yahei", helvetica, arial, verdana;
+}
+
+#checkTargetDeviceInfo table {
+	font-size: 14px
+}
+
+/*挂载配置窗口树图标修改-start*/
+#recSnapShotTreeGridId .x-tree-elbow-empty {
+	background-image: url('');
+}
+
+/*挂载配置窗口树图标修改-end*/
+.list_grid {
+	display: inline-block;
+	width: 45%;
+	height: 50px;
+	line-height: 50px;
+	padding-left: 20px;
+}
+
+.list_grid:first-child {
+	border-right: 1px solid #d6d8da
+}
+
+.list_grid2 {
+	height: 40px;
+	line-height: 40px;
+	padding-left: 20px;
+	overflow: hidden;
+}
+
+.disk {
+	padding-left: 100px;
+}
+
+.list_grid span {
+	display: inline-block;
+	width: 100px;
+	color: #888;
+}
+
+.list_grid2>span {
+	display: inline-block;
+	width: 200px;
+	color: #888;
+}
+
+.line-height-no .x-form-text {
+	line-height: 14px;
+}
+
+/*#capabilityWarningConfig-body .x-slider-horz {
+    background:#d90000
+}
+#capabilityWarningConfig-body .x-slider-horz .x-slider-thumb {
+    width: 15px;
+    height: 6px;
+    background-color: #31baba ;
+    z-index:2;
+}
+#capabilityWarningConfig-body .x-slider-horz .x-slider-thumb {
+    width: 15px;
+    height: 6px;
+    left:0!important;
+    background-color: #ff7f00 ;
+    z-index:1;
+}
+.combo_width .x-field-label-cell{
+	width:105px!important;
+}
+
+*/
+.combo_width .x-form-item-body {
+	width: 100% !important;
+}
+
+.combo_width .x-form-trigger-wrap {
+	width: 100% !important;
+}
+
+.x-form-text {
+	padding: 0 6px;
+}
+
+.bot_list_title {
+	border-bottom: 1px solid #ccc;
+	background: #fafafa;
+}
+
+.bot_list_title span,.bot_list_title a {
+	color: #666;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.bot_list_title a {
+	margin-right: 27px;
+}
+
+.table1 {
+	border: none;
+	width: 100%;
+	line-height: 36px;
+	padding: 0;
+	margin: 0;
+	border-collapse: collapse;
+}
+
+.table1 th {
+	text-align: left;
+	border-bottom: 1px solid #ccc;
+	padding: 0;
+	margin: 0;
+	background: #fafafa;
+	text-indent: 10px;
+	color: #666;
+}
+
+.table1 td {
+	border-bottom: 1px solid #eee;
+	padding: 0;
+	margin: 0;
+	text-indent: 10px;
+}
+
+.operate a {
+	color: #0079d2;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.table1_empty {
+	text-align: center;
+	height: 100px;
+}
+
+.new {
+	display: inline-block;
+	margin-right: 10px;
+	line-height: 40px;
+	text-indent: 10px;
+	color: #0079d2;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.new a {
+	cursor: pointer;
+}
+
+.tab_btn_hover {
+	border-top: 2px solid #00aaaa;
+	background: #fafbfc;
+}
+
+.tab_btn_active {
+	border-top: 2px solid #00aaaa;
+	background: #fafbfc;
+}
+
+.vms_tip {
+	z-index: 19022 !important
+}
+
+.log_chart {
+	position: relative;
+}
+
+.log_chart_title {
+	text-align: center;
+	position: absolute;
+	top: 170px;
+}
+
+.tree_scroll .x-tree-view {
+	overflow-x: hidden !important;
+}
+
+/*toolbar边框颜色，和grid颜色一样*/
+.x-toolbar-default {
+	border-color: #DBE0E2;
+}
+
+/*表格不出现横向滚动条*/
+.x-grid-view {
+	overflow-x: hidden !important;
+}
+
+/*#hardDiskAndVmdkId{margin:10px!important;}
+*/
+.btn_a {
+	border: none !important;
+	margin-top: 4px;
+	width: 16px;
+	height: 16px;
+	background: url("/images/config/menu_delete.png") no-repeat;
+}
+
+.cap_bar {
+	display: block;
+	float: left;
+	width: 10px;
+	margin-top: 7px;
+	height: 5px;
+	background: #D1DADE;
+}
+
+.cap_bar_text {
+	display: block;
+	margin-left: 10px;
+	float: left;
+	margin-left: 
+}
+
+/*消息显示*/
+#notifyPage-innerCt {
+	margin-left: 30px;
+}
+
+#notifyPage a[data-qtip="第一页"],#notifyPage a[data-qtip="最后页"],#notifyPage a[data-qtip="刷新"],#notifyPage .x-toolbar-separator
+	{
+	display: none;
+}
+
+.info_title_orange,.info_title_red,.info_title_blue {
+	color: #FFA54C;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.info_title_red {
+	color: red;
+}
+
+.info_title_blue {
+	color: #00a897
+}
+
+.info_text {
+	height: 40px;
+	line-height: 40px;
+	color: #333;
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.info_text span {
+	display: block;
+	float: right;
+	color: #ccc;
+	font-size: 14px;
+	font-weight: 400;
+}
+
+.base_info {
+	height: 30px;
+}
+
+.base_info_t {
+	display: block;
+	float: left;
+	margin-right: 10px;
+	color: #aaa;
+}
+
+.base_info_c {
+	display: block;
+	float: left;
+	width: 160px;
+	color: #666;
+}
+
+.btn_text_underline {
+	display: block;
+	padding: 0 2px;
+	font-size: 14px;
+	color: #0aa;
+	text-decoration: underline;
+}
+
+.btn_padding_left .x-btn-inner {
+	padding: 0;
+}
+
+.retryYes {
+	background: url("/images/emergency/retry.png");
+	cursor: pointer;
+}
+
+.retryNo {
+	background: url("/images/emergency/retry_gray.png");
+	cursor: default;
+}
+
+.startYes {
+	background: url("/images/emergency/start.png");
+	cursor: pointer;
+}
+
+.startNo {
+	background: url("/images/emergency/start_gray.png");
+	cursor: default;
+}
+
+.stopYes {
+	background: url("/images/emergency/stop.png");
+	cursor: pointer;
+}
+
+.stopNo {
+	background: url("/images/emergency/stop_gray.png");
+	cursor: default;
+}
+
+.deleteYes {
+	background: url("/images/emergency/delete_red.png");
+	cursor: pointer;
+}
+
+.deleteNo {
+	background: url("/images/emergency/delete_gray.png");
+	cursor: default;
+}
+
+.onLine {
+	background: url("/images/recovery/onLine.png")
+}
+
+.offLine {
+	background: url("/images/recovery/offLine.png")
+}
+
+.unauthorized {
+	background: url("/images/recovery/unauthorized.png")
+}
+
+.onLine_cal {
+	background: url("/images/emergency/onLine.png")
+}
+
+.offLine_cal {
+	background: url("/images/emergency/offLine.png")
+}
+
+.bot_list a.btn_a_disabled,a.btn_a_disabled {
+	color: #ccc;
+	cursor: default;
+}
+
+#virtualNodeGridPanelId  img.x-item-disabled {
+	cursor: default;
+}
+
+#vncViewId {
+	cursor: pointer;
+}
+
+#mountListId-body tr.x-grid-row td {
+	height: 32px;
+}
+
+/*#emergencyToobarId .x-box-inner{
+	height:108px;
+}
+#tabPanel .x-tab-bar-body{
+	height:38px;
+}
+#tabPanel .x-tab-bar-body .x-horizontal-box-overflow-body{
+	width:100%;
+	height:38px;
+}
+首页备份按钮
+*/
+.btn_big.x-btn-default-small-disabled {
+	filter: progid : DXImageTransform.Microsoft.Alpha ( Opacity = 30 );
+	opacity: 0.3;
+}
+
+/*全局加粗样式*/
+.font_bold {
+	font-weight: 600;
+}
+
+.font_color_999 {
+	color: #999;
+}
+
+/*表格hover颜色*/
+.x-grid-with-row-lines .x-grid-td {
+	border-top: 1px solid #fafafa;
+}
+
+.x-grid-row-over .x-grid-td,.x-grid-row-focused .x-grid-td {
+	border-color: #ededed;
+}
+
+.grid_border .x-grid-td {
+	border-bottom: 1px solid #ededed;
+}
+
+#foreWarningPanelView-innerCt {
+	width: 100% !important;
+}
+
+.btn_focus {
+	border-color: rgb(0, 153, 153);
+	background: rgb(0, 170, 170);
+}
+
+.btn_focus .x-btn-inner {
+	color: #fff;
+}
+
+.btn_focus table td {
+	border: none !important;
+	background: rgb(0, 170, 170) !important;
+}
+
+.ip_add_btn .x-btn-inner {
+	padding: 0 15px;
+}
+
+.icon_logView {
+	float: left;
+	display: block;
+	margin-right: 10px;
+	width: 100px;
+	height: 84px;
+	background: url("/images/log/view_all.png") no-repeat 0 0;
+}
+
+.icon_logView1 {
+	background-position: 0 0;
+}
+
+.icon_logView2 {
+	background-position: -100px 0;
+}
+
+.icon_logView3 {
+	background-position: -200px 0;
+}
+
+.icon_logView4 {
+	background-position: -300px 0;
+}
+
+.icon_logView5 {
+	background-position: -400px 0;
+}
+
+.icon_logView6 {
+	background-position: -500px 0;
+}
+
+.a_text {
+	color: #006CD8;
+}
+
+.logView_list {
+	cursor: pointer;
+	background: #fafbfc;
+	border: 1px solid #e3eaec;
+	padding: 36px 0 0 30px;
+}
+
+.device_tip {
+	position: relative;
+	float: right;
+	padding-top: 10px;
+}
+
+.device_tip span {
+	display: inline-block;
+	position: relative;
+	top: -3px;
+	height: 100%;
+	line-height: 20px;
+}
+
+.dev_sep {
+	position: relative;
+	top: 2px;
+	display: inline-block;
+	width: 1px;
+	height: 20px;
+	background: #dedede;
+	margin: 0 4px 0 12px;
+}
+
+.dev_icon {
+	display: inline-block;
+	position: relative;
+	top: 4px;
+	margin: 0 3px 0 8px;
+	width: 20px;
+	height: 22px;
+	background: url("/images/backup/device_tip.png") no-repeat 0 0;
+}
+
+.dev_icon2 {
+	background-position: -20px 0;
+}
+
+.dev_icon3 {
+	background-position: -40px 0;
+}
+
+.dev_icon4 {
+	background-position: -60px 0;
+}
+
+.dev_icon5 {
+	background-position: -80px 0;
+}
+
+.dev_icon6 {
+	background-position: -100px 0;
+}
+
+.dev_icon7 {
+	background-position: -120px 0;
+}
+
+.dev_icon8 {
+	background-position: -140px 0;
+}
+
+.dev_icon9 {
+	background-position: -160px 0;
+}
+
+.dev_icon10 {
+	background-position: -180px 0;
+}
+
+.dev_icon11 {
+	background-position: -200px 0;
+}
+
+/*虚拟机图标*/
+.vm_icon {
+	position: relative;
+	top: 4px;
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	margin-right: 2px;
+	background: url("/images/emergency/vm_icon.png") no-repeat 0 0;
+}
+
+.vm_icon_type {
+	background-position: 0 0;
+}
+
+.vm_icon_sys {
+	background-position: -17px 0;
+}
+
+.vm_icon_cpu {
+	background-position: -33px 0;
+}
+
+.vm_icon_mem {
+	background-position: -49px 0;
+}
+
+.vm_icon_net {
+	background-position: -65px 0;
+}
+
+.vm_icon_disk {
+	background-position: -81px 0;
+}
+
+.vm_icon_gpu {
+	background-position: -97px 0;
+}
+
+.vm_icon_cd {
+	background-position: -113px 0;
+}
+
+.vm_icon_usb {
+	background-position: -129px 0;
+}
+
+/*火狐下位置控制*/
+@
+-moz-document url-prefix () { .config_ahth_check { top:-20px!important;
+	
+}
+
+.config_auth_field {
+	overflow: visible;
+}
+
+}
+.icon_active {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background: url("/images/recovery/active.png") no-repeat 0 0;
+}
+
+.icon_unistall {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background: url("/images/recovery/unistall.png") no-repeat 0 0;
+}
+
+.icon_set {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background: url("/images/recovery/set_blue.png") no-repeat 0 0;
+}
+
+.icon_setGray {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background: url("/images/recovery/set_gray.png") no-repeat 0 0;
+}
+
+.icon_delete {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background: url("/images/emergency/delete_red.png") no-repeat 0 0;
+}
+
+.icon_deleteGray {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background: url("/images/emergency/delete_gray.png") no-repeat 0 0;
+}
+
+.icon_creatMount {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background: url("/images/recovery/creatMount.png") no-repeat 0 0;
+}
+
+.icon_mountInit {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background: url("/images/recovery/mount_init.png") no-repeat 0 0;
+}
+
+.offlineClsText {
+	font-size: 40px;
+	color: #ddd;
+	text-align: center;
+}
+
+.offlineClsTextS {
+	font-size: 20px;
+	color: #ddd;
+	text-align: center;
+}
+
+#mountInfo .x-grid-cell-value .x-grid-cell-inner {
+	color: #999
+}
+
+.x-toolbar .x-tbar-page-number .x-form-trigger-input-cell .x-form-text {
+	padding: 0 0 0 2px;
+	font-size: 12px;
+}
+
+.x-tabpanel-child {
+	overflow-y: auto\9; /*for ie8*/
+}
+
+.x-tbar-page-number {
+	width: 40px !important;
+}
+
+.imgPositon {
+	position: relative;
+	top: 2px;
+}
+
+.hander {
+	cursor: pointer;
+}
+
+.cal_top_info {
+	position: relative;
+}
+
+.cal_top_info .vm_icon_cpu {
+	background-position: -33px -2px;
+}
+
+.cal_top_info .vm_icon_mem {
+	background-position: -49px -1px;
+}
+
+.label_icon {
+	display: block;
+	padding-left: 18px;
+}
+
+.label_icon_type {
+	background: url("/images/emergency/label_icon_type.png") no-repeat 0 2px;
+}
+
+.label_icon_cal {
+	background: url("/images/emergency/label_icon_cal.png") no-repeat 0 2px;
+}
+
+.label_icon_sys {
+	background: url("/images/emergency/label_icon_sys.png") no-repeat 0 2px;
+}
+
+.label_icon_cpu {
+	background: url("/images/emergency/label_icon_cpu.png") no-repeat 0 2px;
+}
+
+.label_icon_mem {
+	background: url("/images/emergency/label_icon_mem.png") no-repeat 0 3px;
+}
+
+.addMonitorPanel .x-form-text {
+	width: 200px !important;
+}
+
+.addMonitorPanel .x-form-trigger-wrap {
+	width: 200px !important;
+}
+
+.addMonitorPanel .x-form-trigger-wrap .x-form-text {
+	width: 100% !important;
+}
+
+#scriptWarningConfigPanel #scriptWarningServerName-inputEl {
+	width: 150px !important;
+}
+
+/* #configRunTimeInterval-inputEl{
+	width:100%!important;
+	
+}
+.addMonitorPanel #configRunTimeIntervalUnit-triggerWrap,.addMonitorPanel #configRunTimeIntervalUnit-triggerWrap,
+.addMonitorPanel #configRunTimeInterval-triggerWrap
+{
+	width:100%!important;
+	
+} */
+.btn_left_posi {
+	left: 300px !important;
+}
+
+.btn_pad_left.x-btn-default-small .x-btn-inner {
+	padding: 0;
+}
+
+#hardDiskAndVmdkId .x-form-cb-label {
+	margin-top: 0;
+}
+
+.x-action-col-cell .x-item-disabled {
+	cursor: default;
+}
+
+/*测试用样式-start*/
+.clear {
+	overflow: hidden;
+	clear: both;
+}
+
+.device_view {
+	position: relative;
+	border: none;
+	border-top: 1px solid #e6e6e6;
+	padding-left: 0;
+	margin: 20px 20px 20px 20px;
+}
+
+.device_view legend {
+	cursor: default;
+}
+
+.field_cont {
+	width: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+.field_cont_li {
+	float: left;
+}
+
+.icon_arrow {
+	position: relative;
+	top: 0;
+	float: left;
+	display: block;
+	width: 12px;
+	height: 16px;
+	background: url("/images/common/icon_arrow.png") no-repeat -20px 0;
+}
+
+.icon_arrow:hover {
+	background-position: -52px 0;
+}
+
+.icon_arrow_hide {
+	background-position: -4px 0;
+}
+
+.icon_arrow_hide:hover {
+	background-position: -36px 0;
+}
+
+.field_cont_a {
+	display: block;
+	cursor: pointer;
+	width: 320px;
+	height: 100px;
+	padding: 10px;
+	overflow: hidden;
+	position: relative;
+}
+
+.field_li_left {
+	float: left;
+	position: relative;
+	width: 80px;
+	height: 80px;
+	margin: 0 10px 0 0;
+}
+
+.circle_left,.circle_right,.circle_bottom,.circle_middle {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 80px;
+	height: 80px;
+}
+
+.field_li_right {
+	position: absolute;
+	left: 100px;
+	top: 20;
+	width: 220px;
+}
+
+.field_li_right .font_h4 {
+	line-height: 36px;
+}
+
+.field_li_right .font_h4,.field_li_right .field_title_info {
+	width: 100%;
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/*测试用样式-end*/
+.win_auth_wrap {
+	padding: 15px;
+	line-height: 30px;
+}
+
+.win_auth_btn {
+	height: 64px;
+	padding-top: 15px;
+	background: #fafafa;
+}
+
+.win_auth_btn a {
+	float: right;
+	margin-right: 20px;
+	display: block;
+	width: 80px;
+	background: #00aaaa;
+	height: 32px;
+	line-height: 32px;
+	text-align: center;
+	color: #fff;
+	text-decoration: none;
+}
+
+.log_text_wrap div span div {
+	padding: 20px;
+	font-size: 24px;
+	color: #999;
+}
+
+.log_h2_wrap {
+	padding-left: 110px;
+}
+
+.icon_radio .x-tree-checkbox {
+	background-image: url("/images/common/radio.png");
+}
+
+.text_wrap {
+	width: 100%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.no_auth_wrap {
+	position: absolute;
+	top: 60px;
+	width: 100%;
+	height: 100%;
+	background: #fff;
+	text-align: center;
+	line-height: 300px;
+	font-size: 40px;
+	color: #ddd;
+}
+
+.msgClsLoadMask .x-mask-msg-text {
+	background-image: none;
+	padding: 10px;
+}
+
+#warningConfigPanel .x-mask {
+	filter: progid : DXImageTransform.Microsoft.Alpha ( Opacity = 75 );
+	opacity: 0.75;
+}
+
+#activeForm .fileUpIe8 .x-form-file-btn {
+	background: red;
+	z-index: 999;
+}
+
+#activeForm .fileUpIe8 .x-form-file-btn * {
+	background: none;
+}
+
+#activeForm .fileUpIe8 .x-form-file-btn span.x-btn-inner {
+	color: #0aa;
+	font-weight: 600;
+	font-size: 14px;
+}
+
+#successDBReturn .x-item-disabled .x-form-cb-label,#failedDBReturn .x-item-disabled .x-form-cb-label,#editFailedDBReturn .x-item-disabled .x-form-cb-label,#editSuccessDBReturn .x-item-disabled .x-form-cb-label
+	{
+	filter: progid : DXImageTransform.Microsoft.Alpha ( Opacity = 60 );
+	opacity: 0.6;
+}
+
+.disabled_text .x-form-field,.disabled_field {
+	filter: progid : DXImageTransform.Microsoft.Alpha ( Opacity = 60 );
+	opacity: 0.6;
+}
+
+.x-grid-tree-node-leaf td.check_dis input.x-tree-checkbox,.x-grid-tree-node-leaf td input.x-tree-checkbox.disabled
+	{
+	filter: progid : DXImageTransform.Microsoft.Alpha ( Opacity = 30 );
+	opacity: 0.3;
+}
+
+.icon_position {
+	position: relative;
+	display: inline-block;
+	top: 2px;
+}
+
+.btn_delete_a {
+	position: absolute;
+	right: 10px;
+	top: -2px;
+	font-weight: normal;
+	font-size: 14px;
+	float: right;
+	width: 80px;
+	height: 30px;
+	text-indent: 20px;
+	text-align: center;
+	border: none;
+	text-decoration: none;
+	background: #fff;
+}
+
+.btn_delete_a .x-frame-mc {
+	padding-left: 0;
+}
+
+.btn_delete_a .x-btn-inner {
+	color: red;
+	padding: 0;
+	text-decoration: none;
+}
+
+.cluster .x-tree-node-text,.cluster {
+	cursor: pointer !important;
+}
+
+.cluster:hover .x-tree-node-text {
+	color: #0aa !important;
+}
+
+.btn_text_a.x-item-disabled {
+	filter: progid : DXImageTransform.Microsoft.Alpha ( Opacity = 30 );
+	opacity: 0.3;
+	cursor: default;
+}
+
+/*进度条*/
+div.progress {
+	width: 70%;
+	min-width: 120px;
+	position: relative;
+	background: #FFF;
+	height: 20px;
+	border: 1px solid #eee;
+	padding: 1px;
+}
+
+div.progress>span {
+	background: #4dc77f none repeat scroll 0 0;
+	color: #666;
+	display: block;
+	font-size: 12px;
+	height: 100%;
+	line-height: 14px;
+	text-align: center;
+}
+
+div.progress>div {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	line-height: 18px;
+	text-align: center;
+	color: #666;
+	font-size: 12px;
+}
+
+div.progress.gray>span {
+	width: 100%;
+	background: #e0e0e0;
+}
+
+/*选型*/
+.header_ccc>.x-panel-header-default {
+	background-color: #ccc;
+}
+
+.pack_wrap .x-panel-header-default {
+	background: none;
+	border-color: #ccc;
+}
+
+.pack_wrap .x-panel-body-default {
+	border-color: #ccc;
+}
+
+.pack_wrap .x-panel-header-default .x-header-text {
+	color: #666;
+}
+
+.f_bold {
+	font-weight: bold;
+}
+
+.f_bold span {
+	font-weight: normal;
+}
+
+.color_green_first {
+	color: #0aa;
+	display: inline-block;
+	margin: 0 4px 0 0;
+}
+
+.color_green_margin {
+	color: #0aa;
+	display: inline-block;
+	margin: 0 4px;
+}

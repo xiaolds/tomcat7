@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+		<resultMap id="vmManagerBaseMap"  type="vmManager">
+				<id property="id"  column="id"/>            
+				<result property="vmImgId"  column="vir_vmimg_id"/>
+				<result property="deviceId"  column="vir_device_id"/>
+				<result property="computeNoteId"  column="compute_note_id"/>
+				<result property="vmName"  column="vir_name"/>
+				<result property="vmState"   column="vir_state"/>
+				<result property="vmType"    column="vir_type"/>
+				<result property="vmSystemType"    column="vir_system_type"/>
+				<result property="vmSystemBit"    column="vir_system_bit"/>
+				<result property="deviceName"    column="vir_source_device_name"/>
+				<result property="deviceIp"    column="vir_source_device_ip"/>
+				<result property="uuid"    column="vir_task_uuid"/>
+				<result property="vmxPath"    column="vir_vmx_path"/>
+				<result property="vmCpuKernel"    column="vir_cpu_kernel"/>
+				<result property="vmMemory"    column="vir_memory"/>
+				<result property="vmUsbController"    column="vir_usb_controller"/>
+				<result property="vmDiskType"    column="vir_disk_type"/>
+				<result property="nicDriverType"    column="vir_nic_driver_type"/>
+				<result property="vmDisplayType"    column="vir_display_driver_type"/>
+				<result property="vmCDdriverType"    column="vir_cd_driver_type"/>
+				<result property="vmVncPort"    column="vir_vnc_port"/>
+				<result property="vmVncPwd"    column="vir_vnc_pwd"/>
+				<result property="vmRemark"    column="vir_remark"/>
+				<result property="virDiskIndex"    column="vir_disk_index"/>
+				<result property="grainMergePercent"    column="grain_merge_percent"/>
+                <result property="grainMergeStatus"    column="grain_merge_status"/>
+                <result property="grainModifyTime"    column="grain_modify_time"/>
+		</resultMap>
+		
+		<resultMap  id="vmManagerAndNoteMap"   type="vmManager"  extends="vmManagerBaseMap">
+				<result property="device.clusterIdentity" column="device_cluster_identity"/>
+		         <association property="computeNodes"  javaType="computeNodes">
+		             <id property="nodeId"  column="compute_node_id"/>            
+				     <result property="nodeName"  column="compute_node_name"/>
+				     <result property="nodeState"  column="compute_node_state"/>
+				     <result property="nodeIpLan"  column="compute_node_ip_lan"/>
+				     <result property="nodeUniqueId"  column="compute_node_unique_id"/>
+				     <result property="nodeIpLan"  column="compute_node_ip_lan"/>
+		         </association>
+		</resultMap>
+		
+		<resultMap id="vmManagerAndDeviceMap" type="vmManager" extends="vmManagerBaseMap">
+			<result property="device.uniqueId"  column="device_unique_id"/>     
+			<result property="device.status"  column="device_state"/>         
+			<result property="device.markDel"  column="device_mark_del"/>      
+			<result property="device.mac"  column="device_mac"/>          
+			<result property="device.ip"  column="device_ip"/>           
+			<result property="device.computerName" column="device_client_computer_name"/> 
+			<result property="device.isStandby"  column="device_is_standby"/>
+		</resultMap>
+		 
+		 <sql id="vmManager_fields" >
+			    t_vir_manager.id,
+			    t_vir_manager.vir_vmimg_id,
+			    t_vir_manager.vir_device_id,
+			    t_vir_manager.compute_note_id,
+			    t_vir_manager.vir_name,
+			    t_vir_manager.vir_state,
+			    t_vir_manager.vir_type,
+			    t_vir_manager.vir_system_type,
+			    t_vir_manager.vir_system_bit,
+			    t_vir_manager.vir_source_device_name,
+			    t_vir_manager.vir_source_device_ip,
+			    t_vir_manager.vir_task_uuid,
+			    t_vir_manager.vir_vmx_path,
+			    t_vir_manager.vir_cpu_kernel,
+			    t_vir_manager.vir_memory,
+			    t_vir_manager.vir_usb_controller,
+			    t_vir_manager.vir_disk_type,
+			    t_vir_manager.vir_nic_driver_type,
+			    t_vir_manager.vir_display_driver_type,
+			    t_vir_manager.vir_cd_driver_type,
+			    t_vir_manager.vir_vnc_port,
+			    t_vir_manager.vir_vnc_pwd,
+			    t_vir_manager.vir_disk_index,
+			    t_vir_manager.vir_remark,
+			    t_vir_manager.grain_merge_percent,
+                t_vir_manager.grain_merge_status,
+                t_vir_manager.grain_modify_time
+		 </sql>
+		
+		<!-- 查询所有虚拟机 -->
+		<select id="select-vm-manager-by-all"   resultMap="vmManagerAndNoteMap">
+		     select 
+			       <include refid="vmManager_fields"/>, 
+			       t_compute_nodes.compute_node_id,
+			       t_compute_nodes.compute_node_name,
+			       t_compute_nodes.compute_node_state,
+			       t_compute_nodes.compute_node_unique_id,
+			       t_compute_nodes.compute_node_ip_lan,
+			       t_device.device_cluster_identity
+		    from  t_vir_manager 
+		    left join 
+		             t_compute_nodes
+            on t_vir_manager.compute_note_id = t_compute_nodes.compute_node_id 
+            LEFT JOIN 
+            t_device 
+            ON t_vir_manager.vir_device_id = t_device.device_id 
+            AND t_device.device_cluster_identity = 1
+		</select>
+		
+		<!-- 查询所有虚拟机个数 -->  
+		<select id="select-vm-manager-count-by-all"   resultType="int">
+			select count(t_vir_manager.id)
+			from  t_vir_manager 
+			left join 
+				t_compute_nodes
+			on t_vir_manager.compute_note_id = t_compute_nodes.compute_node_id   
+		</select>
+		
+		<!-- 查询接管虚拟机个数 --> 
+		<select id="select-vm-takeover-manager-count-by-all"   resultType="int">
+			select count(t_vir_manager.id)
+			from  t_vir_manager 
+			left join 
+				t_compute_nodes
+			on t_vir_manager.compute_note_id = t_compute_nodes.compute_node_id
+			where vir_type=1   
+		</select>
+		<!-- 查询运行中接管虚拟机个数 --> 
+		<select id="select-vm-run-takeover-manager-count"   resultType="int">
+			select count(id)
+			from  t_vir_manager 
+			where vir_type=1
+			and vir_state=1   
+		</select>
+		<!-- 查询演练虚拟机个数 --> 
+		<select id="select-vm-run-emulation-manager-count"   resultType="int">
+			select count(id)
+			from  t_vir_manager 
+			where vir_type=2
+			and vir_state=1   
+		</select>
+		<!-- 查询所有在线虚拟机个数-->
+		<select id="select-vm-run-manager-count"   resultType="int">
+			select count(id)
+			from  t_vir_manager 
+			where vir_state=1  
+		</select>		
+		<!-- 查询所有在线虚拟机 -->
+		<select id="select-vm-manager-by-online"   resultMap="vmManagerBaseMap">
+		     select 
+			       <include refid="vmManager_fields"/>
+		    from  t_vir_manager 
+		    where vir_state=1 
+		</select>
+		
+		<!-- 根据设备ID查询所有在线虚拟机 -->
+		<select id="select-run-vm-manager-by-device-id"  parameterType="int"   resultMap="vmManagerBaseMap">
+		    select 
+			       <include refid="vmManager_fields"/>
+		    from  t_vir_manager 
+		    where vir_state=1 and vir_type=1 and  t_vir_manager.vir_device_id=#{deviceId}
+		</select>
+		
+		<!-- 根据节点ID查询运行的虚拟机 -->
+		<select id="select-run-vm-manager-by-note-id"  parameterType="int"  resultMap="vmManagerAndNoteMap">
+		      select 
+			       <include refid="vmManager_fields"/>, 
+			       t_compute_nodes.compute_node_id,
+			       t_compute_nodes.compute_node_name,
+			       t_compute_nodes.compute_node_ip_lan,
+			       t_compute_nodes.compute_node_unique_id,
+			       t_compute_nodes.compute_node_state
+		    from  t_vir_manager 
+		    left join 
+		             t_compute_nodes
+            on t_vir_manager.compute_note_id = t_compute_nodes.compute_node_id 
+            where  
+                  t_vir_manager.vir_state=1 and t_vir_manager.compute_note_id=#{computeNoteId}
+		</select>
+		
+		<!-- 根据节点ID查询非集群机器运行的虚拟机  -->
+        <select id="select-run-un-cluster-vm-manager-by-note-id"  parameterType="int"  resultMap="vmManagerAndNoteMap">
+              select 
+                   <include refid="vmManager_fields"/>, 
+                   t_compute_nodes.compute_node_id,
+                   t_compute_nodes.compute_node_name,
+                   t_compute_nodes.compute_node_ip_lan,
+                   t_compute_nodes.compute_node_unique_id,
+                   t_compute_nodes.compute_node_state
+            from  t_vir_manager 
+            left join 
+                     t_compute_nodes
+            on t_vir_manager.compute_note_id = t_compute_nodes.compute_node_id 
+            left join 
+                     t_device
+            on t_vir_manager.vir_device_id = t_device.device_id
+            where  
+                  t_vir_manager.vir_state=1 and t_vir_manager.compute_note_id=#{computeNoteId}
+                  and t_device.device_cluster_identity = 0
+        </select>
+        
+        <!-- 根据集群ID及计算节点ID查询运行中的虚拟机 -->
+        <select id="select-run-vm-manager-by-cluster-id-and-compute-node-id" parameterType="map"  resultMap="vmManagerAndNoteMap">
+            select 
+                   <include refid="vmManager_fields"/>, 
+                   t_compute_nodes.compute_node_id,
+                   t_compute_nodes.compute_node_name,
+                   t_compute_nodes.compute_node_ip_lan,
+                   t_compute_nodes.compute_node_unique_id,
+                   t_compute_nodes.compute_node_state
+            from
+			  t_vir_manager 
+			  left join t_compute_nodes 
+			    on t_vir_manager.compute_note_id = t_compute_nodes.compute_node_id 
+			  left join t_device
+			    on t_vir_manager.vir_device_id = t_device.device_id
+			  left join t_device_and_group 
+			    on t_device.device_id = t_device_and_group.device_id
+			where t_vir_manager.vir_state = 1 
+			  and t_vir_manager.compute_note_id = #{computeNodeId}
+			  and t_device.device_cluster_identity = 1
+			  and t_device_and_group.group_id = #{clusterId}
+        </select>
+		
+		<!-- 查询正在运行中的虚拟机所在的集群列表 -->
+		<select id="select-cluster-id-list-by-run-vm-manager-and-node-id" parameterType="int" resultType="int">
+		    select 
+			  distinct t_device_and_group.group_id
+			from
+			  t_vir_manager 
+			  left join t_compute_nodes 
+			    on t_vir_manager.compute_note_id = t_compute_nodes.compute_node_id 
+			  left join t_device
+			    on t_vir_manager.vir_device_id = t_device.device_id
+			  left join t_device_and_group 
+			    on t_device.device_id = t_device_and_group.device_id
+			where t_vir_manager.vir_state = 1 
+			  and t_vir_manager.compute_note_id = #{computeNoteId}
+			  and t_device.device_cluster_identity = 1  
+		</select>
+		
+		
+		<!-- 根据节点ID查询虚拟机 -->
+		<select id="select-vm-manager-by-note-id"  parameterType="int" resultMap="vmManagerAndNoteMap">
+		    select 
+			       <include refid="vmManager_fields"/>, 
+			       t_compute_nodes.compute_node_id,
+			       t_compute_nodes.compute_node_name,
+			       t_compute_nodes.compute_node_ip_lan,
+			       t_compute_nodes.compute_node_unique_id,
+			       t_compute_nodes.compute_node_state
+		    from  t_vir_manager 
+		    left join 
+		             t_compute_nodes
+            on t_vir_manager.compute_note_id = t_compute_nodes.compute_node_id   
+            where
+                 t_vir_manager.compute_note_id=#{computeNoteId}
+		</select>
+		<select id="select-vm-manager-by-deviceId"  parameterType="int" resultMap="vmManagerBaseMap">
+		    select 
+			       <include refid="vmManager_fields"/>
+		    from  t_vir_manager 
+            where
+                 t_vir_manager.vir_device_id=#{deviceId}
+                 and vir_type=4;
+		</select>
+		<!-- 根据Id查询虚拟机 -->
+		<select id="select-vm-manager-by-vm-id"  parameterType="int"  resultMap="vmManagerAndNoteMap">
+		       select 
+			       <include refid="vmManager_fields"/>, 
+			       t_compute_nodes.compute_node_id,
+			       t_compute_nodes.compute_node_name,
+			       t_compute_nodes.compute_node_ip_lan,
+			       t_compute_nodes.compute_node_unique_id,
+			       t_compute_nodes.compute_node_state
+		    from  t_vir_manager 
+		    left join 
+		             t_compute_nodes
+            on t_vir_manager.compute_note_id = t_compute_nodes.compute_node_id 
+            where  
+                  t_vir_manager.id=#{id}
+		</select>
+		
+		<!-- 根据ID查设备信息 -->
+		<select id="select-vm-manager-and-device-by-id" parameterType="int" resultMap="vmManagerAndDeviceMap">
+			SELECT 
+			    <include refid="vmManager_fields"/>, 
+			    t_device.device_unique_id,
+			    t_device.device_state,
+			    t_device.device_mark_del,
+			    t_device.device_mac,
+			    t_device.device_ip,
+			    t_device.device_client_computer_name,
+			    t_device.device_is_standby
+		    FROM  t_vir_manager 
+		    LEFT JOIN 
+		    	t_device
+            ON t_vir_manager.vir_device_id = t_device.device_id 
+            WHERE  
+                  t_vir_manager.id=#{id}
+		</select>
+		
+		<!-- 根据name查询虚拟机是否存在 -->
+		<select id="select-is-exist-by-vm-name"  parameterType="string"  resultMap="vmManagerAndNoteMap">
+		     select 
+			       <include refid="vmManager_fields"/>, 
+			       t_compute_nodes.compute_node_id,
+			       t_compute_nodes.compute_node_name,
+			       t_compute_nodes.compute_node_ip_lan,
+			       t_compute_nodes.compute_node_unique_id,
+			       t_compute_nodes.compute_node_state
+		    from  t_vir_manager 
+		    left join 
+		             t_compute_nodes
+            on t_vir_manager.compute_note_id = t_compute_nodes.compute_node_id 
+            where  
+                  t_vir_manager.vmName=#{vmName}
+		</select>
+		<!-- 查询最大ID -->
+		<select id="select-max-id" resultType="int">
+			select 
+				IFNULL(max(id),0)
+			from t_vir_manager
+		</select>
+		<select id="select-vir-manage-by-name"  parameterType="string"  resultMap="vmManagerBaseMap">
+			select 
+				<include refid="vmManager_fields"/>
+			from t_vir_manager
+			where vir_name=#{virName}
+		</select>
+		<!-- 查询是否有应急接管信息 -->
+		<select id="select-count-by-vmIdList" resultType="int">
+			select 
+				count(vir_vmimg_id)  
+			from t_vir_manager
+			where vir_vmimg_id IN
+			<foreach item="vmdkIdList" index="index" collection="list" open="(" separator="," close=")">  
+			  	#{vmdkIdList}  
+			 </foreach>
+		</select>
+		
+		<select id="select-count-by-diskCloneId" resultType="int">
+			SELECT 
+			  count(vir_vmimg_id)
+			FROM
+			  t_vir_manager 
+			WHERE vir_vmimg_id IN 
+				(SELECT vmimg_id FROM t_vmimg WHERE vmimg_diskclone_id = #{diskCloneId}) 
+		</select>
+		
+		<select id="select-vm-by-diskclone-id-and-set-id" parameterType="Map" resultMap="vmManagerBaseMap">
+			SELECT 
+			   <include refid="vmManager_fields"/>
+			FROM
+			  t_vir_manager 
+			  LEFT JOIN t_vmimg 
+			    ON t_vir_manager.vir_vmimg_id = t_vmimg.vmimg_id
+			WHERE t_vmimg.vmimg_diskclone_id = #{diskCloneId}
+			  AND t_vmimg.vmimg_snapshot_set_id = #{setId} 
+		</select>
+		
+		<!-- 根据虚拟子网ID查找关联的虚拟机 -->
+		<select id="select-vm-manager-by-vir-net-id" parameterType="int" resultMap="vmManagerBaseMap">
+			SELECT 
+			  <include refid="vmManager_fields"/>
+			FROM
+			  t_vir_manager 
+			  LEFT JOIN t_vir_nic 
+			    ON t_vir_manager.id = t_vir_nic.vir_id 
+			  LEFT JOIN t_compute_nodes_virtual_nic 
+			    ON t_vir_nic.compute_virtual_nic_id = t_compute_nodes_virtual_nic.compute_virtual_nic_id 
+			    WHERE t_compute_nodes_virtual_nic.compute_virtual_nic_id  = #{virtualNicId}
+		</select>
+		
+		<!-- 增加虚拟机 -->
+		<insert id="add-vm-manager"  parameterType="vmManager"  useGeneratedKeys="true"  keyProperty="id">
+		      insert into  t_vir_manager
+		           (
+		            t_vir_manager.vir_vmimg_id,
+				    t_vir_manager.vir_device_id,
+				    t_vir_manager.compute_note_id,
+				    t_vir_manager.vir_name,
+				    t_vir_manager.vir_state,
+				    t_vir_manager.vir_type,
+				    t_vir_manager.vir_system_type,
+				    t_vir_manager.vir_system_bit,
+				    t_vir_manager.vir_source_device_name,
+				    t_vir_manager.vir_source_device_ip,
+				    t_vir_manager.vir_task_uuid,
+				    t_vir_manager.vir_vmx_path,
+				    t_vir_manager.vir_cpu_kernel,
+				    t_vir_manager.vir_memory,
+				    t_vir_manager.vir_usb_controller,
+				    t_vir_manager.vir_disk_type,
+				    t_vir_manager.vir_nic_driver_type,
+				    t_vir_manager.vir_display_driver_type,
+				    t_vir_manager.vir_cd_driver_type,
+				    t_vir_manager.vir_vnc_port,
+				    t_vir_manager.vir_vnc_pwd,
+				    t_vir_manager.vir_remark,
+				    t_vir_manager.vir_unique_id,
+				    t_vir_manager.grain_merge_percent,
+                    t_vir_manager.grain_merge_status,
+                    t_vir_manager.grain_modify_time
+		           )
+		           values
+		           ( 
+				     #{vmImgId},
+				     #{deviceId},
+				     #{computeNoteId},
+				     #{vmName},
+				     #{vmState},
+				     #{vmType},
+				     #{vmSystemType},
+				     #{vmSystemBit},
+				     #{deviceName},
+				     #{deviceIp},
+				     #{uuid},
+				     #{vmxPath},
+				     #{vmCpuKernel},
+				     #{vmMemory},
+				     #{vmUsbController},
+				     #{vmDiskType},
+				     #{nicDriverType},
+				     #{vmDisplayType},
+				     #{vmCDdriverType},
+				     #{vmVncPort},
+				     #{vmVncPwd},
+				     "",
+				     #{uniqueId},
+				     #{grainMergePercent},
+                     #{grainMergeStatus},
+                     #{grainModifyTime}
+		           )
+		</insert>
+		
+		<!-- 更新虚拟机配置 -->
+		<update id="update-vm-manager"   parameterType="vmManager">
+		       update t_vir_manager
+		       <set>
+		             <if test="vmImgId != null and  vmImgId != ''">
+                            vir_vmimg_id=#{vmImgId},
+                     </if>
+                     <if test="deviceId != null and  deviceId != ''">
+                            vir_device_id=#{deviceId},
+                     </if>
+		             <if test="computeNoteId != null and  computeNoteId  != ''">
+                            compute_note_id=#{computeNoteId},
+                     </if>
+				     <if test="vmName !=null and  vmName != ''">
+				            vir_name=#{vmName},
+				     </if>
+				     <if test="vmState !=null and vmState !=''">
+				             vir_state=#{vmState},
+				     </if>
+				     <if test="vmType !=null  and vmType  != ''">
+				            vir_type=#{vmType},
+				     </if>
+				     <if test="vmSystemType !=null  and vmSystemType  != ''">
+				             vir_system_type=#{vmSystemType},
+				     </if>
+				      <if test="vmSystemBit !=null  and vmSystemBit  != ''">
+				             vir_system_bit=#{vmSystemBit},
+				      </if>
+				      <if test="deviceName !=null and deviceName != ''">
+				             vir_source_device_name=#{deviceName},
+				      </if>
+				      <if test="deviceIp !=null and deviceIp!= ''">
+				             vir_source_device_ip=#{deviceIp},
+				      </if>
+				      <if test="uuid  !=null and uuid != ''">
+				             vir_task_uuid=#{uuid},
+				      </if>
+				      <if test="vmxPath  !=null and vmxPath != ''">
+				             vir_vmx_path=#{vmxPath},
+				      </if>
+				      <if test="vmCpuKernel !=null and  vmCpuKernel!= ''">
+				             vir_cpu_kernel=#{vmCpuKernel},
+				      </if>
+				      <if test="vmMemory !=null  and  vmMemory != ''">
+				             vir_memory=#{vmMemory},
+				      </if>
+				      <if test="vmUsbController !=null and  vmUsbController != ''">
+				             vir_usb_controller=#{vmUsbController},
+				      </if>
+				      <if test="temp_update_type == 6">
+				             vir_disk_type=#{vmDiskType},
+				     </if>
+				     <if test="temp_update_type == 4">
+				             vir_nic_driver_type=#{nicDriverType},
+				     </if>
+				     <if test="temp_update_type == 7">
+				             vir_display_driver_type=#{vmDisplayType},
+				     </if>
+				     <if test="vmCDdriverType !=null  and  vmCDdriverType != ''">
+				             vir_cd_driver_type=#{vmCDdriverType},
+				     </if>
+				     <if test="vmVncPort !=null and  vmVncPort != ''">
+				             vir_vnc_port=#{vmVncPort},
+				     </if>
+				     <if test="vmVncPwd !=null and vmVncPwd != ''">
+				             vir_vnc_pwd=#{vmVncPwd},
+				     </if>
+				     <if test="virDiskIndex !=null and virDiskIndex != ''">
+				             vir_disk_index=#{virDiskIndex},
+				     </if>
+ 				     vir_remark=""
+		       </set>
+		       where   id=#{id}
+		</update>
+		<!-- 修改虚拟机配置，0的问题排除影响其他操作 -->
+		<update id="update-vm-manager-vmHardType"   parameterType="vmManager">
+		       update t_vir_manager
+		       set
+		             vir_disk_type=#{vmDiskType}
+		       where   id=#{id}
+		</update>
+		<update id="update-vm-manager-vmDisPlayType"   parameterType="vmManager">
+		       update t_vir_manager
+		       set
+		             vir_display_driver_type=#{vmDisplayType}
+		       where   id=#{id}
+		</update>
+		<update id="update-vm-manager-vmNicType"   parameterType="vmManager">
+		       update t_vir_manager
+		       set
+		             vir_nic_driver_type=#{nicDriverType}
+		       where   id=#{id}
+		</update>
+	
+		<!-- 删除虚拟机配置 -->
+		<delete id="delete-vm-manager"   parameterType="int">
+		       delete from t_vir_manager where id = #{vmId}
+		</delete>
+		
+</mapper>

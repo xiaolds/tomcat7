@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="UserAndNotifyMap" type="userAndNotify">
+		<id property="id"  column="id"/>            
+		<result property="userId"  column="user_id"/>     
+		<result property="notifyId"  column="notify_id"/>         
+		<result property="msgReadState"  column="msg_read"/>      
+		<result property="msgSendState"  column="sms_email_send"/>
+		<result property="isMsgNotify"  column="is_msg_notify"/>  
+		<result property="readTime"  column="read_time"/>    
+	</resultMap>
+
+    <insert id="insert-user-and-notify" parameterType="Map">
+        INSERT INTO t_user_notify 
+            (
+                user_id,      
+                notify_id,    
+                msg_read,     
+                sms_email_send,
+                is_msg_notify
+            )
+            VALUES 
+        <foreach collection="userList" index="index"  item="user" open="" close="" separator=",">
+	        (
+		        #{user.userID},
+		        #{notifyId},
+		        1,
+		        #{user.isEmailSmsNotify},
+		        #{user.isMsgNotify}
+	        )
+        </foreach>
+    </insert>
+    
+    <!-- 设置消息通知状态为已读 -->
+    <update id="update-notify-read-state-as-read" parameterType="Map">
+       UPDATE 
+		  t_user_notify 
+		SET
+		  msg_read = 2 ,
+		  read_time = NOW() 
+		WHERE notify_id = #{notifyId}
+		AND user_id = #{userId}
+    </update>
+    
+    <!-- 设置消息通知为已发送 -->
+    <update id="update-notify-send-state-as-send" parameterType="Map">
+        UPDATE 
+          t_user_notify 
+        SET
+        sms_email_send = 2
+        WHERE notify_id = #{notifyId} 
+        AND user_id = #{userId}
+    </update>
+    
+      <!-- 删除某用户的消息通知-->
+    <delete id="del-user-and-notify-by-userid" parameterType="int">
+	    DELETE 
+		FROM
+		  t_user_notify 
+		WHERE user_id = #{userId} 
+    </delete>
+    
+    <delete id="delete-specif-date-ago-notify-and-user" parameterType="java.util.Date">
+       DELETE FROM t_user_notify 
+		WHERE notify_id IN 
+		  (SELECT 
+		    t_notify.id 
+		  FROM
+		    t_notify 
+		  WHERE notify_time &lt;= DATE_FORMAT(#{oneMonthAgo},'%Y-%m-%d'))
+    </delete>
+    
+    <!-- 查询某用户某条消息通知的发送状态 -->
+    <select id="select-notify-send-state-by-notify-and-user-id" parameterType="Map" resultType="int">
+        SELECT 
+		  sms_email_send 
+		FROM
+		  t_user_notify 
+		WHERE user_id = #{userId} 
+		  AND notify_id = #{notifyId} 
+    </select>
+    
+</mapper>

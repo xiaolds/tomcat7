@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+        <resultMap id="deviceNetWorkCardBaseMap"  type="deviceNetWorkCard" >
+               <id property="id"  column="device_nic_id"/>
+               <result property="deviceId"  column="device_id"/>
+               <result property="index"  column="device_nic_index"/>
+               <result property="name"  column="device_nic_name"/>
+               <result property="uuid"  column="device_nic_uuid"/>
+               <result property="mac"  column="device_nic_mac"/>
+               <result property="ip"  column="device_nic_ip"/>
+               <result property="netmask"  column="device_nic_netmask"/>
+               <result property="gateway"  column="device_nic_gateway"/>
+               <result property="dns1"  column="device_nic_dns1"/>
+               <result property="dns2"  column="device_nic_dns2"/>
+               <result property="remark"  column="device_nic_remark"/>
+        </resultMap>
+         
+         <sql id="deviceNetWorkCard_fields">
+                device_nic_id,
+			    device_id,
+			    device_nic_index,
+			    device_nic_name,
+			    device_nic_uuid,
+			    device_nic_mac,
+			    device_nic_ip,
+			    device_nic_netmask,
+			    device_nic_gateway,
+			    device_nic_dns1,
+			    device_nic_dns2,
+			    device_nic_remark
+         </sql>
+        
+        <!-- 根据节点ID查询计算节点网卡信息 -->
+        <select id="select-device-netWork-by-device-id"  parameterType="int"  resultMap="deviceNetWorkCardBaseMap">
+        	SELECT * 
+        	FROM 
+        	t_device_nic
+        	WHERE 
+        	device_id = #{deviceId}
+        </select>
+        
+        <select id="select-device-netWork-by-id"  parameterType="int"  resultMap="deviceNetWorkCardBaseMap">
+               select 
+                    <include refid="deviceNetWorkCard_fields"/>
+               from
+                   t_device_nic
+               where   
+                   device_nic_id=#{id}  
+        </select>
+        
+        
+</mapper>

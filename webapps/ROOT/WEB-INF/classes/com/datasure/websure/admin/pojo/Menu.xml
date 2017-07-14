@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="MenuMap" type="Menu">
+		<id property="menuId"  column="menu_id"/>  
+		<result property="pageId"  column="page_id"/>                
+		<result property="menuName"  column="menu_name"/>         
+		<result property="classStyle"  column="class_style"/>            
+		<result property="menuIcon"  column="menu_icon"/>    
+		<result property="menuUrl"  column="menu_url"/>
+		<result property="parentId"  column="parent_id"/>
+		<result property="menuLevel"  column="menu_level"/>
+		<result property="menuType"  column="menu_type"/>
+		<result property="sort"  column="sort"/>
+		<result property="isShow"  column="is_show"/>
+		<result property="createTime"  column="create_time"/>
+		<result property="updateTime"  column="update_time"/>
+		<result property="desc"  column="desc"/>
+	</resultMap>
+	
+	<sql id="menu-column">
+		t_menu.menu_id,
+		t_menu.page_id,
+		t_menu.menu_name,
+		t_menu.class_style,
+		t_menu.menu_icon,
+		t_menu.menu_url,
+		t_menu.parent_id,
+		t_menu.menu_level,
+		t_menu.menu_type,      
+		t_menu.sort,
+		t_menu.is_show,
+		t_menu.create_time,
+		t_menu.update_time,
+		t_menu.desc               
+	</sql>
+		
+	<select id="select-single-level-menu" resultMap="MenuMap" parameterType="int">
+		SELECT 
+			<include refid="menu-column"/>
+		FROM t_menu 
+		WHERE menu_type = #{type} and parent_id = -1 and is_show = 1
+		ORDER BY sort ASC
+	</select>
+		
+	<select id="select-menu-by-type-and-parent-id" resultMap="MenuMap" parameterType="map">
+		SELECT 
+			<include refid="menu-column"/>
+		FROM t_menu 
+		WHERE menu_type = #{menuType} and parent_id = #{parentId} and is_show = 1
+		ORDER BY sort ASC
+	</select>
+		
+</mapper>

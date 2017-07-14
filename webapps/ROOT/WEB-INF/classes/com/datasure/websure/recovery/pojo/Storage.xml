@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="storageMap" type="storage">
+		<id property="id" column="storage_id" />
+		<result property="uniqueId" column="storage_unique_id" />
+		<result property="name" column="storage_name" />
+		<result property="type" column="storage_type" />
+		<result property="ipLan" column="storage_ip_lan" />
+		<result property="ipNet" column="storage_ip_net" />
+		<result property="state" column="storage_state" />
+		<result property="storageKey" column="storage_key" />
+		<result property="managePort" column="storage_manage_port" />
+		<result property="maxManageNum" column="storage_max_manage_num" />
+		<result property="userCmdPort" column="storage_user_cmd_port" />
+		<result property="userDataPort" column="storage_user_data_port" />
+		<result property="maxUserNum" column="storage_max_user_num" />
+		<result property="maxUserRwNum" column="storage_max_user_rw_num" />
+		<result property="setupTime" column="storage_setup_time" />
+		<result property="localPort" column="storage_local_port" />
+		<result property="systemType" column="storage_system_type" />
+		<result property="isExistPath" column="is_exist_path" />
+		<result property="redirectedRootSymbol" column="redirected_root_symbol" />
+		<result property="version" column="storage_version" />
+		<result property="remark" column="storage_remark" />
+		<result property="redirectStoragePathSource" column="redirect_storage_path_source" />
+		<result property="redirectStoragePathDest" column="redirect_storage_path_dest" />
+		<result property="reserver1" column="storage_reserver1" />
+		<result property="reserver2" column="storage_reserver2" />
+		<result property="license" column="so_sq_s" />
+	</resultMap>
+	<resultMap id="storageAndStoragePathMap" type="storage">
+		<id property="id" column="storage_id" />
+		<result property="uniqueId" column="storage_unique_id" />
+		<result property="name" column="storage_name" />
+		<result property="type" column="storage_type" />
+		<result property="ipLan" column="storage_ip_lan" />
+		<result property="ipNet" column="storage_ip_net" />
+		<result property="state" column="storage_state" />
+		<result property="storageKey" column="storage_key" />
+		<result property="managePort" column="storage_manage_port" />
+		<result property="maxManageNum" column="storage_max_manage_num" />
+		<result property="userCmdPort" column="storage_user_cmd_port" />
+		<result property="userDataPort" column="storage_user_data_port" />
+		<result property="maxUserNum" column="storage_max_user_num" />
+		<result property="maxUserRwNum" column="storage_max_user_rw_num" />
+		<result property="setupTime" column="storage_setup_time" />
+		<result property="localPort" column="storage_local_port" />
+		<result property="systemType" column="storage_system_type" />
+		<result property="isExistPath" column="is_exist_path" />
+		<result property="redirectedRootSymbol" column="redirected_root_symbol" />
+		<result property="version" column="storage_version" />
+		<result property="remark" column="storage_remark" />
+		<result property="redirectStoragePathSource" column="redirect_storage_path_source" />
+		<result property="redirectStoragePathDest" column="redirect_storage_path_dest" />
+		<result property="reserver1" column="storage_reserver1" />
+		<result property="reserver2" column="storage_reserver2" />
+		<result property="license" column="so_sq_s" />
+		<collection property="storagePaths" column="storage_id" ofType="storagePath"
+		select="select-storage-path-list-by-storage-id"/>
+	</resultMap>
+	<resultMap id="storageAndStoragePathMap_type" type="storage">
+		<id property="id" column="storage_id" />
+		<result property="uniqueId" column="storage_unique_id" />
+		<result property="name" column="storage_name" />
+		<result property="type" column="storage_type" />
+		<result property="ipLan" column="storage_ip_lan" />
+		<result property="ipNet" column="storage_ip_net" />
+		<result property="state" column="storage_state" />
+		<result property="storageKey" column="storage_key" />
+		<result property="managePort" column="storage_manage_port" />
+		<result property="maxManageNum" column="storage_max_manage_num" />
+		<result property="userCmdPort" column="storage_user_cmd_port" />
+		<result property="userDataPort" column="storage_user_data_port" />
+		<result property="maxUserNum" column="storage_max_user_num" />
+		<result property="maxUserRwNum" column="storage_max_user_rw_num" />
+		<result property="setupTime" column="storage_setup_time" />
+		<result property="localPort" column="storage_local_port" />
+		<result property="systemType" column="storage_system_type" />
+		<result property="isExistPath" column="is_exist_path" />
+		<result property="redirectedRootSymbol" column="redirected_root_symbol" />
+		<result property="version" column="storage_version" />
+		<result property="remark" column="storage_remark" />
+		<result property="redirectStoragePathSource" column="redirect_storage_path_source" />
+		<result property="redirectStoragePathDest" column="redirect_storage_path_dest" />
+		<result property="reserver1" column="storage_reserver1" />
+		<result property="reserver2" column="storage_reserver2" />
+		<result property="license" column="so_sq_s" />
+		<collection property="storagePaths" column="storage_id" ofType="storagePath"
+		select="select-storage-path-list-by-storage-id-type"/>
+	</resultMap>
+
+	<sql id="storage-fields">
+			t_storage.storage_id,
+			t_storage.storage_unique_id,
+			t_storage.storage_name,
+			t_storage.storage_type,
+			t_storage.storage_ip_lan,
+			t_storage.storage_ip_net,
+			t_storage.storage_state,
+			t_storage.storage_key,
+			t_storage.storage_manage_port,
+			t_storage.storage_max_manage_num,
+			t_storage.storage_user_cmd_port,
+			t_storage.storage_user_data_port,
+			t_storage.storage_max_user_num,
+			t_storage.storage_max_user_rw_num,
+			t_storage.storage_setup_time,
+			t_storage.storage_local_port,
+			t_storage.storage_system_type,
+			t_storage.is_exist_path,
+			t_storage.redirected_root_symbol,
+			t_storage.storage_version,
+			t_storage.storage_remark,
+			t_storage.redirect_storage_path_source,
+			t_storage.redirect_storage_path_dest,
+			t_storage.storage_reserver1,
+			t_storage.storage_reserver2,
+			t_storage.so_sq_s
+	</sql>
+
+	<!-- 新增存储器 -->
+	<insert id="add-storage" parameterType="storage">
+		insert into t_storage (
+			storage_unique_id,
+			storage_name,
+			storage_type,
+			storage_ip_lan,
+			storage_ip_net,
+			storage_state,
+			storage_key,
+			storage_manage_port,
+			storage_max_manage_num,
+			storage_user_cmd_port,
+			storage_user_data_port,
+			storage_max_user_num,
+			storage_max_user_rw_num,
+			storage_setup_time,
+			storage_local_port,
+			storage_system_type,
+			is_exist_path,
+			redirected_root_symbol,
+			storage_version,
+			storage_remark,
+			redirect_storage_path_source,
+			redirect_storage_path_dest,
+			storage_reserver1,
+			storage_reserver2
+		)VALUES(
+			#{uniqueId},
+			#{name},
+			#{type},
+			#{ipLan},
+			#{ipNet},
+			#{state},
+			#{storageKey},
+			#{managePort},
+			#{maxManageNum},
+			#{userCmdPort},
+			#{userDataPort},
+			#{maxUserNum},
+			#{maxUserRwNum},
+			#{setupTime},
+			#{localPort},
+			#{systemType},
+			#{isExistPath},
+			#{redirectedRootSymbol},
+			#{version},
+			#{remark},
+			#{redirectStoragePathSource},
+			#{redirectStoragePathDest},
+			#{reserver1},
+			#{reserver2}
+		)
+		<selectKey resultType="int" keyProperty="id">
+			select @@IDENTITY as
+			storage_id 
+		</selectKey>
+	</insert>
+
+	<!-- delete storage 删除存储器 -->
+	<delete id="delete-storage-by-storage-id" parameterType="int">
+		DELETE
+		FROM
+		t_storage
+		WHERE storage_id = #{id}
+	</delete>
+	
+	<!-- select-all-storage 查找所有的存储器 -->
+	<select id="select-all-storage" resultMap="storageMap">
+		SELECT 
+			<include refid="storage-fields"/>
+		FROM t_storage 
+		WHERE storage_state !=0
+	</select>
+	
+	<!-- 根据存储器id查找 -->
+	<select id="select-storage-by-storage-id" resultMap="storageMap"
+		parameterType="int">
+		SELECT 
+			<include refid="storage-fields"/>
+		FROM t_storage WHERE storage_id=#{id}
+	</select>
+	
+	<!-- 查找存储器及存储路径 -->
+	<select id="select-all-storage-and-storage-path" resultMap="storageAndStoragePathMap">
+		SELECT 
+			<include refid="storage-fields"/>
+		FROM t_storage 
+		WHERE storage_state !=0
+	</select>
+	<!-- 查找存储器及存储路径在线 -->
+	<select id="select-storage-and-storage-path-onLine" resultMap="storageAndStoragePathMap">
+		SELECT 
+			<include refid="storage-fields"/>
+		FROM t_storage 
+		WHERE storage_state=1
+	</select>
+	<select id="select-storage-and-storage-path-onLine-and-type" resultMap="storageAndStoragePathMap_type">
+		SELECT 
+			<include refid="storage-fields"/>
+		FROM t_storage 
+		WHERE storage_state=1
+		<!-- AND
+		storage_type != 3 -->
+	</select>
+	<!-- 根据存储器uniqueid查找 -->
+	<select id="select-storage-by-storage-uniqueid" resultMap="storageMap"
+		parameterType="String">
+		SELECT 
+			<include refid="storage-fields"/>
+		FROM t_storage WHERE storage_unique_id=#{uniqueId}
+	</select>
+	
+	<!-- 计算所有存储器的数量 -->
+	<select id="count-all-storage" resultType="int">
+		SELECT count(*) FROM t_storage WHERE storage_state!=0
+	</select>
+	
+	<!-- 根据symbol查询存储器唯一ID -->
+	<select id="select-unique-by-symbol" parameterType="String" resultMap="storageMap">
+		SELECT 
+			storage_unique_id ,
+			storage_id
+		FROM
+			t_storage 
+		WHERE storage_state=1
+		AND storage_id = (
+							SELECT 
+								storage_id STORAGEID 
+							FROM
+								t_storage_path 
+							WHERE storage_symbol = #{symbol}
+							)
+	</select>
+		<!-- 根据symbol查询存储器唯一ID -->
+	<select id="select-unique-by-vmimgId" parameterType="int" resultMap="storageMap">
+			SELECT 
+				storage_unique_id ,
+				storage_id,
+				storage_state
+			FROM
+				t_storage 
+			WHERE storage_state=1
+			AND storage_id = (
+							SELECT 
+								storage_id STORAGEID 
+							FROM
+							t_storage_path 
+							WHERE storage_symbol = (
+											SELECT vmimg_storage_symbol 
+											FROM t_vmimg 
+											WHERE vmimg_id=#{vmimgId}
+											)
+							)
+	</select>
+	 <!-- 根据symbol查询存储器-->
+    <select id="select-storage-by-symbol" parameterType="String" resultMap="storageMap">
+         SELECT 
+            <include refid="storage-fields"/>
+         FROM t_storage LEFT JOIN t_storage_path ON t_storage.storage_id = t_storage_path.storage_id
+        WHERE t_storage_path.storage_symbol = #{symbol}
+    </select>
+	<!-- 更改存储器 -->
+	<update id="update-storage" parameterType="storage">
+		UPDATE t_storage 
+		<set>
+			 <if test="uniqueId  !=null and '' != uniqueId">
+	                  storage_unique_id=#{uniqueId},
+             </if>
+              <if test="name  !=null and '' != name">
+	                  storage_name=#{name},
+             </if>
+              <if test="type  !=null">
+	                  storage_type=#{type},
+             </if>
+              <if test="ipLan  !=null">
+	                  storage_ip_lan=#{ipLan},
+             </if>
+              <if test="ipNet  !=null">
+	                  storage_ip_net=#{ipNet},
+             </if>
+              <if test="state  !=null">
+	                  storage_state=#{state},
+             </if>
+              <if test="managePort  !=null">
+	                  storage_manage_port=#{managePort},
+             </if>
+              <if test="maxManageNum  !=null">
+	                  storage_max_manage_num=#{maxManageNum},
+             </if>
+              <if test="userCmdPort  !=null">
+	                  storage_user_cmd_port=#{userCmdPort},
+             </if>
+             <if test="userDataPort  !=null">
+	                  storage_user_data_port=#{userDataPort},
+             </if>
+              <if test="maxUserNum  !=null">
+	                  storage_max_user_num=#{maxUserNum},
+             </if>
+              <if test="maxUserRwNum  !=null">
+	                  storage_max_user_rw_num=#{maxUserRwNum},
+             </if>
+              <if test="localPort  !=null">
+	                  storage_local_port=#{localPort},
+             </if>
+              <if test="systemType  !=null">
+	                  storage_system_type=#{systemType},
+             </if>
+              <if test="isExistPath  !=null">
+	                  is_exist_path=#{isExistPath},
+             </if>
+             <if test="version  !=null and '' != remark">
+	                  storage_version=#{version},
+             </if>
+              <if test="remark  !=null and '' != remark">
+	                  storage_remark=#{remark},
+             </if>
+               <if test="redirectedRootSymbol  !=null and '' != redirectedRootSymbol">
+	                  redirected_root_symbol=#{redirectedRootSymbol},
+             </if>
+             <if test="redirectStoragePathSource  !=null and '' != redirectStoragePathSource">
+	                   redirect_storage_path_source=#{redirectStoragePathSource},
+             </if>
+              <if test="redirectStoragePathDest  !=null and '' != redirectStoragePathDest">
+	                  redirect_storage_path_dest=#{redirectStoragePathDest},
+             </if>
+		</set>
+		WHERE storage_id = #{id}
+	</update>
+
+</mapper>

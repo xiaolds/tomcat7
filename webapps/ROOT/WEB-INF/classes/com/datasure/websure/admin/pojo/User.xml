@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="UserMap" type="User">
+		<id property="userId"  column="user_id"/>            
+		<result property="userDelMark"  column="user_del_mark"/>     
+		<result property="userName"  column="user_name"/>         
+		<result property="userPwd"  column="user_pwd"/>      
+		<result property="userState"  column="user_state"/>          
+		<result property="userLoginType"  column="user_login_type"/>           
+		<result property="userRegDateTime" column="user_reg_date_time"/> 
+		<result property="userUpdateDateTime"  column="user_update_date_time"/>    
+		<result property="userLoginDateTime"  column="user_login_date_time"/>  
+		<result property="userLockDateTime"  column="user_lock_date_time"/>    
+		<result property="userLoginErrorCount"  column="user_login_error_count"/>
+		<result property="userLoginIP"  column="user_login_ip"/> 
+		<result property="userEmail"  column="user_email"/> 
+		<result property="userPhone"  column="user_phone"/>
+		<result property="userGuide" column="user_guide"/>
+		<result property="userRemark"  column="user_remark"/> 
+	</resultMap>
+	
+	<resultMap  id="UserAndRoleMap"  type="User"  extends="UserMap" >
+          <association property="role"  javaType="Role">  
+              <id column="id" property="id"/>             
+              <result column="role_id" property="roleId"/>
+              <result column="role_name" property="roleName"/>
+              <result column="power_str" property="powerStr"/>     
+         </association>
+     </resultMap>   
+		
+	<sql id="user-column">
+		t_user.user_id,              
+	    t_user.user_del_mark,         
+	    t_user.user_name,             
+	    t_user.user_pwd,              
+	    t_user.user_state,            
+	    t_user.user_login_type,       
+	    t_user.user_reg_date_time,    
+	    t_user.user_update_date_time, 
+	    t_user.user_login_date_time,  
+	    t_user.user_lock_date_time,   
+	    t_user.user_login_error_count,
+	    t_user.user_login_ip,
+	    t_user.user_email, 
+	    t_user.user_phone,
+	    t_user.user_guide,
+	    t_user.user_remark           
+	</sql>
+	
+	
+	<select id="select-all-users" resultMap="UserAndRoleMap">
+		SELECT 
+			<include refid="user-column"/>,
+            t_user_role.role_id,
+            t_role.role_name                 
+		FROM t_user 
+		left join t_user_role 
+			on t_user.user_id = t_user_role.user_id 
+		left join t_role 
+			on t_user_role.role_id = t_role.role_id
+	</select>
+	
+	
+	<select id="select-count-of-all-users" parameterType="java.util.Map" resultType="int">
+		SELECT 
+			count(*)              
+		FROM t_user 
+		left join t_user_role 
+			on t_user.user_id = t_user_role.user_id 
+		left join t_role 
+			on t_user_role.role_id = t_role.role_id
+		where 1=1
+			 <if test="userName != null and '' != userName">
+	  		 	and user_name LIKE CONCAT(CONCAT('%', #{userName}),'%')
+	  		 </if>
+	  		 <if test="userState != null">  
+		        and user_state = #{userState}  
+	         </if>
+		     <if test="roleId != null">  
+		         and t_role.role_id = #{roleId}
+	         </if> 
+	</select>
+	
+	
+	<select id="select-all-users-by-split-page" parameterType="java.util.Map" resultMap="UserAndRoleMap">
+		SELECT 
+			<include refid="user-column"/>,
+            t_user_role.role_id,
+            t_role.role_name                 
+		FROM t_user 
+		left join t_user_role 
+			on t_user.user_id = t_user_role.user_id 
+		left join t_role 
+			on t_user_role.role_id = t_role.role_id
+		where 1=1 
+			 <if test="userName != null and '' != userName">
+	  		 	and user_name LIKE CONCAT(CONCAT('%', #{userName}),'%')
+	  		 </if>
+	  		 <if test="userState != null">  
+		        and user_state = #{userState}  
+	         </if>
+		     <if test="roleId != null">  
+		         and t_role.role_id = #{roleId}
+	         </if>
+		limit #{firstResult},#{maxResult}
+	</select>
+	
+	<select id="select-count-of-all-users-in-admin-mode" parameterType="java.util.Map" resultType="int">
+		SELECT 
+			count(*)              
+		FROM t_user 
+		left join t_user_role 
+			on t_user.user_id = t_user_role.user_id 
+		left join t_role 
+			on t_user_role.role_id = t_role.role_id
+		where user_name not in('auditor', 'security') 
+			 <if test="userName != null and '' != userName">
+	  		 	and user_name LIKE CONCAT(CONCAT('%', #{userName}),'%')
+	  		 </if>
+	  		 <if test="userState != null">  
+		        and user_state = #{userState}  
+	         </if>
+		     <if test="roleId != null">  
+		         and t_role.role_id = #{roleId}
+	         </if> 
+	</select>
+	
+	<select id="select-all-users-by-split-page-in-admin-mode" parameterType="java.util.Map" resultMap="UserAndRoleMap">
+		SELECT 
+			<include refid="user-column"/>,
+            t_user_role.role_id,
+            t_role.role_name                 
+		FROM t_user 
+		left join t_user_role 
+			on t_user.user_id = t_user_role.user_id 
+		left join t_role 
+			on t_user_role.role_id = t_role.role_id
+		where user_name not in('auditor', 'security') 
+			 <if test="userName != null and '' != userName">
+	  		 	and user_name LIKE CONCAT(CONCAT('%', #{userName}),'%')
+	  		 </if>
+	  		 <if test="userState != null">  
+		        and user_state = #{userState}  
+	         </if>
+		     <if test="roleId != null">  
+		         and t_role.role_id = #{roleId}
+	         </if>
+		limit #{firstResult},#{maxResult}
+	</select>
+	
+	<select id="select-single-user-by-username" parameterType="string" resultMap="UserAndRoleMap">
+		SELECT 
+			<include refid="user-column"/>,
+            t_user_role.role_id,
+            t_role.role_name,
+            t_role.power_str        
+		FROM t_user 
+		left join t_user_role 
+			on t_user.user_id = t_user_role.user_id 
+		left join t_role 
+			on t_user_role.role_id = t_role.role_id
+		where binary user_name = #{userName}
+	</select>
+	
+	<select id="select-single-user-by-userid" parameterType="int" resultMap="UserAndRoleMap">
+		SELECT 
+			<include refid="user-column"/>,
+            t_user_role.role_id,
+            t_role.role_name,
+            t_role.power_str        
+		FROM t_user 
+		left join t_user_role 
+			on t_user.user_id = t_user_role.user_id 
+		left join t_role 
+			on t_user_role.role_id = t_role.role_id
+		where t_user.user_id = #{userId}
+	</select>
+	
+	<!-- update user by name -->
+	<update id="update-user-pwd-and-email-by-name" parameterType="java.util.Map">
+		<foreach collection="userList" item="item" index="index" open="" close="" separator=";">
+	        update t_user 
+			<set>
+				user_pwd = #{item.userPwd},
+				user_email = #{item.userEmail},
+				user_login_type = #{item.userLoginType},
+				user_update_date_time = now()
+			</set>	
+          	where binary user_name = #{item.userName}
+         </foreach>
+	</update>
+	
+	<update id="update-user-by-name" parameterType="User">
+	        update t_user 
+			set
+				user_pwd = #{userPwd},
+				user_email = #{userEmail},
+				user_phone = #{userPhone},
+				<if test="userUpdateDateTime == null or '' == userUpdateDateTime">  
+					user_update_date_time = now(),
+				</if>
+				user_login_type = #{userLoginType},
+				user_remark = #{userRemark}				
+          	where binary user_name = #{userName}        
+	</update>
+	
+	<update id="update-user-login-init-limit-info" parameterType="java.util.Map">
+	        update t_user 
+			set				
+				user_lock_date_time = #{LockDate},
+				user_login_error_count = #{ErrorCount}        
+	</update>
+	
+	<update id="update-user-login-info-by-name" parameterType="User">
+	        update t_user 
+			set
+				user_login_date_time = now(),				
+				user_lock_date_time = #{userLockDateTime},
+				<if test="userLoginIP != null or '' != userLoginIP">
+					user_login_ip = #{userLoginIP},
+				</if>
+				user_login_error_count = #{userLoginErrorCount} 
+          	where binary user_name = #{userName}        
+	</update>
+	
+	<update id="update-user-password-by-userid" parameterType="java.util.Map">
+	        update t_user 
+			set
+				user_update_date_time = now(),				
+				user_pwd = #{Password} 
+          	where user_id = #{UserID}        
+	</update>
+	
+	<update id="update-user-guide-state-by-userid" parameterType="java.util.Map">
+            update t_user 
+            set
+                user_update_date_time = now(),              
+                user_guide = #{userGuide} 
+            where user_id = #{userId}        
+    </update>
+	
+	<update id="update-user-phone-by-userid" parameterType="java.util.Map">
+	        update t_user 
+			set
+				user_phone = #{phone}				  
+          	where user_id = #{userid}        
+	</update>
+	
+	<insert id="insert-single-user"  parameterType="User" >
+		insert 
+			into 
+		t_user(                                     
+			  user_del_mark,         
+			  user_name,             
+			  user_pwd,              
+			  user_state,            
+			  user_login_type,       
+			  user_reg_date_time,    
+			  user_update_date_time, 
+			  user_login_date_time,  
+			  user_lock_date_time,   
+			  user_login_error_count,
+			  user_email,
+			  user_phone,            
+			  user_remark          
+			)values(
+			  #{userDelMark},
+			  #{userName},
+		      #{userPwd},
+			  #{userState},
+			  #{userLoginType},
+			  now(),
+			  now(),
+			  #{userLoginDateTime},
+			  #{userLockDateTime},
+			  #{userLoginErrorCount},
+			  #{userEmail},
+			  #{userPhone},
+			  #{userRemark}
+			)
+		<selectKey resultType="int" keyProperty="userId" >
+			select @@IDENTITY as id 
+		</selectKey>
+	</insert>
+		
+	<delete id="delete-user-by-userid" parameterType="int">
+         delete from t_user where user_id=#{userId} 
+	</delete>
+	
+	<delete id="delete-user-by-user-name" parameterType="String">
+         delete from t_user where user_name=#{name} 
+    </delete>
+	
+</mapper>

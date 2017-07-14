@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"></meta>
+    <title></title>
+    <style>
+        body{
+            width:100%;
+            height:100%;
+            margin:0;
+            padding:0;
+            background: #fff;
+            font-family: SimHei;
+            font-size:12px;
+            color:#000;
+        }
+        
+        span,body, div, dl, dt, a,dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td
+        {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-size: 10px;
+        }
+        
+        ul,li{
+            list-style: none;
+        }
+        
+        a{
+            outline: none;
+            text-decoration: none;
+            color:#666;
+        }
+        
+        .clear{
+            overflow:hidden;
+            clear:both;
+        }
+        
+        .header{
+            width: 100%;
+            height:80px;
+            background: #00aaaa url("${imagePath}/logo_report.png") no-repeat 50px 25px;
+        }
+        
+        .title{
+            padding:20px;
+            text-align: center;
+        }
+        
+        h1{
+            line-height: 230%;
+        }
+        
+        .grid_info{
+            width: 100%;
+            height:30px;
+            border-top:1px solid #000;
+        }
+        
+        .grid_info li{
+            display: block;
+            float:left;
+            width: 29%;
+            text-align: left;
+            line-height: 30px;
+        }
+        
+        .grid_info li:first-child{
+            width: 40%;
+            text-indent: 50px;
+        }
+        
+        .report_wrap{
+            width: 100%;
+            border-collapse:collapse;
+            position: relative;
+            border:1px solid #ccc;
+        }
+        
+        .report_wrap tr th{
+            background: #000;
+            color:#fff;
+            text-align: left;
+            line-height: 26px;
+            text-indent: 10px;
+        }
+        
+        .report_wrap tr td{
+            border:1px solid #ccc;
+            padding-left:10px;
+        }
+
+        .icon_pc{
+            position: relative;
+            top:10px;
+            display: block;
+            float:left;
+            width: 22px;
+            height: 16px;
+            background: url("images/icon_pc.png") no-repeat 0 0;
+        }
+        
+        .pc_name_wrap{
+            float: left;
+        }
+        
+        .report_wrap tr td.state_wrap{
+            padding: 0 10px;
+            height: 66px;
+        }
+        .disk_header{
+            height: 15px;
+            background: #000;
+            color: #fff;
+            line-height: 10px;
+            text-align: center;
+            padding:10px;
+            text-align: center;
+        }
+        .disk_title{
+            padding:10px 40px 0;
+        }
+        .disk_wrap{
+            padding:20px 40px 40px;
+        }
+        .disk_info{
+            margin-bottom: 20px;
+            background: #666;
+            width: 100%;
+            height: 40px;
+            color:#fff;
+            line-height: 40px;
+            text-indent: 10px;
+            position: relative;
+        }
+        .disk_used{
+            display: block;
+            background: #008a8a;
+            position: absolute;
+            height: 40px;
+            z-index: 1;
+        }
+        .disk_text{
+            position: relative;
+            z-index: 2;
+            color:#fff;
+        }
+        .disk_space{
+            height: 10px;
+            background: #008a8a;
+        }
+        .disk_space_text{
+            margin-left:10px;
+            margin-top:3px;
+        }
+    </style>
+</head>
+<body>
+<div class="header"></div>
+<div class="title">
+    <h1>备份报表</h1>
+    <h3>截至  ${endDate}</h3>
+</div>
+<ul class="grid_info">
+    <li>设备型号：AceSure-Advance U3</li>
+    <li>服务端版本：1.0.0.00001</li>
+    <li>服务端版本：1.0</li>
+</ul>
+<ul class="grid_info">
+    <li>运行时间：${days}天</li>
+    <li>客户端版本：3.0.0.00001</li>
+    <li>客户端版本：1.0</li>
+</ul>
+
+<h1 class="disk_header">存储容量占用（截至 ${endDate}）</h1>
+<h2 class="disk_title">存储容量大小：${sumSize}G   已占用：${useSize}G</h2>
+<div class="disk_wrap">
+    ${otherContent}
+</div>
+<table class="report_wrap">
+    <tr>
+        <th width="20%">分组</th>
+        <th width="20%">设备</th>
+        <th width="40%">占用空间（截止 ${endDate}）</th>
+    </tr>
+    ${content}
+</table>
+<div>
+</div>
+</body>
+</html>

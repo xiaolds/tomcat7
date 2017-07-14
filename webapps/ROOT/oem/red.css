@@ -1,0 +1,220 @@
+/**
+ * oem-css-red
+ * 基本背景色：  #2b7dad  #6752a0
+ * 加深背景色：  #21618c  #57448c
+ * 淡色背景色：  #d9e5ec  #e8e5f1
+ */
+/*login*/
+.login_logo{
+    background-color:#6752a0;
+}
+.submit_wrap {
+    background: #6752a0;
+}
+.submit{
+	background:#6752a0;
+}
+.submit:hover{
+	background:#57448c;
+}
+.uk_text a {
+    color: #6752a0;
+}
+.color_green {
+    color: #6752a0;
+}
+/*window and button*/
+.x-window-default {
+    border-color: #6752a0;
+}
+.x-window-header-default-top{
+    border-color: #6752a0;
+    background-color: #6752a0;
+}
+.x-window-body-default {
+    border-color: #6752a0;
+}
+.x-window-header-default .x-tool-img {
+    background-color: #6752a0; 
+}
+.btn_focus {
+    border-color: #57448c;
+    background: #6752a0;
+}
+.x-toolbar-footer {
+    background: #e8e5f1;
+}
+.config_t button {
+    color: #6752a0;
+}
+.x-panel-body-default {
+    border-color: #6752a0;
+}
+.x-menu {
+    border-color: #6752a0;
+}
+.x-grid-body, .x-grid-header-ct {
+    border-color: #DBE0E2;
+}
+.btn_focus table td{
+	background:#6752a0!important ;
+}
+.btn_text_underline {
+    color: #6752a0;
+}
+/*Header*/
+.header{
+	background: #6752a0;
+}
+.logo{
+	background-color: #57448c;
+}
+.line_hr{
+	border-left:1px solid #57448c;
+}
+.top_a_text:hover{
+	background: #57448c;
+}
+.tab_big .x-tab-default-active{
+     border-top:2px solid #6752a0!important;
+}
+.tab_big .x-tab-default-active .x-tab-inner {
+	color:#6752a0;
+}
+.font_t{
+	border-left:3px solid #6752a0;
+}
+.tab_s .x-tab-default-active{
+	border:1px solid #57448c!important;
+	background:#6752a0!important;
+}
+.verticalTab .x-tab-left-active{
+	border-top:2px solid #6752a0!important;
+}
+.bgcolor .x-grid-row-selected .x-grid-td .x-tree-node-text ,
+.bgcolor .x-grid-row-focus .x-grid-td .x-tree-node-text ,
+.bgcolor .x-grid-row-over .x-grid-td .x-tree-node-text 
+{color:#6752a0;}
+.config_t{
+	border-left:3px solid #6752a0;
+}
+/*button鼠标悬浮状态-ie8*/
+.x-btn-default-small-over,
+.x-btn-default-small-focus,
+.x-btn-default-toolbar-small-pressed,
+.x-btn-default-toolbar-small-over,
+.x-btn-default-toolbar-small-focus,
+.x-btn-default-toolbar-small-pressed{
+	border-color: #57448c;
+}
+.x-btn-default-small-over .x-frame-mr,
+.x-btn-default-small-over .x-frame-ml,
+.x-btn-default-small-over .x-frame-tl,
+.x-btn-default-small-over .x-frame-tc,
+.x-btn-default-small-over .x-frame-tr,
+.x-btn-default-small-over .x-frame-bl,
+.x-btn-default-small-over .x-frame-bc,
+.x-btn-default-small-over .x-frame-br,
+
+.x-btn-default-small-pressed .x-frame-mr,
+.x-btn-default-small-pressed .x-frame-ml,
+.x-btn-default-small-pressed .x-frame-tl,
+.x-btn-default-small-pressed .x-frame-tc,
+.x-btn-default-small-pressed .x-frame-tr,
+.x-btn-default-small-pressed .x-frame-bl,
+.x-btn-default-small-pressed .x-frame-bc,
+.x-btn-default-small-pressed .x-frame-br,
+
+.x-btn-default-small-focus .x-frame-mr,
+.x-btn-default-small-focus .x-frame-ml,
+.x-btn-default-small-focus .x-frame-tl,
+.x-btn-default-small-focus .x-frame-tc,
+.x-btn-default-small-focus .x-frame-tr,
+.x-btn-default-small-focus .x-frame-bl,
+.x-btn-default-small-focus .x-frame-bc,
+.x-btn-default-small-focus .x-frame-br{
+	background:#6752a0;
+}
+.x-btn-default-toolbar-small-over .x-frame-mr,
+.x-btn-default-toolbar-small-over .x-frame-ml,
+.x-btn-default-toolbar-small-over .x-frame-tl,
+.x-btn-default-toolbar-small-over .x-frame-tc,
+.x-btn-default-toolbar-small-over .x-frame-tr,
+.x-btn-default-toolbar-small-over .x-frame-bl,
+.x-btn-default-toolbar-small-over .x-frame-bc,
+.x-btn-default-toolbar-small-over .x-frame-br,
+
+.x-btn-default-toolbar-small-pressed .x-frame-mr,
+.x-btn-default-toolbar-small-pressed .x-frame-ml,
+.x-btn-default-toolbar-small-pressed .x-frame-tl,
+.x-btn-default-toolbar-small-pressed .x-frame-tc,
+.x-btn-default-toolbar-small-pressed .x-frame-tr,
+.x-btn-default-toolbar-small-pressed .x-frame-bl,
+.x-btn-default-toolbar-small-pressed .x-frame-bc,
+.x-btn-default-toolbar-small-pressed .x-frame-br,
+
+.x-btn-default-toolbar-small-focus .x-frame-mr,
+.x-btn-default-toolbar-small-focus .x-frame-ml,
+.x-btn-default-toolbar-small-focus .x-frame-tl,
+.x-btn-default-toolbar-small-focus .x-frame-tc,
+.x-btn-default-toolbar-small-focus .x-frame-tr,
+.x-btn-default-toolbar-small-focus .x-frame-bl,
+.x-btn-default-toolbar-small-focus .x-frame-bc,
+.x-btn-default-toolbar-small-focus .x-frame-br{
+	background:#6752a0;
+}
+.btn_big{
+	border:1px solid #57448c!important;
+	background: #6752a0!important;
+}
+.tab_storage_active{
+	background:#6752a0!important;
+}
+/*弹出窗口ie8兼容性*/
+.x-window-header-tl,
+.x-window-header-tr,
+.x-window-header-tc,
+.x-window-header-ml,
+.x-window-header-mr,
+.x-window-header-mc,
+.x-window-header-bl,
+.x-window-header-br,
+.x-window-header-bc,
+.x-window-ml,
+.x-window-mr,
+.x-window-mc,
+.x-window-bl,
+.x-window-br,
+.x-window-bc
+{
+	background:#6752a0
+}
+#backupStrategy-body  .x-grid-cell-last a{
+	color:#6752a0;
+}
+/*初始化*/
+.pro span {
+    color: #6752a0!important;
+}
+.pro span:after {
+    background: #6752a0!important;
+}
+.btn_first.x-btn-default-small .x-btn-inner.x-btn-inner-center {
+    color: #6752a0!important;
+}
+.btn_first, .btn_sec, .btn_sec_gray{
+    border: 2px solid #6752a0!important;
+}
+#initializationListId .x-btn-default-small-over{
+	border:2px solid #6752a0!important;
+	background:#57448c!important;
+}
+#initializationListId  .x-btn-default-small-over .x-btn-inner{
+	color:#fff!important;
+}
+.x-progress-default .x-progress-bar-default {
+    background-color: #57448c!important;
+}
+.win_auth_btn a {
+    background: #6752a0;
+}

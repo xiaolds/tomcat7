@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+    <!-- 结果集 -->
+	<resultMap id="ClusterLogMap" type="ClusterLog">
+		<id property="clusterLogId"  column="cluster_log_id"/>            
+		<result property="clusterId"  column="cluster_id"/>     
+		<result property="clusterLogLevel"  column="cluster_log_level"/>         
+		<result property="clusterEventId"  column="cluster_event_id"/>         
+		<result property="clusterLogIp"  column="cluster_log_ip"/>         
+		<result property="clusterLogType"  column="cluster_log_type"/>         
+		<result property="clusterLogContent"  column="cluster_log_content"/>      
+		<result property="clusterLogCreateTime"  column="cluster_log_create_time"/>      
+	</resultMap>
+	
+	<sql id="log-column-alias-in-cluster">
+        A.diskclone_log_id cluster_log_id,
+        A.diskclone_id cluster_id,
+        A.diskclone_log_level cluster_log_level,
+        A.diskclone_event_id cluster_event_id,
+        A.diskclone_log_ip cluster_log_ip,
+        A.diskclone_log_type cluster_log_type,
+        A.diskclone_log_content cluster_log_content, 
+        A.diskclone_log_create_time cluster_log_create_time
+    </sql>
+	
+	<sql id="disk-clone-log-column-in-cluster">
+	    t_diskclone_log.diskclone_log_id,
+	    t_diskclone_log.diskclone_id,
+	    t_diskclone_log.diskclone_log_level,
+	    t_diskclone_log.diskclone_event_id,
+	    t_diskclone_log.diskclone_log_ip,
+	    t_diskclone_log.diskclone_log_type,
+	    t_diskclone_log.diskclone_log_content, 
+	    t_diskclone_log.diskclone_log_create_time
+	</sql>
+	
+	<sql id="emergency-log-column-in-cluster">
+        t_emergency_log.emergency_log_id,
+        t_emergency_log.emergency_device_id,
+        t_emergency_log.emergency_log_level,
+        t_emergency_log.emergency_event_id,
+        t_emergency_log.emergency_log_ip,
+        t_emergency_log.emergency_log_type,
+        t_emergency_log.emergency_log_content, 
+        t_emergency_log.emergency_log_insert_date_time
+    </sql>
+    
+    <sql id="storage-log-column-in-cluster">
+        t_storage_log.storage_log_id,
+        t_storage_log.storage_id,
+        t_storage_log.storage_log_level,
+        t_storage_log.storage_event_id,
+        t_storage_log.storage_log_ip,
+        t_storage_log.storage_log_type,
+        t_storage_log.storage_log_content, 
+        t_storage_log.storage_log_insert_date_time
+    </sql>
+    
+    <sql id="warning-log-column-in-cluster">
+        t_warning_log.warning_log_id,
+        t_warning_log.warning_device_id,
+        t_warning_log.warning_log_level,
+        t_warning_log.warning_event_id,
+        t_warning_log.warning_log_ip,
+        t_warning_log.warning_log_type,
+        t_warning_log.warning_log_content, 
+        t_warning_log.warning_log_insert_date_time
+    </sql>
+    
+    <sql id="cluster-log-test-case">
+        <if test="beginDate !=null and beginDate !='' and endDate == null or endDate == ''  "  >
+             AND t_diskclone_log.diskclone_log_create_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+        </if>
+        <if test="endDate !=null and endDate !='' and beginDate == null or beginDate == ''  "  >
+             AND t_diskclone_log.diskclone_log_create_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+        </if>
+        <if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+            AND DATE_FORMAT(t_diskclone_log.diskclone_log_create_time,'%Y-%m-%d') &gt;=  #{beginDate}
+            AND DATE_FORMAT(t_diskclone_log.diskclone_log_create_time,'%Y-%m-%d') &lt;=  #{endDate}
+        </if>
+    </sql>
+	
+	<!-- 查询备份日志总条数 -->
+	<select id="select-cluster-log-all-split-page-count" parameterType="map" resultType="int">
+		SELECT
+           COUNT(A.diskclone_log_id)
+        FROM
+          (
+            SELECT 
+              <include refid="disk-clone-log-column-in-cluster"/>
+            FROM t_diskclone_log
+              WHERE t_diskclone_log.diskclone_log_type=3
+            UNION ALL
+            SELECT 
+              <include refid="emergency-log-column-in-cluster"/>
+            FROM t_emergency_log 
+              WHERE t_emergency_log.emergency_log_type=4
+            UNION ALL
+            SELECT
+              <include refid="storage-log-column-in-cluster"/>
+            FROM t_storage_log 
+              WHERE t_storage_log.storage_log_type IN (3, 4)
+            UNION ALL
+            SELECT
+              <include refid="warning-log-column-in-cluster"/>
+            FROM t_warning_log WHERE
+              t_warning_log.warning_log_type=2
+          ) A
+          <where>
+            <if test="logLevel!=null and logLevel!='0' ">
+                  A.diskclone_log_level=#{logLevel}
+            </if>
+            <if test="beginDate!=null and beginDate!='' ">  
+                  AND A.diskclone_log_create_time&gt;=#{beginDate}
+            </if>  
+            <if test="endDate!=null and endDate!='' ">  
+                  AND A.diskclone_log_create_time&lt;=#{endDate}  
+            </if> 
+          </where>
+          ORDER BY A.diskclone_log_create_time DESC
+    </select>
+	
+	<!-- 查询集群日志(条件查询,分页) -->
+	<select id="select-cluster-log-all-split-page" parameterType="map" resultMap="ClusterLogMap">
+
+		SELECT
+		  <include refid="log-column-alias-in-cluster"></include>
+		FROM
+		  (
+		    SELECT 
+	          <include refid="disk-clone-log-column-in-cluster"/>
+	        FROM t_diskclone_log
+	          WHERE t_diskclone_log.diskclone_log_type=3
+	        UNION ALL
+	        SELECT 
+	          <include refid="emergency-log-column-in-cluster"/>
+	        FROM t_emergency_log 
+	          WHERE t_emergency_log.emergency_log_type=4
+	        UNION ALL
+	        SELECT
+	          <include refid="storage-log-column-in-cluster"/>
+	        FROM t_storage_log 
+	          WHERE t_storage_log.storage_log_type IN (3, 4)
+	        UNION ALL
+	        SELECT
+	          <include refid="warning-log-column-in-cluster"/>
+	        FROM t_warning_log WHERE
+	          t_warning_log.warning_log_type=2
+		  ) A
+		  <where>
+            <if test="logLevel!=null and logLevel!='0' ">
+                  A.diskclone_log_level=#{logLevel}
+            </if>
+            <if test="beginDate!=null and beginDate!='' ">  
+                  AND A.diskclone_log_create_time&gt;=#{beginDate}
+            </if>  
+            <if test="endDate!=null and endDate!='' ">  
+                  AND A.diskclone_log_create_time&lt;=#{endDate}  
+            </if> 
+          </where>
+          ORDER BY A.diskclone_log_create_time DESC
+		  <if test="firstResult != null and maxResult != null">
+                limit  #{firstResult},#{maxResult} 
+          </if>
+		  
+	</select>
+	
+</mapper>

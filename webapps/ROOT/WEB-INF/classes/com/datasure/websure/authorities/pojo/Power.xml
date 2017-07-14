@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="PowerMap" type="Power">
+		<id property="id"  column="id"/>               
+		<result property="powerName"  column="power_name"/>         
+		<result property="powerText"  column="power_text"/>            
+		<result property="powerGroupId" column="power_group_id"/> 
+		<result property="powerKey"  column="power_key"/>    
+		<result property="powerSort"  column="power_sort"/>
+		<result property="powerRemark"  column="power_remark"/> 
+		<result property="powerModel"  column="power_model"/> 
+	</resultMap>
+	
+	<sql id="power-column">
+		t_power.id,
+		t_power.power_name,                    
+	    t_power.power_text,             
+	    t_power.power_group_id,              
+	    t_power.power_key,            
+	    t_power.power_sort,                 
+	    t_power.power_remark,
+	    t_power.power_model          
+	</sql>
+	
+	<select id="select-all-power" resultMap="PowerMap">
+		SELECT * FROM t_power 
+	</select>
+		
+	<select id="select-power-by-powergroupid" resultMap="PowerMap" parameterType="int">
+		SELECT * FROM t_power WHERE power_group_id=#{powerGroupId}
+	</select>
+		
+	<select id="select-power-by-powerkey" resultMap="PowerMap" parameterType="string">
+		SELECT * FROM t_power WHERE power_key=#{powerKey}
+	</select>
+		
+	<select id="select-power-by-powerid" resultMap="PowerMap" parameterType="int">
+		SELECT * FROM t_power WHERE id=#{powerId}
+	</select>
+	
+	
+</mapper>

@@ -21,8 +21,19 @@ public class DecryptClassLoader extends WebappClassLoader {
 	/** 自定义加密文件尾缀 **/
 	private static final String CLASS_SUFFIX = ".enclass";
 	/** 自定义文件根目录**/
-	private static final String DEFAULT_WEB_PATH = "";
+	private static final String DEFAULT_WEB_PATH = System.getProperty("user.dir") 
+														+ "/webapps/ROOT/WEB-INF/classes/";
 	
+	
+	
+	public DecryptClassLoader() {
+		super();
+	}
+
+	public DecryptClassLoader(ClassLoader parent) {
+		super(parent);
+	}
+
 	/**
 	 * 
 	 * 通过包名+类名查找Class文件
@@ -39,15 +50,15 @@ public class DecryptClassLoader extends WebappClassLoader {
 		}
 		
 		try (
-				BufferedInputStream in = new BufferedInputStream(new FileInputStream(className));
+				BufferedInputStream in = new BufferedInputStream(new FileInputStream(DEFAULT_WEB_PATH + className));
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 				) {
 
 			// read class file and write to Byte
 			int c = 0;
 			while ((c = in.read()) != -1) {
-//				out.write((char) c ^ 2);
-				out.write(c);
+				out.write((char) c ^ 2);
+//				out.write(c);
 			}
 
 			byte[] classBytes = out.toByteArray();
@@ -60,7 +71,7 @@ public class DecryptClassLoader extends WebappClassLoader {
 		} catch (IOException ioe) {
 //			throw ioe;
 		}
-		return super.findClass(name);
+		return super.findClass(name.replace(".class", CLASS_SUFFIX));
 	}
 
 	/**

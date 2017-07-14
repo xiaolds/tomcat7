@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="deviceScriptMap" type="deviceScript">
+		<id property="scriptId"  column="device_script_id"/>            
+		<result property="deviceId"  column="device_id"/>     
+		<result property="scriptName"  column="device_script_name"/>     
+		<result property="scriptText"  column="device_script_text"/>     
+		<result property="scriptFilter"  column="device_script_filter"/>     
+		<result property="reserver1"  column="device_reserver1"/>         
+		<result property="reserver2"  column="device_reserver2"/>      
+	</resultMap>
+	
+	<select id="select-device-script-by-params" resultMap="deviceScriptMap" parameterType="deviceScript">
+		SELECT
+		  device_script_id,
+		  device_id,
+		  device_script_name,
+		  device_script_text,
+		  device_script_filter,
+		  device_reserver1,
+		  device_reserver2
+		FROM t_device_script
+		WHERE device_script_name = #{scriptName}
+			AND device_id = #{deviceId}
+	</select>
+	
+	<select id="select-device-script-by-device-id" resultMap="deviceScriptMap" parameterType="int">
+		SELECT
+		  device_script_id,
+		  device_id,
+		  device_script_name,
+		  device_script_text,
+		  device_script_filter,
+		  device_reserver1,
+		  device_reserver2
+		FROM t_device_script
+		WHERE device_id = #{deviceId}
+	</select>
+	
+	<insert id="insert-device-script" parameterType="deviceScript">
+		INSERT INTO t_device_script
+            (
+             device_id,
+             device_script_name,
+             device_script_text,
+             device_script_filter,
+             device_reserver1,
+             device_reserver2)
+		VALUES (
+		        #{deviceId},
+		        #{scriptName},
+		        #{scriptText},
+		        #{scriptFilter},
+		        #{reserver1},
+		        #{reserver2}
+		        );
+		<selectKey resultType="int" keyProperty="scriptId">
+			select @@IDENTITY as id 
+		</selectKey>
+	</insert>
+	
+	<update id="update-device-script" parameterType="deviceScript">
+		UPDATE t_device_script
+			<set>
+				<if test="scriptName != null and scriptName != '' ">
+					device_script_name = #{scriptName},
+				</if>
+				<if test="scriptText != null and scriptText != '' ">
+					device_script_text = #{scriptText},
+				</if>
+				<if test="scriptFilter != null and scriptFilter != '' ">
+					device_script_filter = #{scriptFilter},
+				</if>
+				<if test="reserver1 != null and reserver1 != '' ">
+					device_reserver1 = #{reserver1},
+				</if>
+				<if test="reserver2 != null and reserver2 != '' ">
+					device_reserver2 = #{reserver2}
+				</if>
+			</set>
+		WHERE device_script_id = #{scriptId}
+	</update>
+	
+	<delete id="delete-device-script" parameterType="deviceScript">
+		DELETE FROM t_device_script
+		WHERE device_id = #{deviceId}
+			AND device_script_name = #{scriptName}
+	</delete>
+	
+</mapper>

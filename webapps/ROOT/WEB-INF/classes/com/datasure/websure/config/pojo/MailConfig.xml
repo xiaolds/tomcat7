@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="MailConfigMap" type="MailConfig">
+		<id property="mailConfigID"  column="mail_config_id"/>            										
+		<result property="mailSMTPHost"  column="mail_config_smtphost"/>                                          
+		<result property="mailPort"  column="mail_config_port"/>             
+		<result property="mailConfigUser"  column="mail_config_user"/>                          
+		<result property="mailPwd"  column="mail_config_pwd"/> 
+		<result property="mailAddress"  column="mail_config_address"/> 
+		<result property="mailToAddr"  column="mail_config_to_addr"/> 
+		<result property="configCreateTime"  column="mail_config_create_time"/> 
+		<result property="configUpdateTime"  column="mail_config_update_time"/>                                 
+	</resultMap>                                                                                               
+	                                                                                                           
+	<sql id="mail-config-column">
+		t_mail_config.mail_config_id,
+		t_mail_config.mail_config_smtphost,
+		t_mail_config.mail_config_port,
+		t_mail_config.mail_config_user,
+		t_mail_config.mail_config_pwd,
+		t_mail_config.mail_config_address,
+		t_mail_config.mail_config_to_addr,
+		t_mail_config.mail_config_create_time,
+		t_mail_config.mail_config_update_time
+	</sql>
+	
+	<!-- 查询全部服务器邮件配置信息 -->
+	<select id="select-all-mail-config" resultMap="MailConfigMap">
+		SELECT 
+			<include refid="mail-config-column"></include>
+		 FROM t_mail_config 
+	</select>
+		
+	<!-- 根据ID查询单条邮件配置信息 -->
+	<select id="select-mail-config-by-id" parameterType="int" resultMap="MailConfigMap">
+       SELECT 
+            <include refid="mail-config-column"></include>
+       FROM t_mail_config 
+       WHERE t_mail_config.mail_config_id = #{mailConfigID}
+	</select>
+	
+	<!-- 根据ID修改单条邮件配置信息 -->	
+	<update id="update-mail-config-by-id" parameterType="MailConfig">
+		update t_mail_config set
+			mail_config_smtphost = #{mailSMTPHost},
+			mail_config_user = #{mailConfigUser},
+			mail_config_pwd	= #{mailPwd},
+			mail_config_address	= #{mailAddress},
+			mail_config_port = #{mailPort},
+			mail_config_update_time = now()
+		where mail_config_id = #{mailConfigID}
+	</update>
+	
+</mapper>

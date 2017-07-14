@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    <!-- 存储器运行状态监控  Begin -->
+	<bean id="storageRunStateMonitorJob" class="com.datasure.websure.Quartz.spring.StorageRunStateMonitor" />
+    <bean id="storageMonitorTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="storageRunStateMonitorJob"/>
+        <property name="targetMethod"  value="getStorageRunState"/>
+    </bean>
+    <bean id="storageMonitorTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="storageMonitorTask"/>
+         <!-- 每1分钟触发 -->
+        <property name="cronExpression">
+             <value>0 0/1 * * * ?</value> 
+            <!--<value>0/1 * * * * ?</value> -->
+        </property>
+    </bean>
+    <!-- 存储器运行状态监控  End -->
+    
+    
+    <!-- 获取容量大小(每天获取一次)begin -->
+    <bean id="quartzBackupLog" class="com.datasure.websure.Quartz.BackupLogCapacityOccupancy"></bean>
+    <!-- 获取状态信息 任务 -->
+    <bean id="getBackupLogTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject" ref="quartzBackupLog"/>
+         <!-- 调用类中的方法 -->
+        <property name="targetMethod"  value="getBackupLogCapacityOccupancy"/>
+    </bean>
+    <!-- 定义触发时间 -->
+    <bean id="doBackupLogTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="getBackupLogTask"/>
+        <property name="cronExpression">
+			<!-- 每1小时触发 -->
+            <!-- <value>0 0 0/1 * * ?</value>  -->
+			<!-- 每天23点59触发 -->
+            <value>0 30 00 * * ?</value>
+        </property>
+    </bean>
+    <!-- end -->
+    
+    
+    <!-- 获取容量大小(每小时获取一次)begin -->
+    <bean id="quartzBackupLogHour" class="com.datasure.websure.Quartz.BackupLogCapacityOccupancyHour"></bean>
+    <!-- 获取状态信息 任务 -->
+    <bean id="getBackupLogTaskHour" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject" ref="quartzBackupLogHour"/>
+         <!-- 调用类中的方法 -->
+        <property name="targetMethod"  value="getBackupLogCapacityOccupancyHour"/>
+    </bean>
+    <!-- 定义触发时间 -->
+    <bean id="doBackupLogHourTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="getBackupLogTaskHour"/>
+        <property name="cronExpression">
+			<!-- 每1小时触发 -->
+            <!-- <value>0 0 0/1 * * ?</value>  -->
+            <!-- 每30分钟触发 -->
+            <value>0 0/30 * * * ?</value>
+        </property>
+    </bean>
+    <!-- end -->
+    
+    <!-- 预警消息通知begin -->
+    <bean id="quartzWarningNotify" class="com.datasure.websure.Quartz.WarningMonitorNotify"></bean>
+    <!-- 获取状态信息 任务 -->
+    <bean id="getWarningNotifyTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject" ref="quartzWarningNotify"/>
+         <!-- 调用类中的方法 -->
+        <property name="targetMethod"  value="getWarningMonitorNotify"/>
+    </bean>
+    <!-- 定义触发时间 -->
+    <bean id="doWarningNotifyTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="getWarningNotifyTask"/>
+        <property name="cronExpression">
+			<!-- 每5分钟触发 -->
+            <value>0 0/5 * * * ?</value>
+        </property>
+    </bean>
+    <!-- end -->
+
+    <!-- 性能预警数据库清理 begin -->
+    <bean id="PerformanceDataClean" class="com.datasure.websure.Quartz.spring.PerformanceDataCleanQuartz"></bean>
+    <!-- 获取状态信息 任务 -->
+    <bean id="getPerformanceDataCleanTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject" ref="PerformanceDataClean"/>
+         <!-- 调用类中的方法 -->
+        <property name="targetMethod"  value="delLog"/>
+    </bean>
+    <!-- 定义触发事件 -->
+    <bean id="doPerformanceDataCleanTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="getPerformanceDataCleanTask"/>
+        <property name="cronExpression">
+            <!-- 每天00点59触发 -->
+            <value>0 30 00 * * ?</value>
+        </property>
+    </bean>
+    <!-- 性能预警数据库清理 end -->
+        
+    <!-- 计算节点运行状态监控  Begin -->
+    <bean id="calculateRunStateMonitor" class="com.datasure.websure.Quartz.spring.CalculateRunStateMonitor" />
+    <bean id="calculateMonitorTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+         <property name="targetObject" ref="calculateRunStateMonitor"/>
+         <property name="targetMethod"  value="getCalculateRunState"/>
+    </bean>
+    <bean id="calculateMonitorTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+         <property name="jobDetail" ref="calculateMonitorTask"/>
+          <!-- 每1分钟触发 -->
+         <property name="cronExpression">
+              <value>0 0/1 * * * ?</value> 
+         </property>
+    </bean>
+    <!-- 计算节点运行状态监控  End -->
+    
+     <!-- backup database Begin -->
+	   <bean id="databaseBackupJob" class="com.datasure.websure.Quartz.spring.DatabaseBackupQuartz" />
+        <bean id="databaseBackupTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+            <property name="targetObject" ref="databaseBackupJob"/>
+            <property name="targetMethod"  value="backupDatabase"/>
+        </bean>
+        <bean id="databaseBackupTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+            <property name="jobDetail" ref="databaseBackupTask"/>
+            <property name="cronExpression">
+            	<value> 0 0 3 * * ?</value>          
+            </property>
+        </bean>
+    <!-- backup database End -->
+    
+     <!-- notify message Begin -->
+	   <bean id="messageNotifyJob" class="com.datasure.websure.Quartz.spring.MessageNotifyMonitor" />   
+        <bean id="messageNotifyTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+            <property name="targetObject" ref="messageNotifyJob"/>
+            <property name="targetMethod"  value="doMessageNotify"/>
+        </bean>
+        <bean id="messageNotifyTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+            <property name="jobDetail" ref="messageNotifyTask"/>
+            <property name="cronExpression">            	           
+                 <value>0 0/30 * * * ?</value>                
+            </property>
+        </bean>
+    <!-- notify message End -->
+    
+    <!-- clean log Begin -->
+	   <bean id="logCleanJob" class="com.datasure.websure.Quartz.spring.LogCleanQuartz" />   
+        <bean id="logCleanTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+            <property name="targetObject" ref="logCleanJob"/>
+            <property name="targetMethod"  value="cleanLog"/>
+        </bean>
+        <bean id="logCleanTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+            <property name="jobDetail" ref="logCleanTask"/>
+            <property name="cronExpression">            	           
+                 <value>0 0 0 * * ?</value>                
+            </property>
+        </bean>
+    <!-- clean log End -->
+    
+   <!-- VmSet Begin -->
+	   <bean id="AutoVirJob" class="com.datasure.websure.Quartz.spring.AutoVirStatusTimer" />   
+        <bean id="AutoVirTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+            <property name="targetObject" ref="AutoVirJob"/>
+            <property name="targetMethod"  value="autoVirTimer"/>
+        </bean>
+        <bean id="AutoVirJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+            <property name="jobDetail" ref="AutoVirTask"/>
+            <property name="cronExpression">            	           
+                 <value>0 0/1 * * * ?</value>                
+            </property>
+        </bean>
+    <!-- VmSet End -->
+
+	<!-- putsh computeNodes status start -->
+	<bean id="computeNodesNotifyJob" class="com.datasure.websure.Quartz.ComputeNodesExceptionStatusMsg" />
+	<bean id="computeNodesTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="computeNodesNotifyJob" />
+		<property name="targetMethod" value="pushComputeNodesExceptionStatus" />
+	</bean>
+	<bean id="computeNodesNotifyTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="computeNodesTask" />
+		<property name="cronExpression">
+			<value>0 0/2 * * * ?</value>
+		</property>
+	</bean>
+	<!-- putsh computeNodes status end -->
+        
+    <!-- 定时清理消息通知  begin -->
+    <bean id="notifyCleanJob" class="com.datasure.websure.Quartz.spring.NotifyCleanQuartz" />
+    <bean id="notifyCleanTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="notifyCleanJob"/>
+        <property name="targetMethod"  value="cleanNotify"/>
+    </bean>
+    <bean id="notifyCleanTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="notifyCleanTask"/>
+         <!-- 每周日晚上23:30 分清理 -->
+        <property name="cronExpression">
+             <value>0 30 23 ? * SUN</value> 
+        </property>
+    </bean>
+    <!-- 定时清理消息通知  End -->
+    
+    <!-- 存储节点预警  Begin -->
+    <bean id="storageWarningJob" class="com.datasure.websure.Quartz.spring.StorageWarningQuartz" />
+    <!-- 状态变更监控 -->
+    <bean id="monitorStorageTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="storageWarningJob"/>
+        <property name="targetMethod"  value="monitorState"/>
+    </bean>
+    <bean id="monitorStorageTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="monitorStorageTask"/>
+         <!-- 2分钟检测一次节点状态 -->
+        <property name="cronExpression">
+             <value>0 0/2 * * * ?</value> 
+        </property>
+    </bean>
+    
+    <!-- 存储介质空间不足监控 -->
+    <bean id="monitorVMSSpaceTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="storageWarningJob"/>
+        <property name="targetMethod"  value="monitorVMSSpace"/>
+    </bean>
+    <bean id="monitorVMSSpaceTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="monitorVMSSpaceTask"/>
+         <!-- 1小时检测一次空间大小 -->
+        <property name="cronExpression">
+             <value>0 0 0/1 * * ?</value> 
+        </property>
+    </bean>
+    <!-- 存储节点预警  End -->
+    
+    
+    <!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序  -->
+    <bean id="startMonitor" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="doBackupLogTime"/>
+                <ref bean="doPerformanceDataCleanTime"/>
+                <ref bean="doBackupLogHourTime"/>
+                <ref bean="doWarningNotifyTime"/>
+                <ref bean="storageMonitorTrigger"/>
+                <ref bean="calculateMonitorTrigger"/>
+                <ref bean="computeNodesNotifyTrigger"/>
+                <ref bean="monitorStorageTrigger"/>
+                <ref bean="monitorVMSSpaceTrigger"/>
+            </list>
+        </property>
+    </bean>
+        
+    <!-- system-config  -->
+   	<bean id="systemQuartz" lazy-init='false' autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="databaseBackupTrigger" />
+				<ref bean="messageNotifyTrigger" />
+				<ref bean="logCleanTrigger" />
+				 <ref bean="notifyCleanTrigger"/>
+				<ref bean="AutoVirJobTrigger" />
+			</list>
+		</property>
+	</bean>
+   
+</beans>

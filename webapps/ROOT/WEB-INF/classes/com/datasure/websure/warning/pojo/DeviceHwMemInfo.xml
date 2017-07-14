@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="deviceHwMemInfoMap" type="deviceHwMemInfo">
+		<id property="hwMeminfoId"  column="device_hw_meminfo_id"/>            
+		<result property="deviceId"  column="device_id"/>     
+		<result property="memUsed"  column="device_mem_used"/>         
+		<result property="memAvail" column="device_mem_avail"/> 
+		<result property="memTotal" column="device_mem_total"/> 
+		<result property="memUsedrate" column="device_mem_usedrate"/> 
+		<result property="vmemUsed" column="device_vmem_used"/> 
+		<result property="vmemAvail" column="device_vmem_avail"/> 
+		<result property="vmemTotal" column="device_vmem_total"/> 
+		<result property="vmemUsedrate" column="device_vmem_usedrate"/> 
+		<result property="deviceTime" column="device_time"/> 
+		<result property="deviceReserver2" column="device_reserver2"/> 
+		<result property="deviceReserver3" column="device_reserver3"/> 
+		<result property="deviceReserver4" column="device_reserver4"/> 
+	</resultMap>
+	
+	<!-- 不包含 t_device_hw_mem_info.device_mem_usedrate -->
+	<sql id="device-hw-mem-column">
+		t_device_hw_mem_info.device_hw_meminfo_id,              
+	    t_device_hw_mem_info.device_id,         
+	    t_device_hw_mem_info.device_mem_used,		       
+	    t_device_hw_mem_info.device_mem_avail,		        
+	    t_device_hw_mem_info.device_mem_total,		
+	    t_device_hw_mem_info.device_vmem_used,		
+	    t_device_hw_mem_info.device_vmem_avail,		
+	    t_device_hw_mem_info.device_vmem_total,		
+	    t_device_hw_mem_info.device_vmem_usedrate,	
+	    t_device_hw_mem_info.device_time,			         
+	    t_device_hw_mem_info.device_reserver2,		       
+	    t_device_hw_mem_info.device_reserver3		      
+	</sql>  
+	
+	<select id="select-device-hw-mem-info-by-device-id" parameterType="map" resultMap="deviceHwMemInfoMap">
+	 	SELECT 
+	 		ROUND(AVG(t_device_hw_mem_info.device_mem_usedrate)) AS device_mem_usedrate,
+			<include refid="device-hw-mem-column"></include>
+		FROM
+		  t_device_hw_mem_info WHERE 
+		  	device_id = #{deviceId}
+		  	AND device_mem_used &lt; #{memThreshold}
+		  	<if test="beginDate != null and beginDate !='' and endDate == null or endDate == '' "  >
+			 	AND device_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+			</if>
+			<if test="endDate != null and endDate !='' and beginDate == null or beginDate == '' "  >
+				 AND device_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+			</if>
+			<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+				AND date_format(device_time,#{format}) &gt;= #{beginDate}
+				AND date_format(device_time,#{format}) &lt;= #{endDate}
+			</if>
+		GROUP BY date_format(device_time,#{format})
+		ORDER BY device_time ASC
+		
+	 </select>  
+	
+	<select id="select-device-hw-mem-info-by-device-mac" parameterType="map" resultMap="deviceHwMemInfoMap">
+		SELECT 
+			device_mem_usedrate,
+			<include refid="device-hw-mem-column"></include>
+		FROM
+			t_device_hw_mem_info
+		where
+			device_mem_usedrate > #{memThreshold}
+		AND
+			device_id in
+			  (SELECT 
+			    device_id
+			  FROM
+			    t_device_main 
+			  WHERE 
+			  	device_unique_id = #{deviceMac} 
+		)                 		
+	 </select>   
+	 
+	 <select id="select-device-hw-mem-info-by-device-mac-and-time" parameterType="map" resultMap="deviceHwMemInfoMap">
+	 	SELECT 
+			device_mem_usedrate,
+			<include refid="device-hw-mem-column"></include>
+		FROM
+			t_device_hw_mem_info
+		where
+			device_mem_usedrate > #{memThreshold}
+		AND
+			device_id in
+			(
+				SELECT device_id FROM t_device_main  WHERE device_unique_id = #{deviceMac} 
+			)
+			<if test="beginDate != null and beginDate != '' and endDate == null or endDate == ''  "  >
+			 	AND t_device_hw_mem_info.device_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+			</if>
+			<if test="endDate != null and endDate != '' and beginDate == null or beginDate == ''  "  >
+				 AND t_device_hw_mem_info.device_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+			</if>
+			<if test="endDate != null and endDate != '' and beginDate != null and beginDate != '' "  >
+				AND DATE_FORMAT(t_device_hw_mem_info.device_time,#{format}) &gt;=  #{beginDate}
+				AND DATE_FORMAT(t_device_hw_mem_info.device_time,#{format}) &lt;=  #{endDate}
+			</if>
+	 </select> 
+	 
+	 <!-- 暂无用 -->
+	 <select id="select-device-hw-mem-info-max-by-device-id" parameterType="map" resultMap="deviceHwMemInfoMap">
+	 	SELECT 
+			device_id,
+			  MAX(device_time) AS device_time,
+			  device_mem_usedrate 
+			FROM
+			  (SELECT 
+			    MAX(device_mem_usedrate) AS device_mem_usedrate,
+			    device_time ,
+			    device_id
+			  FROM
+			    t_device_hw_mem_info 
+			  WHERE device_id = #{deviceId} 
+			 	GROUP BY device_time 
+			  	ORDER BY device_time DESC
+			 ) t_device_hw_mem_info 
+	 </select>                    		
+	 
+	 <!-- 根据时间删除数据  begin-->
+    <delete id="delete-mem-log-by-date" parameterType="map">
+       DELETE FROM
+        t_device_hw_mem_info 
+       WHERE device_time &lt;#{time} 
+    </delete>
+    <!-- 根据时间删除数据  end-->
+</mapper>

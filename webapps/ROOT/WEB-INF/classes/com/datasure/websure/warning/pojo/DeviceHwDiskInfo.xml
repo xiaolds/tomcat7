@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="deviceHwDiskInfoMap" type="deviceHwDiskInfo">
+		<id property="hwDiskinfoId"  column="device_hw_diskinfo_id"/>            
+		<result property="deviceId"  column="device_id"/>     
+		<result property="diskName"  column="device_disk_name"/>         
+		<result property="diskRootPath" column="device_disk_rootPath"/> 
+		<result property="diskType" column="device_disk_type"/> 
+		<result property="diskCapcity" column="device_disk_capcity"/> 
+		<result property="diskUsedsize" column="device_disk_usedsize"/> 
+		<result property="diskAvailsize" column="device_disk_availsize"/> 
+		<result property="diskUserrate" column="device_disk_userrate"/> 
+		<result property="diskDiskType" column="device_disk_disktype"/> 
+		<result property="diskModle" column="device_disk_modle"/> 
+		<result property="deviceTime" column="device_time"/> 
+		<result property="deviceReserver3" column="device_reserver3"/> 
+		<result property="deviceReserver4" column="device_reserver4"/> 
+		<result property="deviceReserver5" column="device_reserver5"/> 
+	</resultMap>
+	
+	<!-- 不包含  t_device_hw_disk_info.device_disk_userrate -->
+	<sql id="device-hw-disk-column">
+		t_device_hw_disk_info.device_hw_diskinfo_id,              
+	    t_device_hw_disk_info.device_id,         
+	    t_device_hw_disk_info.device_disk_name,  
+	    t_device_hw_disk_info.device_disk_rootPath,  
+	    t_device_hw_disk_info.device_disk_type,  
+	    t_device_hw_disk_info.device_disk_capcity,  
+	    t_device_hw_disk_info.device_disk_usedsize,  
+	    t_device_hw_disk_info.device_disk_availsize,  
+	    t_device_hw_disk_info.device_disk_disktype,  
+	    t_device_hw_disk_info.device_disk_modle,  
+	    t_device_hw_disk_info.device_time           
+	</sql>
+	
+	<select id="select-device-hw-disk-info-by-device-id" parameterType="map" resultMap="deviceHwDiskInfoMap">
+		SELECT 
+			ROUND(AVG(t_device_hw_disk_info.device_disk_userrate)) AS device_disk_userrate,
+			<include refid="device-hw-disk-column"></include>
+		FROM t_device_hw_disk_info 
+		  WHERE device_disk_name = 
+		  		(
+		  		  SELECT device_disk_name FROM t_device_hw_disk_info 
+		  			WHERE device_id = #{deviceId} 
+		  			<if test="diskName != null and diskName != '' ">
+		  				AND device_disk_name = #{diskName}
+		  			</if>
+		  			GROUP BY device_disk_name 
+		  			<if test="diskName == null or diskName == '' ">
+			  			LIMIT 0,1
+		  			</if>
+		  		)
+		  AND device_id = #{deviceId}
+		  AND t_device_hw_disk_info.device_disk_userrate &lt; #{diskThreshold}
+		<if test="beginDate != null and beginDate !='' and endDate == null or endDate == '' "  >
+			 	AND device_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+			</if>
+			<if test="endDate != null and endDate !='' and beginDate == null or beginDate == '' "  >
+				 AND device_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+			</if>
+			<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+				AND date_format(device_time,#{format}) &gt;= #{beginDate}
+				AND date_format(device_time,#{format}) &lt;= #{endDate}
+			</if>
+		GROUP BY date_format(device_time,#{format})
+		ORDER BY device_time ASC
+		
+		<!-- SELECT 
+			MAX(t_device_hw_disk_info.device_disk_userrate) AS device_disk_userrate,
+			<include refid="device-hw-disk-column"></include>
+		FROM t_device_hw_disk_info WHERE 
+			device_id = #{deviceId}
+			<if test="beginDate != null and beginDate !='' and endDate == null or endDate == '' "  >
+			 	AND device_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+			</if>
+			<if test="endDate != null and endDate !='' and beginDate == null or beginDate == '' "  >
+				 AND device_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+			</if>
+			<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+				AND device_time &gt;= #{beginDate}
+				AND device_time &lt;= #{endDate}
+			</if>
+		GROUP BY date_format(device_time,#{format})
+		ORDER BY device_time ASC -->
+	</select>
+	
+	<select id="select-device-hw-disk-info-by-device-mac" parameterType="map" resultMap="deviceHwDiskInfoMap">
+		SELECT 
+			device_disk_userrate,
+			<include refid="device-hw-disk-column"></include>
+		FROM
+			t_device_hw_disk_info 
+		where
+			device_disk_userrate > #{diskThreshold}
+		AND
+			device_id in
+			  (SELECT 
+			    device_id
+			  FROM
+			    t_device_main 
+			  WHERE 
+			  	device_unique_id = #{deviceMac} 
+		)
+	</select>
+	
+	<select id="select-device-hw-disk-info-by-device-mac-and-time" parameterType="map" resultMap="deviceHwDiskInfoMap">
+			SELECT 
+			device_disk_userrate,
+			<include refid="device-hw-disk-column"></include>
+		FROM
+			t_device_hw_disk_info 
+		where
+			device_disk_userrate > #{diskThreshold}
+		AND
+			device_id in
+			(
+				SELECT device_id FROM t_device_main  WHERE device_unique_id = #{deviceMac} 
+			)
+			<if test="beginDate != null and beginDate != '' and endDate == null or endDate == ''  "  >
+			 	AND t_device_hw_disk_info.device_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+			</if>
+			<if test="endDate != null and endDate != '' and beginDate == null or beginDate == ''  "  >
+				 AND t_device_hw_disk_info.device_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+			</if>
+			<if test="endDate != null and endDate != '' and beginDate != null and beginDate != '' "  >
+				AND DATE_FORMAT(t_device_hw_disk_info.device_time,#{format}) &gt;=  #{beginDate}
+				AND DATE_FORMAT(t_device_hw_disk_info.device_time,#{format}) &lt;=  #{endDate}
+			</if>
+	</select>
+	
+	<!-- 暂无用 -->
+	<select id="select-device-hw-disk-info-max-by-device-id" parameterType="map" resultMap="deviceHwDiskInfoMap">
+		SELECT 
+			device_id,
+		  	MAX(device_time) AS device_time,
+		  	device_disk_userrate 
+		FROM
+			( SELECT 
+			    MAX(device_disk_userrate) AS device_disk_userrate,
+			    device_time ,
+			    device_id
+			  FROM
+			    t_device_hw_disk_info 
+			  WHERE device_id = #{deviceId} 
+			  GROUP BY device_time 
+			  ORDER BY device_time DESC
+		  ) t_device_hw_disk_info 
+	</select>
+	
+	<select id="select-device-hw-disk-info-disk-name-by-device-id" parameterType="int" resultMap="deviceHwDiskInfoMap">
+		SELECT 
+		  device_disk_name
+		FROM
+		  t_device_hw_disk_info
+		WHERE device_id = #{deviceId} 
+		  GROUP BY device_disk_name
+	</select>
+	
+	<!-- 根据时间删除数据  begin-->
+    <delete id="delete-disk-log-by-date" parameterType="map">
+       DELETE FROM
+        t_device_hw_disk_info 
+       WHERE device_time &lt;#{time} 
+    </delete>
+    <!-- 根据时间删除数据  end-->
+</mapper>

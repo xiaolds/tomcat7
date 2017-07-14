@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="SystemLogMap" type="SystemLog">
+		<id property="systemLogId"  column="system_log_id"/>            										
+		<result property="systemLogManager"  column="system_log_manager"/>                                          
+		<result property="systemLogSource"  column="system_log_source"/>             
+		<result property="systemLogLevel"  column="system_log_level"/>                          
+		<result property="systemLogType"  column="system_log_type"/>                                 
+		<result property="systemLogEventId"  column="system_log_event_id"/>                                 
+		<result property="systemLogContent"  column="system_log_content"/>                            
+		<result property="systemLogInsertTime" column="system_log_insert_date_time"/> 
+		<result property="systemLogReserver1" column="system_log_reserver1"/> 
+		<result property="systemLogReserver2" column="system_log_reserver2"/> 
+		<result property="systemLogReserver3" column="system_log_reserver3"/> 
+	</resultMap>                                                                                               
+	                                                                                                           
+	<sql id="system-log-column">
+		t_system_log.system_log_id,
+		t_system_log.system_log_manager,
+		t_system_log.system_log_source,
+		t_system_log.system_log_level,
+		t_system_log.system_log_type,
+		t_system_log.system_log_event_id,
+		t_system_log.system_log_content,
+		t_system_log.system_log_insert_date_time,
+		t_system_log.system_log_reserver1,
+		t_system_log.system_log_reserver2,
+		t_system_log.system_log_reserver3,
+		t_system_log.system_log_reserver4,
+		t_system_log.system_log_reserver5
+	</sql>
+	
+	<!-- 查询客户端日志总条数 -->
+	<select id="select-system-log-all-split-page-count" parameterType="map" resultType="int">
+		SELECT COUNT(t_system_log.system_log_id) FROM t_system_log
+			WHERE 1=1
+		<if test="systemLogType != 0 and systemLogType != null">
+			AND t_system_log.system_log_type = #{systemLogType}
+		</if>
+		<if test="systemLogLevel != 0 and systemLogLevel != null">
+			AND t_system_log.system_log_level = #{systemLogLevel}
+		</if>
+		<if test="beginDate !=null and beginDate !='' and endDate == null or endDate == '' "  >
+			 AND t_system_log.system_log_insert_date_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate == null or beginDate == '' "  >
+			 AND t_system_log.system_log_insert_date_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND DATE_FORMAT(t_system_log.system_log_insert_date_time,'%Y-%m-%d') &gt;=  #{beginDate}
+			AND DATE_FORMAT(t_system_log.system_log_insert_date_time,'%Y-%m-%d') &lt;=  #{endDate}
+		</if>	
+	</select>
+	
+	<select id="select-system-log-count" resultType="int">
+		SELECT COUNT(system_log_id) FROM t_system_log
+	</select>
+	
+	<!-- 查询系统日志+分页 -->
+	<select id="select-system-log-all-split-page" parameterType="map" resultMap="SystemLogMap">
+		SELECT 
+			<include refid="system-log-column"></include>
+		 FROM t_system_log
+			WHERE 1=1
+		<if test="systemLogType != 0 and systemLogType != null">
+			AND t_system_log.system_log_type = #{systemLogType}
+		</if>
+		<if test="systemLogLevel != 0 and systemLogLevel != null">
+			AND t_system_log.system_log_level = #{systemLogLevel}
+		</if>
+		<if test="beginDate !=null and beginDate !='' and endDate == null or endDate == '' "  >
+			 AND t_system_log.system_log_insert_date_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate == null or beginDate == '' "  >
+			 AND t_system_log.system_log_insert_date_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND DATE_FORMAT(t_system_log.system_log_insert_date_time,'%Y-%m-%d') &gt;=  #{beginDate}
+			AND DATE_FORMAT(t_system_log.system_log_insert_date_time,'%Y-%m-%d') &lt;=  #{endDate}
+		</if>
+		ORDER BY t_system_log.system_log_insert_date_time DESC
+		<if test="firstResult != null and maxResult != null">
+			limit  #{firstResult},#{maxResult} 
+		</if>	
+	</select>
+	
+	<select id="select-system-log-all" resultMap="SystemLogMap">
+		SELECT 
+			<include refid="system-log-column"></include>
+		 FROM t_system_log
+		ORDER BY t_system_log.system_log_insert_date_time DESC
+	</select>
+	
+	<insert id="insert-system-log" parameterType="SystemLog">
+		INSERT INTO t_system_log
+            (
+             system_log_manager,
+             system_log_source,
+             system_log_level,
+             system_log_type,
+             system_log_event_id,
+             system_log_content,
+             system_log_insert_date_time,
+             system_log_reserver1,
+             system_log_reserver2,
+             system_log_reserver3)
+		VALUES (
+		        #{systemLogManager},
+		        #{systemLogSource},
+		        #{systemLogLevel},
+		        #{systemLogType},
+		        #{systemLogEventId},
+		        #{systemLogContent},
+		        now(),
+		        #{systemLogReserver1},
+		        #{systemLogReserver2},
+		        #{systemLogReserver3})
+		<selectKey resultType="int" keyProperty="systemLogId">
+			select @@IDENTITY as id 
+		</selectKey>
+	</insert>
+	
+	<delete id="delete-system-log-by-date" parameterType="map">
+		DELETE
+		FROM t_system_log
+		WHERE DATE_FORMAT(system_log_insert_date_time,'%Y-%m-%d') &gt;=  #{beginDate}
+		AND DATE_FORMAT(system_log_insert_date_time,'%Y-%m-%d') &lt;=  #{endDate}
+	</delete>
+	
+	<!-- 删除系统日志 by xuyingan -->
+	<delete id="delete-system-log-by-deldate" parameterType="string">
+		DELETE
+		FROM t_system_log
+		WHERE system_log_insert_date_time &lt;=  #{delDate}
+	</delete>
+	
+	
+</mapper>

@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="DiskCloneLogMap" type="DiskCloneLog">
+		<id property="diskCloneLogId"  column="diskclone_log_id"/>            
+		<result property="diskCloneId"  column="diskclone_id"/>     
+		<result property="diskCloneUserName"  column="diskclone_user_name"/>     
+		<result property="diskCloneLogLevel"  column="diskclone_log_level"/>         
+		<result property="diskCloneEventId"  column="diskclone_event_id"/>         
+		<result property="diskCloneLogIp"  column="diskclone_log_ip"/>         
+		<result property="diskCloneLogType"  column="diskclone_log_type"/>         
+		<result property="diskCloneLogContent"  column="diskclone_log_content"/>      
+		<result property="diskCloneLogCreateTime"  column="diskclone_log_create_time"/>      
+		<result property="diskCloneLogCreateTimeForPage"  column="diskclone_log_create_time_forPage"/>      
+		<result property="diskCloneLogReserve1"  column="diskclone_log_reserve1"/>          
+		<result property="diskCloneLogReserve2"  column="diskclone_log_reserve2"/>           
+	</resultMap>
+	
+	<sql id="disk-clone-log-column">
+	    t_diskclone_log.diskclone_log_id,             
+	    t_diskclone_log.diskclone_id,              
+	    t_diskclone_log.diskclone_user_name,              
+	    t_diskclone_log.diskclone_log_level,            
+	    t_diskclone_log.diskclone_event_id,            
+	    t_diskclone_log.diskclone_log_ip,            
+	    t_diskclone_log.diskclone_log_type,            
+	    t_diskclone_log.diskclone_log_content, 
+	    t_diskclone_log.diskclone_log_create_time,
+	    date_format(t_diskclone_log.diskclone_log_create_time,'%y-%m-%d %T') AS diskclone_log_create_time_forPage,        
+	    t_diskclone_log.diskclone_log_reserve1,        
+	    t_diskclone_log.diskclone_log_reserve2 
+	</sql>
+	
+	<select id="select-all-diskclone-log-by-device-id" parameterType="Map" resultMap="DiskCloneLogMap">
+		select
+			<include refid="disk-clone-log-column"/>
+		from 
+			t_diskclone_log
+		where diskclone_id in(select 
+			diskclone_id 
+		from
+			t_diskclone
+		where 
+			device_id = #{deviceId})
+		ORDER BY t_diskclone_log.diskclone_log_create_time DESC,t_diskclone_log.diskclone_log_id DESC
+		<if test="firstResult !=null and maxResult !=null">
+			limit  #{firstResult},#{maxResult} 
+		</if>
+	</select>
+	
+	<select id="select-all-diskclone-log-by-cluster-id" parameterType="Map" resultMap="DiskCloneLogMap">
+		select
+			<include refid="disk-clone-log-column"/>
+		from 
+			t_diskclone_log
+		where diskclone_id = #{clusterId}
+		And diskclone_log_type = 3
+		ORDER BY t_diskclone_log.diskclone_log_create_time DESC,t_diskclone_log.diskclone_log_id DESC
+		<if test="firstResult !=null and maxResult !=null">
+			limit  #{firstResult},#{maxResult} 
+		</if>
+	</select>
+	
+	<select id="select-all-diskclone-log-by-device-id-count" parameterType="Map" resultType="int">
+		select
+			count(*)
+		from 
+			t_diskclone_log
+		where diskclone_id in(select 
+			diskclone_id 
+		from
+			t_diskclone
+		where 
+			device_id = #{deviceId})
+	</select>
+	
+	<!-- 查询备份日志总条数 -->
+	<select id="select-disk-clone-log-all-split-page-count" parameterType="map" resultType="int">
+		SELECT COUNT(t_diskclone_log.diskclone_log_id) FROM t_diskclone_log
+			WHERE 1=1
+		<if test="diskCloneLogLevel != 0 and diskCloneLogLevel != null "  >
+			 AND t_diskclone_log.diskclone_log_level = #{diskCloneLogLevel}
+		</if>
+		<if test="diskCloneLogType != 0 and diskCloneLogType != null "  >
+             AND t_diskclone_log.diskclone_log_type = #{diskCloneLogType}
+        </if>
+		<if test="beginDate !=null and beginDate !='' and endDate == null or endDate == '' "  >
+			 AND t_diskclone_log.diskclone_log_create_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate == null or beginDate == '' "  >
+			 AND t_diskclone_log.diskclone_log_create_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND DATE_FORMAT(t_diskclone_log.diskclone_log_create_time,'%Y-%m-%d') &gt;=  #{beginDate}
+			AND DATE_FORMAT(t_diskclone_log.diskclone_log_create_time,'%Y-%m-%d') &lt;=  #{endDate}
+		</if>
+	</select>
+	
+	<!-- 查询备份日志(条件查询,分页) -->
+	<select id="select-disk-clone-log-all-split-page" parameterType="map" resultMap="DiskCloneLogMap">
+		SELECT 
+			<include refid="disk-clone-log-column"/>
+		FROM
+		  t_diskclone_log 
+		WHERE 1=1
+		<if test="diskCloneLogLevel != 0 and diskCloneLogLevel != null "  >
+			 AND t_diskclone_log.diskclone_log_level = #{diskCloneLogLevel}
+		</if>
+		<if test="diskCloneLogType != 0 and diskCloneLogType != null "  >
+             AND t_diskclone_log.diskclone_log_type = #{diskCloneLogType}
+        </if>
+		<if test="beginDate !=null and beginDate !='' and endDate == null or endDate == ''  "  >
+			 AND t_diskclone_log.diskclone_log_create_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate == null or beginDate == ''  "  >
+			 AND t_diskclone_log.diskclone_log_create_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND DATE_FORMAT(t_diskclone_log.diskclone_log_create_time,'%Y-%m-%d') &gt;=  #{beginDate}
+			AND DATE_FORMAT(t_diskclone_log.diskclone_log_create_time,'%Y-%m-%d') &lt;=  #{endDate}
+		</if>
+		ORDER BY t_diskclone_log.diskclone_log_create_time DESC
+		<if test="firstResult != null and maxResult != null">
+			limit  #{firstResult},#{maxResult} 
+		</if>
+	</select>
+	
+	<select id="select-disk-clone-log-all" resultMap="DiskCloneLogMap">
+		SELECT 
+			<include refid="disk-clone-log-column"/>
+		FROM
+		  t_diskclone_log
+		ORDER BY t_diskclone_log.diskclone_log_create_time DESC
+	</select>
+	
+	<insert id="insert-disk-clone-log" parameterType="DiskCloneLog">
+		INSERT INTO t_diskclone_log
+            (
+             diskclone_id,
+             diskclone_event_id,
+             diskclone_user_name,
+             diskclone_log_level,
+             diskclone_log_ip,
+             diskclone_log_content,
+             diskclone_log_create_time,
+             diskclone_log_type,
+             diskclone_log_reserve1,
+             diskclone_log_reserve2)
+		VALUES (
+		        #{diskCloneId},
+		        #{diskCloneEventId},
+		        #{diskCloneUserName},
+		        #{diskCloneLogLevel},
+		        #{diskCloneLogIp},
+		        #{diskCloneLogContent},
+		        now(),
+		        #{diskCloneLogType},
+		        #{diskCloneLogReserve1},
+		        #{diskCloneLogReserve2}
+		     )
+		<selectKey resultType="int" keyProperty="diskCloneLogId" >
+			select @@IDENTITY as id 
+		</selectKey>
+	</insert>
+	
+	<delete id="delete-disk-clone-log-by-date" parameterType="map">
+		DELETE
+		FROM t_diskclone_log
+		WHERE DATE_FORMAT(diskclone_log_create_time,'%Y-%m-%d') &gt;=  #{beginDate}
+		AND DATE_FORMAT(diskclone_log_create_time,'%Y-%m-%d') &lt;=  #{endDate}
+	</delete>
+	
+	<!-- 删除备份日志 by xuyingan -->
+	<delete id="delete-disk-clone-log-by-deldate" parameterType="string">
+		DELETE
+		FROM t_diskclone_log
+		WHERE diskclone_log_create_time &lt;= #{delDate}
+	</delete>
+	
+	
+	<!-- 集群日志相关开始 -->
+	
+	<!-- 查询所有集群日志 -->
+	<select id="select-all-cluster-log" resultMap="DiskCloneLogMap">
+		SELECT
+		<include refid="disk-clone-log-column" />
+		FROM
+		t_diskclone_log
+		WHERE
+		diskclone_log_type=3
+		ORDER BY t_diskclone_log.diskclone_log_create_time DESC
+	</select>
+	
+	
+	<!-- 获取集群日志数目 -->
+	<select id="get-cluster-log-count" resultType="long">
+		SELECT
+		  COUNT(*)
+		FROM
+		  t_diskclone_log
+		WHERE
+		  t_diskclone_log.diskclone_log_type=3
+    </select>
+	
+	<!-- 集群日志分页查询 -->
+	<select id="select-cluster-log-for-pages" parameterType="map" resultMap="DiskCloneLogMap">
+		SELECT
+		  <include refid="disk-clone-log-column" />
+		FROM
+		  t_diskclone_log
+		WHERE
+		  diskclone_log_type=3
+		  <if test="diskCloneLogLevel != 0 and diskCloneLogLevel != null">
+		      AND diskclone_log_level=#{diskCloneLogLevel}
+		  </if>
+		  <if test="startTime!=null and startTime!='' ">  
+              AND diskclone_log_create_time&gt;=#{startTime}
+          </if>  
+	      <if test="endTime!=null and endTime!='' ">  
+	          AND diskclone_log_create_time&lt;=#{endTime}  
+	      </if> 
+		ORDER BY t_diskclone_log.diskclone_log_create_time DESC
+		<if test="firstResult != null and maxResult != null">
+            limit  #{firstResult},#{maxResult} 
+        </if>
+	</select>
+	
+	<!-- 删除集群日志 -->
+	<delete id="delete-cluster-log-by-date" parameterType="map">
+        DELETE
+            FROM t_diskclone_log
+        WHERE
+            diskclone_log_type=3
+        <if test="startTime!=null and startTime!='' ">  
+              AND diskclone_log_create_time&gt;=#{startTime}
+        </if>  
+        <if test="endTime!=null and endTime!='' ">  
+            AND diskclone_log_create_time&lt;=#{endTime}  
+        </if> 
+    </delete>
+	<!-- 集群日志相关结束 -->
+	
+	
+</mapper>

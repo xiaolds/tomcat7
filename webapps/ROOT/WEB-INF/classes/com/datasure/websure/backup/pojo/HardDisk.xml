@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+	<resultMap id="HardDiskDetailMap" type="HardDisk">
+		<result property="hardDiskid" column="harddisk_id"/>
+		<result property="diskCloneId" column="diskclone_id"/>
+		<result property="deviceId" column="device_id"/>
+		<result property="online" column="harddisk_is_online"/>
+		<result property="index" column="harddisk_index"/>
+		<result property="partitionNum" column="harddisk_partition_num"/>
+		<result property="sn" column="harddisk_sn"/>
+		<result property="type"  column="harddisk_type"/>
+		<result property="uuid" column="harddisk_uuid"/>
+		<result property="isstandby" column="device_is_standby"/>
+		<result property="remark" column="harddisk_remark"/>
+		<result property="isOS" column="harddisk_is_OS"/>
+		<result property="name" column="harddisk_name"/>
+		<result property="sector"  column="harddisk_sector"/>
+		<result property="hardStandbyModel"  column="harddisk_standby_model"/>
+		<result property="clusterType" column="harddisk_cluster_type"/>
+		<result property="harddiskNeedbackup" column="harddisk_needbackup"/>
+	</resultMap>
+	
+	<resultMap id="HardDiskAndParMap" type="HardDisk">
+		<id property="hardDiskid" column="harddisk_id"/>
+		<id property="index" column="harddisk_index"/>
+		<association property="partitions" javaType="Partition" >
+			<id property="partitionId" column="partition_id"/>
+			<result property="diskcloneId" column="diskclone_id"/>
+			<result property="harddiskId" column="harddisk_id"/>
+			<result property="index" column="partition_index"/>
+			<result property="online" column="partition_is_online"/>
+			<result property="letter" column="partition_letter"/>
+			<result property="volumename" column="partition_volumename"/>
+			<result property="volumeLabel" column="partition_volume_label"/>
+			<result property="totalSector" column="partition_total_sector"/>
+			<result property="startSector" column="partition_start_sector"/>
+			<result property="runstate" column="partition_runstate"/>
+			<result property="needbackup" column="partition_needbackup"/>
+			<result property="fileSystem" column="partition_filesystem"/>
+			<result property="remark" column="partition_remark"/>
+		</association>
+	</resultMap>	
+	<resultMap id="HardDiskAndVmdkMap" type="HardDisk">
+		<id property="hardDiskid" column="harddisk_id"/>
+		<id property="diskCloneId" column="diskclone_id"/>
+		<id property="clusterType" column="harddisk_cluster_type" />
+		<association property="vmdkList" javaType="Vmdk" >
+			<id property="vmimgId" column="vmimg_id"/>
+			<result property="vmimgDiskcloneId" column="vmimg_diskclone_id"/>
+			<result property="vmimgSnapshotIndex" column="vmimg_snapshot_index"/>
+			<result property="vmimgSnapshotSetId" column="vmimg_snapshot_set_id"/>
+			<result property="vmimgVirId" column="vmimg_vir_id"/>
+			<result property="vmimgHarddiskId" column="vmimg_harddisk_id"/>
+			<result property="vmimgType" column="vmimg_type"/>
+			<result property="vmimgIsStandby" column="vmimg_is_standby"/>
+			<result property="deviceStandbyVmimgId" column="device_standby_vmimg_id"/>
+			<result property="vmimgStorageSymbol" column="vmimg_storage_symbol"/>
+			<result property="vmimgFileName" column="vmimg_file_name"/>
+			<result property="vmimgFilePath" column="vmimg_file_path"/>
+			<result property="vmimgHaveOs" column="vmimg_have_os"/>
+			<result property="vmimgDataSize" column="vmimg_data_size"/>
+			<result property="vmimgBackupPartition" column="vmimg_backup_partition"/>
+			<result property="vmimgCreateTime" column="vmimg_create_time"/>
+			<result property="vmimgModifyTime" column="vmimg_modify_time"/>
+			<result property="vmimgParentId" column="vmimg_parent_id"/>
+			<result property="vmimgRemark" column="vmimg_remark"/>
+		</association>
+	</resultMap>
+	
+	
+	<resultMap id="AllHardDiskMap" type="HardDisk" extends="HardDiskDetailMap">
+		<collection property="partitions" column="harddisk_id" ofType="HardDisk"
+		select="select-partitions-by-harddisk-id"/>
+	</resultMap>
+	
+	<resultMap id="AllShareHardDiskMap" type="HardDisk" extends="HardDiskDetailMap">
+		<!-- <collection property="partitions" column="harddisk_id" ofType="HardDisk"
+		select="select-share-partitions-by-harddisk-id"/> -->
+	</resultMap>
+	
+		<select id="select-hardisk-by-id" resultMap="HardDiskAndParMap " parameterType="int">
+		SELECT
+			A.harddisk_id,
+			B.partition_id,
+			B.diskclone_id,
+			B.harddisk_id,
+			B.partition_index,
+			B.partition_is_online,
+			B.partition_letter,
+			B.partition_is_online,
+			B.device_is_standby,
+			B.device_standby_partition_id,
+			B.partition_volumename,
+			B.partition_volume_label,
+			B.partition_total_sector,
+			B.partition_start_sector,
+			B.partition_runstate,
+			B.partition_needbackup,
+			B.partition_filesystem,
+			B.partition_remark
+		FROM t_harddisk A 
+		LEFT JOIN t_partition B
+		ON A.harddisk_id=B.harddisk_id
+		WHERE A.harddisk_id=#{hardDiskId} AND A.harddisk_is_online=1
+	</select>
+	
+	<select id="select-hardisk-by-harddisk-id" resultMap="HardDiskDetailMap " parameterType="int">
+		SELECT
+			harddisk_id,           
+			diskclone_id,          
+			device_id,             
+			harddisk_name,         
+			harddisk_is_online,    
+			harddisk_index,        
+			harddisk_type,         
+			harddisk_sector,       
+			harddisk_partition_num,
+			harddisk_sn,           
+			harddisk_uuid,         
+			device_is_standby,
+			harddisk_remark,
+			harddisk_is_OS, 
+			harddisk_cluster_type,
+			harddisk_needbackup
+		FROM t_harddisk
+		WHERE t_harddisk.harddisk_id=#{hardDiskId}
+	</select>
+	
+	<select id="select-harddisks-by-harddiskidlist" resultMap="HardDiskDetailMap " parameterType="list">
+		SELECT
+			harddisk_id,           
+			diskclone_id,          
+			device_id,             
+			harddisk_name,         
+			harddisk_is_online,    
+			harddisk_index,        
+			harddisk_type,         
+			harddisk_sector,       
+			harddisk_partition_num,
+			harddisk_sn,           
+			harddisk_uuid,         
+			device_is_standby,
+			harddisk_remark,
+			harddisk_is_OS, 
+			harddisk_cluster_type,
+			harddisk_needbackup
+		FROM t_harddisk
+		WHERE t_harddisk.harddisk_id in 
+		<foreach collection="list" item="itemId" index="index" open="(" close=")" separator=",">
+            #{itemId}
+        </foreach>
+	</select>
+	
+	<select id="select-harddisks-by-deviceid-and-index" resultMap="HardDiskDetailMap " parameterType="Map">
+		SELECT
+			harddisk_id,           
+			diskclone_id,          
+			device_id,             
+			harddisk_name,         
+			harddisk_is_online,    
+			harddisk_index,        
+			harddisk_type,         
+			harddisk_sector,       
+			harddisk_partition_num,
+			harddisk_sn,           
+			harddisk_uuid,         
+			device_is_standby,
+			harddisk_remark,
+			harddisk_is_OS,
+			harddisk_needbackup
+		FROM t_harddisk
+		WHERE 
+			device_id=#{shareDeviceId}
+		AND
+			harddisk_index = #{shareHardIndex}
+		AND 
+			diskclone_id = (select diskclone_id from t_diskclone where device_id = #{shareDeviceId} AND diskclone_is_online = 1)
+	</select>  
+	
+	<select id="select-harddisk-by-deviceid-harddisk-index-and-diskclone-id" resultMap="HardDiskDetailMap " parameterType="Map">
+        SELECT
+            harddisk_id,           
+            diskclone_id,          
+            device_id,             
+            harddisk_name,         
+            harddisk_is_online,    
+            harddisk_index,        
+            harddisk_type,         
+            harddisk_sector,       
+            harddisk_partition_num,
+            harddisk_sn,           
+            harddisk_uuid,         
+            device_is_standby,
+            harddisk_remark,
+            harddisk_is_OS,
+            harddisk_needbackup
+        FROM t_harddisk
+        WHERE 
+            device_id=#{deviceId}
+        AND
+            harddisk_index = #{harddiskIndex}
+        AND 
+            diskclone_id = #{diskCloneId}
+    </select>
+	
+	<select id="select-hardisk-vmdk-by-id" resultMap="HardDiskAndVmdkMap" parameterType="int">
+		SELECT
+			A.harddisk_id,
+			A.diskclone_id,
+			A.harddisk_cluster_type,
+			B.vmimg_id ,
+			B.vmimg_diskclone_id ,
+			B.vmimg_snapshot_index ,
+			B.vmimg_snapshot_set_id ,
+			B.vmimg_vir_id ,
+			B.vmimg_harddisk_id ,
+			B.vmimg_type ,
+			B.vmimg_is_standby ,
+			B.device_standby_vmimg_id ,
+			B.vmimg_storage_symbol ,
+			B.vmimg_file_name ,
+			B.vmimg_file_path ,
+			B.vmimg_have_os ,
+			B.vmimg_data_size ,
+			B.vmimg_backup_partition ,
+			B.vmimg_create_time ,
+			B.vmimg_modify_time ,
+			B.vmimg_parent_id ,
+			B.vmimg_remark
+		FROM t_harddisk A 
+		LEFT JOIN t_vmimg B
+		ON A.harddisk_id=B.vmimg_harddisk_id
+		WHERE A.diskclone_id=#{diskCloneID} AND A.harddisk_is_online=1
+	</select>
+	
+	<select id="select-hardisk-by-diskCloneId" resultType="HardDisk" parameterType="int">
+		SELECT 
+			harddisk_id,
+			diskclone_id
+		FROM t_harddisk
+		WHERE diskclone_id=#{diskId}
+	</select>
+	
+	
+	<select id="select-harddisks-by-diskclone-id-and-index" resultMap="HardDiskDetailMap" parameterType="HardDisk">
+		select
+			 harddisk_id,
+			 diskclone_id,
+			 device_id,
+			 harddisk_cluster_type,
+			 harddisk_is_online,
+			 harddisk_index,
+			 harddisk_partition_num,
+			 harddisk_sn,
+			 harddisk_type,
+			 harddisk_uuid,
+			 harddisk_sector
+		from t_harddisk where diskclone_id=#{diskCloneId} 
+		and harddisk_index=#{index}
+	</select>
+	
+	
+<!-- 	<select id="select-harddisks-by-diskclone-id" resultMap="HardDiskDetailMap" parameterClass="int">
+		select
+			 harddisk_id,
+			 diskclone_id,
+			 device_id,
+			 harddisk_is_online,
+			 harddisk_index,
+			 harddisk_partition_num,
+			 harddisk_sn,
+			 harddisk_type,
+			 harddisk_uuid,
+			 harddisk_reserve1,
+			 harddisk_reserve2,
+			 harddisk_reserve3
+		from t_harddisk where diskclone_id=#value# and harddisk_is_online=1 
+	</select>
+	<select id="select-harddisks-by-id" resultMap="HardDiskDetailMap" parameterType="int">
+		select
+			 harddisk_id,
+			 diskclone_id,
+			 device_id,
+			 harddisk_is_online,
+			 harddisk_index,
+			 harddisk_partition_num,
+			 harddisk_sn,
+			  harddisk_type,
+			 harddisk_uuid,
+			 harddisk_reserve1,
+			 harddisk_reserve2,
+			 harddisk_reserve3
+		from t_harddisk where harddisk_id=#value# and harddisk_is_online=1
+	</select> -->
+	
+	<update id="update-standby-by-harddisklist" parameterType="Map">
+		<foreach collection="hardDiskList" item="item" index="index" open="" close="" separator=";">
+	        update t_harddisk 
+			<set>
+				device_is_standby = 1,
+				harddisk_standby_model = #{item.hardStandbyModel}
+			</set>	
+          	where harddisk_id = #{item.hardDiskid}
+         </foreach>
+	</update>
+	
+	<select id="select-harddisks-by-device-id" resultMap="HardDiskDetailMap" parameterType="int">
+		SELECT
+			 harddisk_id,
+			 diskclone_id,
+			 device_id,
+			 harddisk_is_online,
+			 harddisk_index,
+			 harddisk_partition_num,
+			 harddisk_sn,
+			 harddisk_type,
+			 harddisk_uuid,
+			 device_is_standby,
+			 harddisk_remark,
+			 harddisk_name,
+			 harddisk_sector,
+			 harddisk_standby_model,
+			 harddisk_is_OS,
+			 harddisk_cluster_type,
+			 harddisk_needbackup
+		FROM 
+			t_harddisk 
+		WHERE device_id=#{value} AND 
+			  harddisk_is_online=1 AND 
+			  diskclone_id in
+			(
+				SELECT 
+					diskclone_id 
+				FROM 
+					t_diskclone 
+				WHERE 
+					device_id = #{value} AND 
+					diskclone_is_online = 1
+			)
+	</select>
+	
+	<select id="select-share-harddisks-by-device-id" resultMap="AllShareHardDiskMap" parameterType="int">
+		SELECT
+			 harddisk_id,
+			 diskclone_id,
+			 device_id,
+			 harddisk_is_online,
+			 harddisk_index,
+			 harddisk_partition_num,
+			 harddisk_sn,
+			 harddisk_type,
+			 harddisk_uuid,
+			 device_is_standby,
+			 harddisk_remark,
+			 harddisk_name,
+			 harddisk_sector,
+			 harddisk_is_OS,
+			 harddisk_cluster_type,
+			 harddisk_needbackup
+		FROM t_harddisk WHERE device_id=#{value} AND harddisk_is_online=1 AND device_is_standby = 1 AND 
+			  diskclone_id in
+			(
+				SELECT 
+					diskclone_id 
+				FROM 
+					t_diskclone 
+				WHERE 
+					device_id = #{value} AND 
+					diskclone_is_online = 1
+			)
+	</select>
+	
+	<select id="select-all-harddisks-by-device-id" resultMap="AllHardDiskMap" parameterType="int">
+		SELECT
+			 harddisk_id,
+			 diskclone_id,
+			 device_id,
+			 harddisk_is_online,
+			 harddisk_index,
+			 harddisk_partition_num,
+			 harddisk_sn,
+			 harddisk_type,
+			 harddisk_uuid,
+			 device_is_standby,
+			 harddisk_remark,
+			 harddisk_name,
+			 harddisk_sector,
+			 harddisk_is_OS,
+			 harddisk_needbackup
+		FROM 
+			t_harddisk 
+		WHERE device_id=#{value}
+			GROUP by harddisk_index
+			ORDER by harddisk_index ASC
+	</select>
+	
+	<update id="update-standby-by-hardDisklist-cancel" parameterType="Map">
+		<foreach collection="hardDiskList" item="item" index="index" open="" close="" separator=";">
+	        update t_harddisk 
+			<set>
+				device_is_standby = 2,
+				harddisk_standby_model = 0
+			</set>	
+          	where harddisk_id = #{item.hardDiskid}
+         </foreach>
+	</update>
+	
+	<update id="update-cluster-type-by-deviceid-and-index" parameterType="Map">
+		<foreach collection="deviceHarddiskIndexlist" item="item" index="index" open="" close="" separator=";">
+	        update t_harddisk 
+			<set>
+				harddisk_cluster_type = #{item.harddiskClusterType}
+			</set>	
+          	where 
+          		device_id = #{item.deviceId}
+          	AND
+          		harddisk_index = #{item.harddiskIndex}
+          	AND
+          		harddisk_is_online = 1
+         </foreach>
+	</update>
+	
+	<update id="update-needback-by-harddiskid-to-yes" parameterType="list">
+        update 
+        	t_harddisk 
+			<set>
+				harddisk_needbackup = 1
+			</set>	
+         	where 
+         		harddisk_id in
+          	<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+         	 	#{item}
+         	</foreach>
+	</update>
+	
+	<update id="update-needback-by-harddiskid-to-no" parameterType="list">
+        update 
+        	t_harddisk 
+			<set>
+				harddisk_needbackup = 0
+			</set>	
+         	where 
+         		harddisk_id in
+          	<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+         	 	#{item}
+         	</foreach>
+	</update>
+	
+	<select id="select-harddisks-and-par-by-device-id" parameterType="int" resultMap="HardDiskAndParMap">
+	SELECT * 
+	FROM t_harddisk a,t_partition b 
+	WHERE
+	a.device_id = #{deviceId}
+	AND 
+	b.harddisk_id = a.harddisk_id
+	</select>
+	
+	
+</mapper>

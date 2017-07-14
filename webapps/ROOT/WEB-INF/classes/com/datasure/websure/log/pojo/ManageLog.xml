@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="ManageLogMap" type="ManageLog">
+		<id property="manageLogId"  column="manage_log_id"/>            
+		<result property="manageDeviceId"  column="manage_device_id"/>     
+		<result property="manageUserName"  column="manage_user_name"/>     
+		<result property="manageLogContent"  column="manage_log_content"/>         
+		<result property="manageLogLevel"  column="manage_log_level"/>      
+		<result property="manageLogType"  column="manage_log_type"/>          
+		<result property="manageLogInsertTime"  column="manage_log_insert_date_time"/>           
+		<result property="manageLogRemark" column="manage_log_remark"/> 
+	</resultMap>
+	
+	<resultMap id="ManageLogAndDeviceMap" type="ManageLog" extends="ManageLogMap">
+		<result property="device.mac"  column="device_mac"/> 
+		<result property="device.ip"  column="device_ip"/> 
+		<result property="device.computerName"  column="device_client_computer_name"/> 
+	</resultMap>
+	
+	<sql id="manage-log-column">
+		t_manage_log.manage_log_id,
+		t_manage_log.manage_device_id,
+		t_manage_log.manage_user_name,
+		t_manage_log.manage_log_content,
+		t_manage_log.manage_log_level,
+		t_manage_log.manage_log_type,
+		t_manage_log.manage_log_insert_date_time,
+		t_manage_log.manage_log_remark      
+	</sql>
+	
+	<!-- 查询客户端日志总条数 -->
+	<select id="select-manage-log-all-split-page-count" parameterType="map" resultType="int">
+		SELECT COUNT(t_manage_log.manage_log_id) FROM t_manage_log
+			WHERE 1=1
+		<if test="manageLogLevel != 0 and manageLogLevel != null "  >
+			 AND t_manage_log.manage_log_level = #{manageLogLevel}
+		</if>
+		<if test="beginDate !=null and beginDate !='' and endDate == null or endDate == '' "  >
+			 AND t_manage_log.manage_log_insert_date_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate == null or beginDate == '' "  >
+			 AND t_manage_log.manage_log_insert_date_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND DATE_FORMAT(t_manage_log.manage_log_insert_date_time,'%Y-%m-%d') &gt;=  #{beginDate}
+			AND DATE_FORMAT(t_manage_log.manage_log_insert_date_time,'%Y-%m-%d') &lt;=  #{endDate}
+		</if>
+	</select>
+	
+	<select id="select-manage-log-count" resultType="int">
+		SELECT COUNT(manage_log_id) FROM t_manage_log
+	</select>
+	
+	<!-- 查询客户端日志(分页) -->
+	<select id="select-manage-log-all-split-page" parameterType="map" resultMap="ManageLogAndDeviceMap">
+		SELECT 
+		   <include refid="manage-log-column"/>,
+		   t_device.device_ip,
+		   t_device.device_mac,
+		   t_device.device_client_computer_name
+		FROM
+		  t_manage_log 
+		  LEFT JOIN t_device
+		  ON t_device.device_id = t_manage_log.manage_device_id
+		WHERE 1=1
+		<if test="manageLogLevel != 0 and manageLogLevel != null "  >
+			 AND t_manage_log.manage_log_level = #{manageLogLevel}
+		</if>
+		<if test="beginDate !=null and beginDate !='' and endDate == null or endDate == '' "  >
+			 AND t_manage_log.manage_log_insert_date_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate == null or beginDate == '' "  >
+			 AND t_manage_log.manage_log_insert_date_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND DATE_FORMAT(t_manage_log.manage_log_insert_date_time,'%Y-%m-%d') &gt;=  #{beginDate}
+			AND DATE_FORMAT(t_manage_log.manage_log_insert_date_time,'%Y-%m-%d') &lt;=  #{endDate}
+		</if>
+		ORDER BY t_manage_log.manage_log_insert_date_time DESC
+		<if test="firstResult != null and maxResult != null">
+			limit  #{firstResult},#{maxResult} 
+		</if>
+	</select>
+	
+	<!-- 查询运维日志 -->
+	<select id="select-manage-log-all" resultMap="ManageLogMap">
+		SELECT 
+			<include refid="manage-log-column"/>
+		FROM t_manage_log
+	</select>
+	
+	<!-- 查询运维日志和设备 -->
+	<select id="select-manage-log-all-and-device" resultMap="ManageLogAndDeviceMap">
+		SELECT 
+		   <include refid="manage-log-column"/>,
+		   t_device.device_ip,
+		   t_device.device_mac,
+		   t_device.device_client_computer_name
+		FROM
+		  t_manage_log 
+		  LEFT JOIN t_device
+		  ON t_device.device_id = t_manage_log.manage_device_id
+		  ORDER BY t_manage_log.manage_log_insert_date_time DESC
+	</select>
+	
+	<insert id="insert-manage-log" parameterType="ManageLog">
+		INSERT INTO t_manage_log
+            (
+             manage_device_id,
+             manage_user_name,
+             manage_log_content,
+             manage_log_level,
+             manage_log_type,
+             manage_log_insert_date_time,
+             manage_log_remark)
+		VALUES (
+		        #{manageDeviceId},
+		        #{manageUserName},
+		        #{manageLogContent},
+		        #{manageLogLevel},
+		        #{manageLogType},
+		        now(),
+		        #{manageLogRemark}
+		     )
+		<selectKey resultType="int" keyProperty="manageLogId" >
+			select @@IDENTITY as id 
+		</selectKey>
+	</insert>
+	
+	<delete id="delete-manage-log-by-date" parameterType="map">
+		DELETE FROM
+		t_manage_log
+		WHERE DATE_FORMAT(manage_log_insert_date_time,'%Y-%m-%d')  &gt;=  #{beginDate}
+		AND DATE_FORMAT(manage_log_insert_date_time,'%Y-%m-%d') &lt;=  #{endDate}
+	</delete>
+	
+	<!-- 删除运维日志 by xuyingan -->
+	<delete id="delete-manage-log-by-deldate" parameterType="string">
+		DELETE FROM
+		t_manage_log
+		WHERE manage_log_insert_date_time &lt;= #{delDate}
+	</delete>
+	
+</mapper>

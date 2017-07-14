@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="HwdWarningConfigMap" type="HdwWarningConfig">
+		<id property="hdwWarningId"  column="hdw_warning_id"/>            
+		<result property="deviceId"  column="device_id"/>     
+		<result property="deviceMac"  column="device_mac"/>         
+		<result property="hdwWarningType"  column="hdw_warning_type"/>      
+		<result property="hdwWarningLevel"  column="hdw_warning_level"/>          
+		<result property="hdwWarningCondition"  column="hdw_warning_condition"/>           
+		<result property="hdwWarningThreshold" column="hdw_warning_threshold"/> 
+		<result property="hdwWarningCreateTime"  column="hdw_warning_create_time"/>    
+		<result property="hdwwarningupdatetime"  column="hdw_warning_update_time"/>    
+		<result property="remark"  column="remark"/>  
+	</resultMap>
+	
+	<resultMap id="SysWarningConfigMap" type="SysWarningConfig">
+		<id property="sysWarningId"  column="sys_warning_id"/>            
+		<result property="deviceId"  column="device_id"/>     
+		<result property="deviceMac"  column="device_mac"/>         
+		<result property="sysWarningType"  column="sys_warning_type"/>      
+		<result property="sysWarningStartTime"  column="sys_warning_start_time"/>          
+		<result property="sysWarningRuleString"  column="sys_warning_rule_string"/>           
+		<result property="sysWarningCreateTime" column="sys_warning_create_time"/> 
+		<result property="sysWarningupdateTime"  column="sys_warning_update_time"/>    
+		<result property="remark"  column="remark"/>  
+	</resultMap>
+	
+	<resultMap id="ProcessWarningConfigMap" type="ProcessWarningConfig">
+		<id property="processWarningId"  column="process_warning_id"/>            
+		<result property="deviceId"  column="device_id"/>     
+		<result property="deviceMac"  column="device_mac"/>         
+		<result property="processWarningName"  column="process_warning_name"/>      
+		<result property="processWarningState"  column="process_warning_state"/>          
+		<result property="processWarningCreateTime"  column="process_warning_create_time"/>           
+		<result property="processWarningUpdateTime" column="process_warning_update_time"/> 
+		<result property="remark"  column="remark"/>  
+	</resultMap>
+	
+	<resultMap id="ServerWarningConfigMap" type="ServerWarningConfig">
+		<id property="scriptWarningId"  column="script_warning_id"/>  
+		<result property="scriptWarningName"  column="script_warning_name"/>  
+		<result property="deviceId"  column="device_id"/>     
+		<result property="deviceMac"  column="device_mac"/>         
+		<result property="scriptWarningServerType"  column="script_warning_server_type"/>      
+		<result property="scriptWarningServerText"  column="script_warning_server_text"/>          
+		<result property="scriptWarningServerName"  column="script_warning_server_name"/>          
+		<result property="scriptWarningReturnValue"  column="script_warning_return_value"/>           
+		<result property="scriptWarningUrl"  column="script_warning_server_url"/>           
+		<result property="scriptWarninDB"  column="script_warning_server_db"/>           
+		<result property="scriptWarninDrive"  column="script_warning_server_drive"/>           
+		<result property="scriptWarninSystem"  column="script_warning_server_system"/>           
+		<result property="scriptWarninInstallPath"  column="script_warning_server_install_path"/>           
+		<result property="scriptWarninDBName"  column="script_warning_server_db_name"/>           
+		<result property="scriptWarninDBPort"  column="script_warning_server_db_port"/>           
+		<result property="scriptWarninUserName"  column="script_warning_server_user_name"/>           
+		<result property="scriptWarninUserPwd"  column="script_warning_server_user_pwd"/>           
+		<result property="scriptWarninDBTable"  column="script_warning_server_db_table"/>           
+		<result property="scriptWarningState" column="script_warning_state"/> 
+		<result property="scriptWarningLevel" column="script_warning_level"/> 
+		<result property="scriptWarningCreateTime" column="script_warning_create_time"/> 
+		<result property="scriptWarningUpdateTime" column="script_warning_update_time"/> 
+		<result property="remark"  column="remark"/>
+	</resultMap>
+	
+	<resultMap id="WarningConfigInfoMap" type="WarningConfigInfo">
+		<id property="configInfoId"  column="config_info_id"/>
+		<result property="deviceId"  column="device_id"/>
+		<result property="configModelId"  column="config_model_id"/>
+		<result property="configTargetId"  column="config_target_id"/>
+		<result property="configMode"  column="config_mode"/>
+		<result property="configStartTime"  column="config_start_time"/>
+		<result property="configStopTimel"  column="config_stop_time"/>
+		<result property="configRunTimeInterval"  column="config_run_time_interval"/>
+		<result property="configRunTimeIntervalUnit"  column="config_run_time_interval_unit"/>
+		<result property="configContRunTimeInterval"  column="config_cont_run_time_interval"/>
+		<result property="configContRunTimeIntervalUnit"  column="config_cont_run_time_interval_unit"/>
+		<result property="configState"  column="config_state"/>
+		<result property="configCreateTime"  column="config_create_time"/>
+		<result property="configUpdateTime"  column="config_update_time"/>
+		<result property="remark"  column="remark"/>
+	</resultMap>
+	
+	<resultMap id="HdwAndInfoWarningConfigMap" type="HdwWarningConfig" extends="HwdWarningConfigMap">
+		<association property="warningConfigInfo" javaType="warningConfigInfo">
+			<id property="configInfoId"  column="config_info_id"/>
+			<result property="deviceId"  column="device_id"/>
+			<result property="configModelId"  column="config_model_id"/>
+			<result property="configTargetId"  column="config_target_id"/>
+			<result property="configMode"  column="config_mode"/>
+			<result property="configStartTime"  column="config_start_time"/>
+			<result property="configStopTimel"  column="config_stop_time"/>
+			<result property="configRunTimeInterval"  column="config_run_time_interval"/>
+			<result property="configRunTimeIntervalUnit"  column="config_run_time_interval_unit"/>
+			<result property="configContRunTimeInterval"  column="config_cont_run_time_interval"/>
+			<result property="configContRunTimeIntervalUnit"  column="config_cont_run_time_interval_unit"/>
+			<result property="configState"  column="config_state"/>
+			<result property="configCreateTime"  column="config_create_time"/>
+			<result property="configUpdateTime"  column="config_update_time"/>
+			<result property="remark"  column="remark"/>
+		</association>
+	</resultMap>
+	
+	<resultMap id="ServerAndInfoWarningConfigMap" type="ServerWarningConfig" extends="ServerWarningConfigMap">
+		<association property="warningConfigInfo" javaType="warningConfigInfo">
+			<id property="configInfoId"  column="config_info_id"/>
+			<result property="deviceId"  column="device_id"/>
+			<result property="configModelId"  column="config_model_id"/>
+			<result property="configTargetId"  column="config_target_id"/>
+			<result property="configMode"  column="config_mode"/>
+			<result property="configStartTime"  column="config_start_time"/>
+			<result property="configStopTimel"  column="config_stop_time"/>
+			<result property="configRunTimeInterval"  column="config_run_time_interval"/>
+			<result property="configRunTimeIntervalUnit"  column="config_run_time_interval_unit"/>
+			<result property="configContRunTimeInterval"  column="config_cont_run_time_interval"/>
+			<result property="configContRunTimeIntervalUnit"  column="config_cont_run_time_interval_unit"/>
+			<result property="configState"  column="config_state"/>
+			<result property="configCreateTime"  column="config_create_time"/>
+			<result property="configUpdateTime"  column="config_update_time"/>
+			<result property="remark"  column="remark"/>
+		</association>
+	</resultMap>
+	
+	<sql id="hdw-warning-config-column">
+		t_hdw_warning_config.hdw_warning_id,
+		t_hdw_warning_config.device_id,
+		t_hdw_warning_config.device_mac,
+		t_hdw_warning_config.hdw_warning_type,
+		t_hdw_warning_config.hdw_warning_level,
+		t_hdw_warning_config.hdw_warning_condition,
+		t_hdw_warning_config.hdw_warning_threshold,
+		t_hdw_warning_config.hdw_warning_create_time,
+		t_hdw_warning_config.hdw_warning_update_time,
+		t_hdw_warning_config.remark
+	</sql>
+	
+	<sql id="server-warning-config-column">
+		t_server_warning_config.script_warning_id,
+		t_server_warning_config.script_warning_name,
+		t_server_warning_config.device_id,
+		t_server_warning_config.device_mac,
+		t_server_warning_config.script_warning_server_type,
+		t_server_warning_config.script_warning_server_text,
+		t_server_warning_config.script_warning_server_name,
+		t_server_warning_config.script_warning_return_value,
+		t_server_warning_config.script_warning_server_url,
+		t_server_warning_config.script_warning_server_db,
+		t_server_warning_config.script_warning_server_drive,
+		t_server_warning_config.script_warning_server_system,
+		t_server_warning_config.script_warning_server_install_path,
+		t_server_warning_config.script_warning_server_db_name,
+		t_server_warning_config.script_warning_server_db_port,
+		t_server_warning_config.script_warning_server_user_name,
+		t_server_warning_config.script_warning_server_user_pwd,
+		t_server_warning_config.script_warning_server_db_table,
+		t_server_warning_config.script_warning_state,
+		t_server_warning_config.script_warning_level,
+		t_server_warning_config.script_warning_create_time,
+		t_server_warning_config.script_warning_update_time,
+		t_server_warning_config.remark
+	</sql>
+	
+	<sql id="warning-config-info-column">
+		t_warning_config_info.config_info_id,
+		t_warning_config_info.device_id,
+		t_warning_config_info.config_model_id,
+		t_warning_config_info.config_target_id,
+		t_warning_config_info.config_mode,
+		t_warning_config_info.config_start_time,
+		t_warning_config_info.config_stop_time,
+		t_warning_config_info.config_run_time_interval,
+		t_warning_config_info.config_run_time_interval_unit,
+		t_warning_config_info.config_cont_run_time_interval,
+		t_warning_config_info.config_cont_run_time_interval_unit,
+		t_warning_config_info.config_state,
+		t_warning_config_info.config_create_time,
+		t_warning_config_info.config_update_time,
+		t_warning_config_info.remark
+	</sql>
+
+	<select id="select-hwd-warning-config-by-param" parameterType="HdwWarningConfig" resultMap="HwdWarningConfigMap">
+		select
+			<include refid="hdw-warning-config-column"/>
+		from 
+			t_hdw_warning_config
+		where
+			1 = 1
+			<if test="deviceId !=null and deviceId != 0" >
+			 	AND device_id = #{deviceId} 
+			</if>
+			<if test="deviceMac !=null and deviceMac !='' ">	
+			 	AND <![CDATA[ device_mac = #{deviceMac} ]]>
+			</if>
+	</select>
+	
+	<select id="select-all-sys-log-config-info" parameterType="Map" resultMap="SysWarningConfigMap">
+		select
+			sys_warning_id,
+			device_id,
+			device_mac,
+			sys_warning_type,
+			sys_warning_start_time,
+			sys_warning_rule_string,
+			sys_warning_create_time,
+			sys_warning_update_time, 
+			remark
+		from 
+			t_sys_warning_config
+		where
+			1 = 1
+		<if test="deviceId !=null" >
+		 	AND device_id = #{deviceId} 
+		</if>
+		<if test="deviceMac !=null and deviceMac !='' ">	
+		 	AND <![CDATA[ device_mac = #{deviceMac} ]]>
+		</if>
+		ORDER BY sys_warning_create_time DESC
+	</select>
+	
+	<select id="select-process-warning-config-info-by-param" parameterType="Map" resultMap="ProcessWarningConfigMap">
+		select
+			process_warning_id,
+			device_id,
+			device_mac,
+			process_warning_name,
+			process_warning_state,
+			process_warning_create_time,
+			process_warning_update_time,
+			remark
+		from 
+			t_process_warning_config
+		where
+			1 = 1
+		<if test="deviceId !=null" >
+		 	AND device_id = #{deviceId} 
+		</if>
+		<if test="deviceMac !=null and deviceMac !='' ">	
+		 	AND <![CDATA[ device_mac = #{deviceMac} ]]>
+		</if>
+		ORDER BY process_warning_create_time DESC
+	</select>
+	
+	
+	<select id="select-server-warning-config-info-by-param" parameterType="Map" resultMap="ServerWarningConfigMap">
+		select
+			<include refid="server-warning-config-column"></include>
+		from 
+			t_server_warning_config
+		where
+			1 = 1
+		<if test="deviceId !=null and deviceId != 0" >
+		 	AND device_id = #{deviceId} 
+		</if>
+		<if test="deviceMac != null and deviceMac != '' ">	
+		 	AND <![CDATA[ device_mac = #{deviceMac} ]]>
+		</if>
+	</select>
+	
+	<select id="select-server-warning-config-by-id" parameterType="int" resultMap="ServerWarningConfigMap">
+		select
+			<include refid="server-warning-config-column"></include>
+		from 
+			t_server_warning_config
+		where script_warning_id = #{scriptWarningId}
+	</select>
+	
+	<select id="select-server-warning-config-by-warning-name-and-device-id" parameterType="map" resultMap="ServerWarningConfigMap">
+		select
+			<include refid="server-warning-config-column"></include>
+		from 
+			t_server_warning_config
+		where script_warning_name = #{warningName}
+			and device_id = #{deviceId}
+	</select>
+	
+	<select id="select-server-warning-config-info-by-device-id" parameterType="Map" resultMap="ServerAndInfoWarningConfigMap">
+		SELECT 
+		  <include refid="server-warning-config-column"></include>,
+		  <include refid="warning-config-info-column"></include>
+		FROM
+		  t_server_warning_config 
+		  LEFT JOIN t_warning_config_info 
+		    ON t_warning_config_info.config_target_id = t_server_warning_config.script_warning_id 
+		WHERE 1 = 1 
+		<if test="deviceId != null and deviceId != 0" >
+		 	AND t_server_warning_config.device_id = #{deviceId} 
+		</if>
+		<if test="configModelId != null and configModelId != 0" >
+		 	AND t_warning_config_info.config_model_id = #{configModelId} 
+		</if>
+		ORDER BY t_server_warning_config.script_warning_update_time DESC 
+	</select>
+	
+	<select id="select-setup-warning-config-info-by-param" parameterType="Map" resultMap="WarningConfigInfoMap">
+		select
+			<include refid="warning-config-info-column"></include>
+		from 
+			t_warning_config_info
+		where
+			1 = 1
+		<if test="deviceId != null" >
+		 	AND device_id = #{deviceId} 
+		</if>
+	</select>
+
+	<select id="select-hdw-and-info-warning-config-by-decive-id" parameterType="map" resultMap="HdwAndInfoWarningConfigMap">
+		SELECT 
+		  <include refid="hdw-warning-config-column"></include>,
+		  <include refid="warning-config-info-column"></include>
+		FROM
+		  t_hdw_warning_config 
+		  LEFT JOIN t_warning_config_info
+		  ON t_warning_config_info.device_id = t_hdw_warning_config.device_id
+		  WHERE 1 = 1
+		  <if test="deviceId != 0 and deviceId != null">
+		 	 AND t_hdw_warning_config.device_id = #{deviceId}
+		  </if>
+		  <if test="configModelId != 0 and configModelId != null">
+		  	 AND config_model_id = #{configModelId}
+		  </if>
+	</select>
+
+	<select id="select-warning-config-info-by-param" parameterType="map" resultMap="WarningConfigInfoMap">
+		select
+			<include refid="warning-config-info-column"></include>
+		from 
+			t_warning_config_info
+		where
+			1 = 1
+		<if test="deviceId != null and deviceId != 0" >
+		 	AND device_id = #{deviceId} 
+		</if>
+		<if test="configModelId != '' and configModelId != 0">
+			AND config_model_id = #{configModelId} 
+		</if>
+	</select>
+
+	<delete id="delete-server-warning-config-by-id" parameterType="int">
+		DELETE FROM t_server_warning_config WHERE script_warning_id = #{scriptWarningId}
+	</delete>
+	
+	<update id="update-server-warning-config-by-id" parameterType="ServerWarningConfig">
+		UPDATE t_server_warning_config
+			<set>
+				<if test="scriptWarningName != '' and scriptWarningName != null">
+					script_warning_name = #{scriptWarningName},
+				</if>
+				<if test="scriptWarningServerText != '' and scriptWarningServerText != null">
+					script_warning_server_text = #{scriptWarningServerText},
+				</if>
+				<if test="scriptWarningServerName != '' and scriptWarningServerName != null">
+					script_warning_server_name = #{scriptWarningServerName},
+				</if>
+				<if test="scriptWarningReturnValue != '' and scriptWarningReturnValue != null">
+					script_warning_return_value = #{scriptWarningReturnValue},
+				</if>
+				<if test="scriptWarningUrl != '' and scriptWarningUrl != null">
+					script_warning_server_url = #{scriptWarningUrl},
+				</if>
+				<if test="scriptWarninDB != 0 and scriptWarninDB != null">
+					script_warning_server_db = #{scriptWarninDB},
+				</if>
+				<if test="scriptWarninDrive != 0 and scriptWarninDrive != null">
+					script_warning_server_drive = #{scriptWarninDrive},
+				</if>
+				<if test="scriptWarninSystem != 0 and scriptWarninSystem != null">
+					script_warning_server_system = #{scriptWarninSystem},
+				</if>
+				<if test="scriptWarninInstallPath != '' and scriptWarninInstallPath != null">
+					script_warning_server_install_path = #{scriptWarninInstallPath},
+				</if>
+				<if test="scriptWarninDBName != '' and scriptWarninDBName != null">
+					script_warning_server_db_name = #{scriptWarninDBName},
+				</if>
+				<if test="scriptWarninDBPort != 0 and scriptWarninDBPort != null">
+					script_warning_server_db_port = #{scriptWarninDBPort},
+				</if>
+				<if test="scriptWarninUserName != '' and scriptWarninUserName != null">
+					script_warning_server_user_name = #{scriptWarninUserName},
+				</if>
+				<if test="scriptWarninUserPwd != '' and scriptWarninUserPwd != null">
+					script_warning_server_user_pwd = #{scriptWarninUserPwd},
+				</if>
+				<if test="scriptWarninDBTable != '' and scriptWarninDBTable != null">
+					script_warning_server_db_table = #{scriptWarninDBTable},
+				</if>
+				<if test="scriptWarningState != 0 and scriptWarningState != null">
+					script_warning_state = #{scriptWarningState},
+				</if>
+				<if test="scriptWarningLevel != 0 and scriptWarningLevel != null">
+					script_warning_level = #{scriptWarningLevel},
+				</if>
+				script_warning_update_time = now()
+			</set>
+			WHERE script_warning_id = #{scriptWarningId}
+	</update>
+	
+	<update id="update-hdw-warning-config-by-hdwWarning-id" parameterType="map">
+		<foreach collection="hdwWarningConfigList" item="item" index="index" open="" close="" separator=";">
+			UPDATE t_hdw_warning_config
+				<set>
+					<if test="item.hdwWarningType != 0 and item.hdwWarningType != null">
+						hdw_warning_type = #{item.hdwWarningType},
+					</if>
+					<if test="item.hdwWarningLevel != 0 and item.hdwWarningLevel != null">
+						hdw_warning_level = #{item.hdwWarningLevel},
+					</if>
+					<if test="item.hdwWarningCondition != 0 and item.hdwWarningCondition != null">
+						hdw_warning_condition = #{item.hdwWarningCondition},
+					</if>
+					<if test="item.hdwWarningThreshold != 0 and item.hdwWarningThreshold != null">
+						hdw_warning_threshold = #{item.hdwWarningThreshold},
+					</if>
+					hdw_warning_update_time = now()
+				</set>
+			WHERE hdw_warning_id = #{item.hdwWarningId}
+		</foreach>
+	</update>
+	
+	<update id="update-warning-config-info-by-id" parameterType="WarningConfigInfo">
+		UPDATE t_warning_config_info 
+			<set>
+				<if test="configMode != '' and configMode != null">
+					config_mode = #{configMode},
+				</if>
+				<if test="configStartTime != '' and configStartTime != null">
+					config_start_time = #{configStartTime},
+				</if>
+				<if test="configStopTimel != '' and configStopTimel != null">
+					config_stop_time = #{configStopTimel},
+				</if>
+				<if test="configRunTimeInterval != 0 and configRunTimeInterval != null">
+					config_run_time_interval = #{configRunTimeInterval},
+				</if>
+				<if test="configRunTimeIntervalUnit != '' and configRunTimeIntervalUnit != null">
+					config_run_time_interval_unit = #{configRunTimeIntervalUnit},
+				</if>
+				<if test="configContRunTimeInterval != 0 and configContRunTimeInterval != null">
+					config_cont_run_time_interval = #{configContRunTimeInterval},
+				</if>
+				<if test="configContRunTimeIntervalUnit != '' and configContRunTimeIntervalUnit != null">
+					config_cont_run_time_interval_unit = #{configContRunTimeIntervalUnit},
+				</if>
+				<if test="configState != 0 and configState != null">
+					config_state = #{configState},
+				</if>
+				<if test="remark != '' and remark != null">
+					remark = #{remark},
+				</if>
+				config_update_time = now()
+			</set> 
+			WHERE config_info_id = #{configInfoId}
+	</update>
+	
+	<update id="update-warning-config-info-by-device_id" parameterType="WarningConfigInfo">
+		UPDATE t_warning_config_info 
+			<set>
+				<if test="configRunTimeInterval != 0 and configRunTimeInterval != null">
+					config_run_time_interval = #{configRunTimeInterval},
+				</if>
+				<if test="configRunTimeIntervalUnit != '' and configRunTimeIntervalUnit != null">
+					config_run_time_interval_unit = #{configRunTimeIntervalUnit},
+				</if>
+				<if test="configContRunTimeInterval != 0 and configContRunTimeInterval != null">
+					config_cont_run_time_interval = #{configContRunTimeInterval},
+				</if>
+				<if test="configContRunTimeIntervalUnit != '' and configContRunTimeIntervalUnit != null">
+					config_cont_run_time_interval_unit = #{configContRunTimeIntervalUnit},
+				</if>
+				<if test="configState != 0 and configState != null">
+					config_state = #{configState},
+				</if>
+				config_update_time = now()
+			</set>
+			WHERE device_id = #{deviceId}
+			AND config_model_id = #{configModelId}			
+	</update>
+	
+	<insert id="insert-hdw-warning-config-batch" parameterType="map">
+		<foreach collection="hdwWarningConfigList" item="item" index="index" open="" close="" separator=";">
+			INSERT INTO t_hdw_warning_config(
+	             device_id,
+	             device_mac,
+	             hdw_warning_type,
+	             hdw_warning_level,
+	             hdw_warning_condition,
+	             hdw_warning_threshold,
+	             hdw_warning_create_time,
+	             hdw_warning_update_time,
+	             remark)
+			VALUES (
+					#{item.deviceId},
+					#{item.deviceMac},
+					#{item.hdwWarningType},
+					#{item.hdwWarningLevel},
+					#{item.hdwWarningCondition},
+					#{item.hdwWarningThreshold},
+			        now(),
+			        now(),
+			        #{item.remark})
+		</foreach>
+	</insert>
+	
+	<insert id="insert-server-warning-config" parameterType="ServerWarningConfig" >
+		INSERT INTO t_server_warning_config (
+             script_warning_name,
+             device_id,
+             device_mac,
+             script_warning_server_type,
+             script_warning_server_text,
+             script_warning_server_name,
+             script_warning_return_value,
+             script_warning_state,
+             script_warning_level,
+             script_warning_server_url,
+             script_warning_server_db,
+             script_warning_server_drive,
+             script_warning_server_system,
+             script_warning_server_install_path,
+             script_warning_server_db_name,
+             script_warning_server_db_port,
+             script_warning_server_user_name,
+             script_warning_server_user_pwd,
+             script_warning_server_db_table,
+             script_warning_create_time,
+             script_warning_update_time,
+             remark)
+		VALUES (
+		        #{scriptWarningName},
+		        #{deviceId},
+		        #{deviceMac},
+		        #{scriptWarningServerType},
+		        #{scriptWarningServerText},
+		        #{scriptWarningServerName},
+		        #{scriptWarningReturnValue},
+		        #{scriptWarningState},
+		        #{scriptWarningLevel},
+		        #{scriptWarningUrl},
+		        #{scriptWarninDB},
+		        #{scriptWarninDrive},
+		        #{scriptWarninSystem},
+		        #{scriptWarninInstallPath},
+		        #{scriptWarninDBName},
+		        #{scriptWarninDBPort},
+		        #{scriptWarninUserName},
+		        #{scriptWarninUserPwd},
+		        #{scriptWarninDBTable},
+		        now(),
+		        now(),
+		        #{remark})
+		<selectKey resultType="int" keyProperty="scriptWarningId">
+			select @@IDENTITY as id 
+		</selectKey>
+	</insert>
+	
+	<insert id="insert-warning-config-info" parameterType="WarningConfigInfo">
+		INSERT INTO t_warning_config_info (
+             device_id,
+             config_model_id,
+             config_target_id,
+             config_mode,
+             config_start_time,
+             config_stop_time,
+             config_run_time_interval,
+             config_run_time_interval_unit,
+             config_cont_run_time_interval,
+             config_cont_run_time_interval_unit,
+             config_state,
+             config_create_time,
+             config_update_time,
+             remark)
+		VALUES (
+		       #{deviceId},
+		       #{configModelId},
+		       #{configTargetId},
+		       #{configMode},
+		       #{configStartTime},
+		       #{configStopTimel},
+		       #{configRunTimeInterval},
+		       #{configRunTimeIntervalUnit},
+		       #{configContRunTimeInterval},
+		       #{configContRunTimeIntervalUnit},
+		       #{configState},
+		       now(),
+		       now(),
+		       #{remark});
+		<selectKey resultType="int" keyProperty="configInfoId">
+			select @@IDENTITY as id 
+		</selectKey>
+	</insert>
+	
+	<delete id="delete-warning-config-info-by-config-target-id" parameterType="int">
+		DELETE
+			FROM t_warning_config_info
+		WHERE config_target_id = #{configTargetId}
+	</delete>
+</mapper>

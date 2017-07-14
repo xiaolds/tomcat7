@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "struts-2.1.dtd">
+<struts>
+
+	<package name="struts-config" extends="struts-base" namespace="/config">
+		<action name="tostorageConfigAction" class="storageConfigAction">
+		</action>
+		<action name="toUserConfigAction" class="userConfigAction">
+		</action>
+		<action name="toSystemConfigAction" class="systemConfigAction">
+		</action>
+		<action name="toLicenseAction" class="licenseAction">
+		</action>
+		<action name="toSynchStPath" class="synchStoragePathAction">
+        </action>
+	</package>
+
+</struts>    

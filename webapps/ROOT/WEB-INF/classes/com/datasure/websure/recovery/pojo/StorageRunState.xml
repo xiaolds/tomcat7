@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="storageRunStateMap" type="storageRunState">
+		<id property="runStateId" column="storage_run_state_id" />
+		<result property="storageId" column="storage_id" />
+		<result property="runStateNet" column="storage_run_state_net" />
+		<result property="runStateCpu" column="storage_run_state_cpu" />
+		<result property="runStateMemory" column="storage_run_state_memory" />
+		<result property="runStateDisk" column="storage_run_state_disk" />
+		<result property="runStateUsed" column="storage_run_state_used" />
+		<result property="runStateCreateTime" column="storage_run_state_create_time" />
+		<result property="runStateUpdateTime" column="storage_run_state_update_time" />
+	</resultMap>
+	
+	<!-- 根据存储器Id查找存储器运行状态 -->
+	<select id="select-storage-run-state-by-storage-id" parameterType="int" resultMap="storageRunStateMap">
+		SELECT 
+		  storage_run_state_id,
+		  storage_id,
+		  storage_run_state_net,
+		  storage_run_state_cpu,
+		  storage_run_state_memory,
+		  storage_run_state_disk,
+		  storage_run_state_used,
+		  storage_run_state_create_time,
+		  storage_run_state_update_time 
+		FROM
+		  t_storage_run_state 
+		WHERE storage_id = #{storageId}
+		ORDER BY storage_run_state_create_time ASC
+	</select>
+	
+	<!-- 添加存储器运行状态 -->
+	<insert id="add-storage-run-state" parameterType="storageRunState">
+		INSERT INTO t_storage_run_state (
+		  storage_id,
+		  storage_run_state_net,
+		  storage_run_state_cpu,
+		  storage_run_state_memory,
+		  storage_run_state_disk,
+		  storage_run_state_used,
+		  storage_run_state_create_time,
+		  storage_run_state_update_time
+		) 
+		VALUES
+		  (
+		    #{storageId},
+		    #{runStateNet},
+		    #{runStateCpu},
+		    #{runStateMemory},
+		    #{runStateDisk},
+		    #{runStateUsed},
+		    now(),
+		    now()
+		  )
+	</insert>
+	
+	<!-- 获取最新存储器的运行状态信息 -->
+	<select id="select-latest-storage-run-state-by-storage-id" parameterType="int" resultMap="storageRunStateMap">
+		SELECT 
+		  B.storage_run_state_id,
+		  B.storage_id,
+		  B.storage_run_state_net,
+		  B.storage_run_state_cpu,
+		  B.storage_run_state_memory,
+		  B.storage_run_state_disk,
+		  B.storage_run_state_used,
+		  B.storage_run_state_reserver1,
+		  B.storage_run_state_reserver2,
+		  B.storage_run_state_reserver3,
+		  B.storage_run_state_reserver4,
+		  B.storage_run_state_reserver5,
+		  B.storage_run_state_create_time,
+		  B.storage_run_state_update_time 
+		FROM
+		  (SELECT 
+		    * 
+		  FROM
+		    t_storage_run_state A 
+		  WHERE A.storage_id = #{storageId} 
+		  ORDER BY A.storage_run_state_create_time DESC 
+		  LIMIT 30) AS B ORDER BY B.storage_run_state_create_time ASC
+	</select>
+	
+	<!-- 清除指定存储器的运行状态信息 -->
+	<delete id="clean-storage-run-state-by-storage-id" parameterType="Map">
+		DELETE 
+			FROM
+			  t_storage_run_state 
+			WHERE storage_id = #{storageId} 
+			  AND storage_run_state_id NOT IN (
+		<foreach collection="storageRunStateList" item="runState" index="index" open="" close="" separator=",">
+			#{runState.runStateId}
+		</foreach>
+		)
+	</delete>
+
+    <!-- 清除指定存储器的运行状态信息 -->
+    <delete id="del-storage-run-state-by-storage-id" parameterType="int">
+        DELETE FROM t_storage_run_state WHERE storage_id = #{storageId} 
+    </delete>
+</mapper>

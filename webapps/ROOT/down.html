@@ -1,0 +1,103 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>AceSure</title>
+    <!--优先使用 IE 最新版本和 Chrome-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!--360浏览器QQ，搜狗等双内核浏览器，默认使用chrome内核-->
+    <meta name="renderer" content="webkit">
+    <!--浏览器地址栏中的图标，收藏夹中的图标-->
+<link href="/oem/favicon.ico" mce_href="favicon.ico" rel="bookmark" type="image/x-icon" />
+<link href="/oem/favicon.ico" mce_href="favicon.ico" rel="icon" type="image/x-icon" />
+<link href="/oem/favicon.ico" mce_href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
+<link href="/css/down.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+  //for wget downLink
+  function copyUrl(urlLink,fileName){
+      var downURL = window.location.protocol + "//" + window.location.host + urlLink;  
+      var wgetLink = "wget "+downURL+" -O "+fileName;    //wget link -O downFileName  重命名下载文件
+      
+      var copyBox=document.getElementById("copyWrap");
+      var copyBody=document.getElementById("copyBody");
+
+      copyBox.style.display="block"
+      copyBody.innerHTML=wgetLink;
+  }
+  function colseCopy(){
+  	var copyBox=document.getElementById("copyWrap");
+  	copyBox.style.display="none";
+  }
+</script>
+  </head>
+<body>
+<div class='content'>
+<div class="login_logo">
+    <div class="login_header">
+        <a class="setup" href="/down.html"  target="_self">下载客户端</a>
+        <a class="help" href="/help.html" target="_self">帮助</a><!--
+        <a class="lang">English</a>
+    --></div>
+    <img class="logo_icon" src="/oem/logo_login.png" width="190px" height="180px">
+</div>
+
+<div class="title_wrap">
+	<i class="title_icon"></i>
+	<span>下载客户端</span>
+</div>
+
+<div class='wrap1'>
+<div class='list'>
+	<div class="list_top">
+			<i class="sys_icon"></i>
+			<div class="list_tr">
+				<h3>Windows</h3>
+				<a href='/admin/toUserAction!downClient?type=9'>32/64位Win客户端</a>
+			</div>
+	</div>
+	<p>
+				1.适用于Windows 2003,2008,2012 操作系统。<br>
+				2.下载的DiskClone_client_win.exe安装包包括客户端和应急驱动包。
+	</p>
+</div>
+<div class='list'>
+<div class="list_top">
+		<i class="sys_icon sys_icon_linux"></i>
+		<div class="list_tr">
+			<h3>Linux</h3>
+			<a href='/admin/toUserAction!downClient?type=11'>Linux_32客户端</a><span title="点击复制url下载链接地址" class="icon_copy" onClick="copyUrl('/admin/toUserAction%21downClient?type=11','Clone_client_linux_32.zip')"></span><br>
+			<a href='/admin/toUserAction!downClient?type=12'>Linux_64客户端</a><span title="点击复制url下载链接地址"  class="icon_copy" onClick="copyUrl('/admin/toUserAction%21downClient?type=12','Clone_client_linux_64.zip')"></span><br>
+		</div>
+		</div>
+		<p>
+				1.适用于RedHat 5/6,Centos 5/6等内核版本为2.6.18以上的32位和64位的Linux操作系统。<br>
+				2.安装过程请参考相关文档。<br>
+		</p>
+		</div>
+		
+		<div class='list'>
+				<div class="list_top">
+					<i class="sys_icon sys_icon_redhat"></i>
+					<div class="list_tr">
+						<h3>RedHat4</h3>
+						<a href='/admin/toUserAction!downClient?type=14'>Redhat4i686_32客户端</a><span title="点击复制url下载链接地址"  class="icon_copy" onClick="copyUrl('/admin/toUserAction%21downClient?type=14','Clone_client_Redhat4i686.zip')"></span><br>
+						<a href='/admin/toUserAction!downClient?type=15'>Redhat4X86_64客户端</a><span title="点击复制url下载链接地址"  class="icon_copy" onClick="copyUrl('/admin/toUserAction%21downClient?type=15','Clone_client_Redhat4X86_64.zip')"></span>
+						</div>
+						</div>
+					<p>
+							1.适用于RedHat 4,Centos 4等内核版本为2.6.9以上的32位和64位的Linux操作系统。<br>
+							2.安装过程请参考相关文档。<br>
+					</p>
+				</div>
+		
+</div>	
+</div>
+<div id="copyWrap" class="copy_wrap">
+	<div class="copy_bg"></div>
+	<div class="copy_body">
+		<div id="copyBody"  class="copy_inner"></div>
+		<a id="copyClose" class="copy_close" title="close" onClick="colseCopy()"></a>
+	</div>
+</div>
+</body>
+
+</html>

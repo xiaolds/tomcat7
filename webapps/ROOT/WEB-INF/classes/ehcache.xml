@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ehcache name="aceSureCache">
+    <diskStore path="java.io.tmpdir/aceSureCache"/>
+    <defaultCache
+            maxElementsInMemory="10000"
+            eternal="false"
+            timeToIdleSeconds="86400"
+            timeToLiveSeconds="86400"
+            overflowToDisk="true"
+            maxElementsOnDisk="10000000"
+            diskPersistent="false"
+            diskExpiryThreadIntervalSeconds="120"
+            memoryStoreEvictionPolicy="FIFO"
+     />
+     <!-- 保存用户信息的Map -->
+     <cache
+            name="userPool"
+            maxElementsInMemory="1000"
+            eternal="false"
+            timeToIdleSeconds="6000"
+            timeToLiveSeconds="6000"
+            overflowToDisk="false"
+            maxElementsOnDisk="0"
+            diskPersistent="true"
+            diskExpiryThreadIntervalSeconds="300"
+            memoryStoreEvictionPolicy="FIFO">
+      <cacheEventListenerFactory class="com.datasure.api.authority.userpool.ehcache.listener.UserCacheEventListenerFactory"/>
+      </cache>
+      <cacheManagerEventListenerFactory 
+      class="com.datasure.api.authority.userpool.ehcache.listener.UserCacheManagerEventManagerListener" />
+     
+</ehcache>

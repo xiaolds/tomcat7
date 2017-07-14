@@ -1,0 +1,25 @@
+Ext.define("acesure.emergency.model.VirtualMachModel",{
+	extend:"Ext.data.Model",
+	alias:"widget.virtualMachModel",
+	fields:[
+	        {name:"id"},
+	        {name:"vmName"},
+	        {name:"deviceId"},
+	        {name:"deviceIp"},
+	        {name:"vmType"},
+	        {name:"nodeId"},
+	        {name:"deviceName"},
+	        {name:"nodeName"},
+	        {name:"performance"},
+	        {name:"vmState"},
+	        {name:"operation"},
+	        {name:"computeIp"},
+	        {name:"vmPort"},
+	        {name:"nodeId"},
+	        {name:"nodeState"},
+	        {name:"sysType"},
+	        {name:"grainMergePercent"},
+	        {name:"grainMergeStatus"}
+
+	]
+});

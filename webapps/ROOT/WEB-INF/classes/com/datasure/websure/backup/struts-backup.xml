@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "struts-2.1.dtd">
+<struts>
+		<package name="struts-backup" extends="struts-base" namespace="/backup">
+	        <action name="todeviceAction" class="deviceAction"/>
+	        <action name="tobackupAction" class="backupAction"/>
+	        <action name="tomonitorAction" class="monitorAction"/>
+	        <action name="tobackupdbAction" class="backupdbAction"/>
+	        <action name="toclusterAction" class="clusterAction"/>
+       </package> 
+	
+</struts>  

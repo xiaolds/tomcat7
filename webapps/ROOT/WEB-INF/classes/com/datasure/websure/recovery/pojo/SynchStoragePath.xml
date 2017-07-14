@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="SynchStoragePathMap" type="synchStoragePath">
+		<result property="id" column="synch_sp_id" />
+		<result property="delmark" column="del_mark" />
+		<result property="status" column="status" />
+		<result property="src" column="synch_sp_src" />
+		<result property="dest" column="synch_sp_dest" />
+		<result property="insertTime" column="insert_datetime" />
+		<result property="endTime" column="end_datetime" />
+		<result property="enablePlan" column="enable_plan" />
+		<result property="planDay" column="plan_day" />
+		<result property="planEndTime" column="plan_end_time" />
+		<result property="planTime" column="plan_time" />
+		<result property="destPort" column="dest_port" />
+		<result property="intervalTime" column="interval_time" />
+		<result property="intervalType" column="interval_type" />
+	</resultMap>
+	
+	<insert id="insert-synch-storage-path" parameterType="synchStoragePath">
+		insert into t_synch_sp(
+		  del_mark,
+		  status,
+		  synch_sp_src,
+		  synch_sp_dest,
+		  insert_datetime,
+		  end_datetime,
+		  enable_plan,
+		  plan_day,
+		  plan_end_time,
+		  plan_time,
+		  dest_port,
+		  interval_time,
+		  interval_type 
+		) values (
+			0,
+			0,
+			#{src},
+			#{dest},
+			now(),
+			now(),
+			#{enablePlan},
+			#{planDay},
+			#{planEndTime},
+			#{planTime},
+			#{destPort},
+			#{intervalTime},
+			#{intervalType}
+		)
+		<selectKey resultType="int" keyProperty="id">
+			select @@IDENTITY as synch_sp_id 
+		</selectKey>
+	</insert>
+	
+	<select id="select-synch-storage-path-by-id" parameterType="int" resultMap="SynchStoragePathMap">
+		SELECT 
+		  synch_sp_id,
+		  del_mark,
+		  status,
+		  synch_sp_src,
+		  synch_sp_dest,
+		  insert_datetime,
+		  end_datetime,
+		  enable_plan,
+		  plan_day,
+		  plan_end_time,
+		  plan_time,
+		  dest_port,
+		  interval_time,
+		  interval_type 
+		FROM
+		  t_synch_sp 
+		  where synch_sp_id = #{id}
+	</select>
+	
+	<select id="select-all-synch-storage-path" resultMap="SynchStoragePathMap">
+		SELECT 
+		  synch_sp_id,
+		  del_mark,
+		  status,
+		  synch_sp_src,
+		  synch_sp_dest,
+		  insert_datetime,
+		  end_datetime,
+		  enable_plan,
+		  plan_day,
+		  plan_end_time,
+		  plan_time,
+		  dest_port,
+		  interval_time,
+		  interval_type 
+		FROM
+		  t_synch_sp 
+	</select>
+	<select id="select-synch-storage-path-by-symbol" resultMap="SynchStoragePathMap" parameterType="string">
+		SELECT 
+		  synch_sp_id,
+		  del_mark,
+		  status,
+		  synch_sp_src,
+		  synch_sp_dest,
+		  insert_datetime,
+		  end_datetime,
+		  enable_plan,
+		  plan_day,
+		  plan_end_time,
+		  plan_time,
+		  dest_port,
+		  interval_time,
+		  interval_type 
+		FROM
+		  t_synch_sp 
+		WHERE synch_sp_dest=#{symbol}
+	</select>
+	<select id="select-src-synch-storage-path-by-symbol" resultMap="SynchStoragePathMap" parameterType="string">
+		SELECT 
+		  synch_sp_id,
+		  del_mark,
+		  status,
+		  synch_sp_src,
+		  synch_sp_dest,
+		  insert_datetime,
+		  end_datetime,
+		  enable_plan,
+		  plan_day,
+		  plan_end_time,
+		  plan_time,
+		  dest_port,
+		  interval_time,
+		  interval_type 
+		FROM
+		  t_synch_sp 
+		WHERE synch_sp_src=#{symbol}
+	</select>
+	<delete id="del_synch-storage-path-by-id" parameterType="int">
+		DELETE 
+			FROM
+			  t_synch_sp 
+			WHERE synch_sp_id = #{id}
+	</delete>
+	
+	<update id="update-synch-storage-path-by-id" parameterType="synchStoragePath">
+		UPDATE t_synch_sp
+		<set>
+			<if test="delmark !=null">
+				del_mark = #{delmark},
+			</if>
+			<if test="status !=null">
+				status = #{status},
+			</if>
+			<if test="src !=null and ''!=src">
+				synch_sp_src = #{src},
+			</if>
+			<if test="dest !=null and ''!= dest">
+				synch_sp_dest = #{dest},
+			</if>
+			<if test="insertTime !=null">
+				insert_datetime = #{insertTime},
+			</if>
+			<if test="endTime !=null">
+				end_datetime = #{endTime},
+			</if>
+			<if test="enablePlan !=null">
+				enable_plan = #{enablePlan},
+			</if>
+			<if test="planDay !=null">
+				plan_day = #{planDay},
+			</if>
+			<if test="planEndTime !=null and ''!=planEndTime">
+				plan_end_time = #{planEndTime},
+			</if>
+			<if test="planTime !=null and ''!=planTime">
+				plan_time = #{planTime},
+			</if>
+			<if test="destPort !=null">
+				dest_port = #{destPort},
+			</if>
+			<if test="intervalTime !=null">
+				interval_time = #{intervalTime},
+			</if>
+			<if test="intervalType !=null">
+				interval_type = #{intervalType}
+			</if>
+		</set>
+		  WHERE synch_sp_id = #{id}
+	</update>
+	
+	<select id="select-media-synch-strategy-split-page-count" resultType="int">
+		SELECT COUNT(*) FROM t_synch_sp
+	</select>
+	
+	<select id="select-media-synch-strategy-split-page" parameterType="map" resultMap="SynchStoragePathMap">
+		SELECT 
+			synch_sp_id,
+			del_mark,
+			status,
+			synch_sp_src,
+			synch_sp_dest,
+			insert_datetime,
+			end_datetime,
+			enable_plan,
+			plan_day,
+			plan_end_time,
+			plan_time,
+			dest_port,
+			interval_time,
+			interval_type 
+		 FROM 
+		 	t_synch_sp
+		 WHERE 
+		 	1=1
+		ORDER BY t_synch_sp.synch_sp_id DESC
+		<if test="firstResult != null and maxResult != null">
+			limit  #{firstResult},#{maxResult} 
+		</if>	
+	</select>
+	
+	<select id="select-target-strategy-count" parameterType="String" resultType="int">
+		SELECT 
+			count(*)
+		 FROM 
+		 	t_synch_sp
+		 WHERE 
+		 	synch_sp_dest = #{value}
+	</select>
+	
+	<!--  根据源介质及目标介质查找介质同步配置策略. -->
+	<select id="select-synch-strategy-count-by-src-and-dest-symbol" parameterType="Map" resultType="int">
+        SELECT 
+		  COUNT(*) 
+		FROM
+		  t_synch_sp 
+		WHERE synch_sp_dest = #{destSymbol} 
+		  AND synch_sp_src = #{srcSymbol} 
+    </select>
+	
+</mapper>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+	<resultMap id="SystemVersionMap" type="SystemVersion">
+		<result property="id" column="version_id"/>
+		<result property="nodeType" column="version_node_type"/>
+		<result property="info" column="version_info"/>
+		<result property="createTime" column="version_create_time"/>
+		<result property="remark" column="version_remark"/>
+	</resultMap>
+	<select id="select-node-version-by-type" parameterType="int" resultMap="SystemVersionMap">
+		select 
+			version_id,
+			version_node_type,
+			version_info,
+			version_create_time,
+			version_remark
+		from 
+			t_version where version_node_type = #{nodeType}
+	</select>
+	
+</mapper>

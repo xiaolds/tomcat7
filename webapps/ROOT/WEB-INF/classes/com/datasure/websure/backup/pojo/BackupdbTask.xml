@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+	<resultMap id="BackupdbTaskMap" type="BackupdbTask">
+		<result property="id" column="db_backup_task_id"/>
+		<result property="taskName" column="db_backup_task_name"/>
+		<result property="state" column="db_backup_task_state"/>
+		<result property="deviceIp" column="db_backup_task_device_ip"/>
+		<result property="deviceName" column="db_backup_task_device_name"/>
+		<result property="deviceId" column="db_backup_task_device_id"/>
+		<result property="deviceOs" column="db_backup_task_device_os"/>
+		<result property="dbType" column="db_backup_task_device_db_type"/>
+		<result property="fileSharePath" column="db_backup_task_file_share_path"/>
+		<result property="createTime" column="db_backup_task_createTime"/>
+		<result property="updateTime" column="db_backup_task_updateTime"/>
+		<result property="dbUsername" column="db_backup_task_db_username"/>
+		<result property="dbPassword" column="db_backup_task_db_password"/>
+		<result property="remark" column="db_backup_task_remark"/>
+		<result property="remark1" column="db_backup_task_remark1"/>
+	</resultMap>
+	
+	<resultMap id="BackupdbInfoMap" type="BackupdbInfo">
+		<result property="id" column="db_id"/>
+		<result property="taskId" column="db_task_id"/>
+		<result property="oracleHome" column="db_oracle_home"/>
+		<result property="oracleSid" column="db_oracle_sid"/>
+		<result property="oracleUser" column="db_oracle_user"/>
+		<result property="oraclePassword" column="db_oracle_password"/>
+		<result property="recoveryWindow" column="db_oracle_recovery_Window"/>
+		<result property="sybaseHome" column="db_sybase_home"/>
+		<result property="sqlPath" column="db_sybase_sqlPath"/>
+		<result property="dbServer" column="db_sybase_dbServer"/>
+		<result property="dbName" column="db_sybase_dbName"/>
+		<result property="dbUser" column="db_sybase_dbUser"/>
+		<result property="dbPassword" column="db_sybase_dbPassword"/>
+		<result property="backupKeepDay" column="db_sybase_backupKeepDay"/>
+	</resultMap>
+	
+	 <resultMap id="BackupdbTaskAndDBInfoMap" extends="BackupdbTaskMap" type="BackupdbTask">
+		<collection property="backupdbInfos" column="db_backup_task_id" ofType="BackupdbInfo"
+		select="select-db-info-by-task-id"/>
+	</resultMap>
+	
+	<resultMap id="DBLogMap" type="BackupDBLog">
+		<id property="backupDBId"  column="backup_db_id"/>            
+		<result property="backupDBDeviceId"  column="backup_db_device_id"/>     
+		<result property="backupDBUserName"  column="backup_db_user_name"/>     
+		<result property="backupDBContent"  column="backup_db_content"/>         
+		<result property="backupDBEventId"  column="backup_db_event_id"/>      
+		<result property="backupDBIp"  column="backup_db_ip"/>          
+		<result property="backupDBLevel"  column="backup_db_level"/>          
+		<result property="backupDBType"  column="backup_db_type"/>          
+		<result property="backupDBInsertTime"  column="backup_db_insert_time"/>           
+		<result property="backupDBRemark" column="backup_db_remark"/> 
+	</resultMap>
+	
+	
+	 <insert id="add-task-info" parameterType="BackupdbTask" >
+		insert into t_db_backup(
+			db_backup_task_name,
+			db_backup_task_state,
+			db_backup_task_device_ip,
+			db_backup_task_device_name,
+			db_backup_task_device_id,
+			db_backup_task_device_os,
+			db_backup_task_device_db_type,
+			db_backup_task_file_share_path,
+			db_backup_task_createTime,
+			db_backup_task_updateTime
+		)values(
+			#{taskName},
+			#{state},
+			#{deviceIp},
+			#{deviceName},
+			#{deviceId},
+			#{deviceOs},
+			#{dbType},
+			#{fileSharePath},
+			now(),
+			now()
+		)
+		<selectKey resultType="int" keyProperty="id">
+			select @@IDENTITY as id 
+		</selectKey>	
+	</insert>
+	
+	<insert id="add-db-info" parameterType="BackupdbInfo" >
+		insert into t_db_info(
+			db_task_id,
+			db_oracle_home,
+			db_oracle_sid,
+			db_oracle_user,
+			db_oracle_password,
+			db_oracle_recovery_Window,
+			db_sybase_home,
+			db_sybase_sqlPath,
+			db_sybase_dbServer,
+			db_sybase_dbName,
+			db_sybase_dbUser,
+			db_sybase_dbPassword,
+			db_sybase_backupKeepDay
+		)values(
+			#{taskId},
+			#{oracleHome},
+			#{oracleSid},
+			#{oracleUser},
+			#{oraclePassword},
+			#{recoveryWindow},
+			#{sybaseHome},
+			#{sqlPath},
+			#{dbServer},
+			#{dbName},
+			#{dbUser},
+			#{dbPassword},
+			#{backupKeepDay}
+		)
+		<selectKey resultType="int" keyProperty="id">
+			select @@IDENTITY as id 
+		</selectKey>	
+	</insert>
+	
+	<select id="select-backup-db-task-info-by-backuptask-deviceid" parameterType="int" resultMap="BackupdbTaskMap">
+		select 
+		     db_backup_task_id,
+			 db_backup_task_name,
+			 db_backup_task_state,
+			 db_backup_task_device_ip,
+			 db_backup_task_device_name,
+			 db_backup_task_device_id,
+			 db_backup_task_device_os,
+			 db_backup_task_device_db_type,
+			 db_backup_task_file_share_path,
+			 db_backup_task_createTime,
+			 db_backup_task_updateTime,
+			 db_backup_task_db_username,
+			 db_backup_task_db_password,
+			 db_backup_task_remark,
+			 db_backup_task_remark1
+		from 
+			t_db_backup
+		where 
+			db_backup_task_device_id = #{backupTaskDeviceId}
+		ORDER BY 
+			db_backup_task_createTime DESC
+	</select>
+	
+	<select id="select-all-task-info" resultMap="BackupdbTaskMap">
+		select 
+		     db_backup_task_id,
+			 db_backup_task_name,
+			 db_backup_task_state,
+			 db_backup_task_device_ip,
+			 db_backup_task_device_name,
+			 db_backup_task_device_id,
+			 db_backup_task_device_os,
+			 db_backup_task_device_db_type,
+			 db_backup_task_file_share_path,
+			 db_backup_task_createTime,
+			 db_backup_task_updateTime,
+			 db_backup_task_db_username,
+			 db_backup_task_db_password,
+			 db_backup_task_remark,
+			 db_backup_task_remark1
+		from 
+			t_db_backup
+
+	</select>
+	
+	<select id="select-task-count-by-task-name" parameterType="String" resultType="int">
+		select 
+		     count(db_backup_task_id)
+		from 
+			t_db_backup
+		where 
+			db_backup_task_name = #{taskName}
+	</select>
+	
+	<select id="select-task-by-task-id"  parameterType="int" resultMap="BackupdbTaskAndDBInfoMap">
+		select 
+			 db_backup_task_id,
+			 db_backup_task_name,
+			 db_backup_task_state,
+			 db_backup_task_device_ip,
+			 db_backup_task_device_name,
+			 db_backup_task_device_id,
+			 db_backup_task_device_os,
+			 db_backup_task_device_db_type,
+			 db_backup_task_file_share_path,
+			 db_backup_task_createTime,
+			 db_backup_task_updateTime,
+			 db_backup_task_db_username,
+			 db_backup_task_db_password,
+			 db_backup_task_remark,
+			 db_backup_task_remark1
+		from 
+			t_db_backup t
+		where
+			t.db_backup_task_id = #{value}
+			
+	</select> 
+	
+	<select id="select-db-info-by-task-id" parameterType="int" resultMap="BackupdbInfoMap">
+		select 
+			db_task_id,
+			db_oracle_home,
+			db_oracle_sid,
+			db_oracle_user,
+			db_oracle_password,
+			db_oracle_recovery_Window,
+			db_sybase_home,
+			db_sybase_sqlPath,
+			db_sybase_dbServer,
+			db_sybase_dbName,
+			db_sybase_dbUser,
+			db_sybase_dbPassword,
+			db_sybase_backupKeepDay
+		from
+		 t_db_info d
+		where
+			 d.db_task_id = #{value}
+	</select>
+	
+	<select id="select-all-backup-db-log-by-device-id" parameterType="Map" resultMap="DBLogMap">
+		select
+			t_backup_db_log.backup_db_id,
+			t_backup_db_log.backup_db_device_id,  
+			t_backup_db_log.backup_db_user_name,  
+			t_backup_db_log.backup_db_content,
+			t_backup_db_log.backup_db_event_id,   
+			t_backup_db_log.backup_db_ip,         
+			t_backup_db_log.backup_db_level,      
+			t_backup_db_log.backup_db_type,      
+			t_backup_db_log.backup_db_insert_time,      
+			t_backup_db_log.backup_db_remark     
+		FROM
+		  t_backup_db_log 
+		where 
+			backup_db_device_id  = #{deviceId}
+		ORDER BY backup_db_insert_time DESC,backup_db_id DESC
+		<if test="firstResult !=null and maxResult !=null">
+			limit  #{firstResult},#{maxResult} 
+		</if>
+	</select>
+	
+	<select id="select-all-backup-db-log-by-device-id-count" parameterType="Map" resultType="int">
+		select
+			count(*)
+		from 
+			t_backup_db_log 
+		where 
+			backup_db_device_id = #{deviceId}
+	</select>
+	
+	<select id="select-all-task-name-by-device-id" parameterType="int" resultMap="BackupdbTaskMap">
+		select 
+			 db_backup_task_id,
+			 db_backup_task_name,
+			 db_backup_task_state,
+			 db_backup_task_device_ip,
+			 db_backup_task_device_name,
+			 db_backup_task_device_id,
+			 db_backup_task_device_os,
+			 db_backup_task_device_db_type,
+			 db_backup_task_file_share_path,
+			 db_backup_task_createTime,
+			 db_backup_task_updateTime,
+			 db_backup_task_db_username,
+			 db_backup_task_db_password,
+			 db_backup_task_remark,
+			 db_backup_task_remark1
+		from 
+			t_db_backup
+		where 
+			db_backup_task_device_id = #{backupTaskDeviceId}
+		ORDER BY 
+			db_backup_task_createTime DESC
+	</select>
+	
+	<select id="select--task-info-by-task-id" parameterType="int" resultMap="BackupdbTaskAndDBInfoMap">
+		select 
+			 db_backup_task_id,
+			 db_backup_task_name,
+			 db_backup_task_state,
+			 db_backup_task_device_ip,
+			 db_backup_task_device_name,
+			 db_backup_task_device_id,
+			 db_backup_task_device_os,
+			 db_backup_task_device_db_type,
+			 db_backup_task_file_share_path,
+			 db_backup_task_createTime,
+			 db_backup_task_updateTime,
+			 db_backup_task_db_username,
+			 db_backup_task_db_password,
+			 db_backup_task_remark,
+			 db_backup_task_remark1
+		from 
+			t_db_backup
+		where 
+			db_backup_task_id = #{id}
+	</select>
+	
+	<delete id="delete-task-by-task-id"  parameterType="int">
+                delete 
+                	from 
+                t_db_backup 
+                	where 
+                db_backup_task_id=#{value}
+    </delete>   
+    
+    <delete id="delete-task-db-info-by-task-id"  parameterType="int">
+           delete 
+           	from 
+           t_db_info 
+           	where 
+           db_task_id=#{value}
+    </delete> 
+    
+    <update id="update-task-state" parameterType="BackupdbTask">
+        update 
+        	t_db_backup
+        <set>
+            db_backup_task_state=#{state}
+        </set>
+        where 
+        	db_backup_task_id = #{id}
+	</update>  
+	
+</mapper>

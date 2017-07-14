@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="storagePathMap" type="storagePath">
+		<id property="pathId" column="storage_path_id" />
+		<result property="storageId" column="storage_id" />
+		<result property="path" column="storage_path" />
+		<result property="symbol" column="storage_symbol" />
+		<result property="type" column="storage_type" />
+		<result property="size" column="storage_size" />
+		<result property="usedSize" column="storage_used_size" />
+		<result property="freeSize" column="FREE_SIZE" /> <!-- 外加列 ,剩余大小 -->
+		<result property="recommand" column="storage_recommand" />
+		<result property="remark" column="storage_remark" />
+		<result property="ipLan" column="storage_ip_lan" />
+		<result property="ipNet" column="storage_ip2_net" />
+		<result property="redirectedRootSymbol" column="redirected_root_symbol" />
+		<result property="reserver4" column="storage_reserver4" />
+		<result property="reserver5" column="storage_reserver5" />
+	</resultMap>
+	
+	<resultMap id="storagePathUsedRatioMap" type="storagePath">
+		<id property="pathId" column="storage_path_id" />
+        <result property="storageId" column="storage_id" />
+        <result property="path" column="storage_path" />
+        <result property="symbol" column="storage_symbol" />
+        <result property="type" column="storage_type" />
+        <result property="size" column="storage_size" />
+        <result property="usedSize" column="storage_used_size" />
+        <result property="freeSize" column="FREE_SIZE" /> <!-- 外加列 ,剩余大小 -->
+        <result property="recommand" column="storage_recommand" />
+        <result property="remark" column="storage_remark" />
+        <result property="ipLan" column="storage_ip_lan" />
+        <result property="ipNet" column="storage_ip2_net" />
+        <result property="redirectedRootSymbol" column="redirected_root_symbol" />
+		<result property="usedRatio" column="USED_RATIO" /> <!-- 外加使用比例 -->
+	</resultMap>
+
+	<resultMap type="deviceStorageInfo" id="deviceStorageInfoMap">
+	    <id property="deviceId" column="device_id" />
+	    <result property="clusterIdentity" column="device_cluster_identity"/>
+	    <result property="uniqueId" column="device_unique_id"/>
+		<result property="computerName" column="clientComputerName"/>
+		<result property="ip" column="ip"/>
+		<result property="totalUseSize" column="totalUseSize"/>
+		<result property="lastSynchTime" column="lastSynchTime"/>
+		<result property="clientSystype" column="sysType"/>
+	</resultMap>
+	
+	<resultMap  id="storagePathAndStorageMap" type="storagePath" extends="storagePathMap">
+		<result property="storage.uniqueId" column="storage_unique_id"/>
+		<result property="storage.name" column="storage_name"/>
+		<result property="storage.type" column="storage_type"/>
+		<result property="storage.ipLan" column="storage_ip_lan"/>
+		<result property="storage.ipNet" column="storage_ip_net"/>
+		<result property="storage.state" column="storage_state"/>
+	</resultMap>
+	
+	<sql id="storagePath-fields">
+		t_storage_path.storage_path_id,
+	  	t_storage_path.storage_id,
+		t_storage_path.storage_path,
+		t_storage_path.storage_symbol,
+		t_storage_path.storage_type,
+		t_storage_path.storage_size,
+		t_storage_path.storage_used_size,
+		t_storage_path.storage_size - t_storage_path.storage_used_size AS FREE_SIZE,
+		t_storage_path.storage_recommand,
+		t_storage_path.storage_remark,
+		t_storage_path.storage_ip_lan,
+		t_storage_path.storage_ip2_net,
+		t_storage_path.redirected_root_symbol,
+		t_storage_path.storage_reserver4,
+		t_storage_path.storage_reserver5 
+	</sql>
+	
+	<insert id="add-storage-path" parameterType="storagePath">
+		insert into t_storage_path (
+		storage_id,
+		storage_path,
+		storage_symbol,
+		storage_type,
+		storage_size,
+		storage_used_size,
+		storage_recommand,
+		storage_remark,
+		storage_ip_lan,
+		storage_ip2_net,
+		redirected_root_symbol,
+		storage_reserver4,
+		storage_reserver5
+		)VALUES(
+		#{storageId},
+		#{path},
+		#{symbol},
+		#{type},
+		#{size},
+		#{usedSize},
+		0,
+		#{remark},
+		#{ipLan},
+		#{ipNet},
+		#{redirectedRootSymbol},
+		#{reserver4},
+		#{reserver5}
+		)
+		<selectKey resultType="int" keyProperty="pathId">
+			select @@IDENTITY as
+			storage_path_id 
+		</selectKey>
+	</insert>
+
+	<!-- 根据存储器Id查找存储路径集合 -->
+	<select id="select-storage-path-list-by-storage-id"
+		parameterType="int" resultMap="storagePathMap">
+		SELECT 
+			<include refid="storagePath-fields"/>
+		FROM
+		  t_storage_path 
+		WHERE storage_id = #{storageId} 
+		ORDER BY storage_symbol ASC
+	</select>
+	<select id="select-storage-path-list-by-storage-id-type"
+		parameterType="int" resultMap="storagePathMap">
+		SELECT 
+			<include refid="storagePath-fields"/>
+		FROM
+		  t_storage_path 
+		WHERE storage_id = #{storageId} 
+		AND storage_type != 3 OR storage_type IS NULL
+		ORDER BY storage_symbol ASC
+	</select>
+	
+	<!-- 根据symbol查找存储介质 -->
+	<select id="select-storage-path-by-symbol" parameterType="String" resultMap="storagePathMap">
+		SELECT 
+			<include refid="storagePath-fields"/> 
+		FROM
+		  t_storage_path 
+		WHERE storage_symbol = #{symbol} 
+	</select>
+	
+	<!-- 查找所有的存储路径 Symbols 索引-->
+	<select id="select-all-storage-path-symbols" resultType="int">
+		SELECT SUBSTRING(storage_symbol,2) FROM t_storage_path ORDER BY storage_symbol ASC
+	</select>
+	
+	<!-- 查找某存储节点下的所有存储路径 Symbols -->
+    <select id="select-symbol-list-by-storage-id" parameterType="int" resultType="String">
+        SELECT storage_symbol FROM t_storage_path WHERE storage_id = #{storageId} ORDER BY storage_symbol ASC 
+    </select>
+		
+	<!-- 根据存储器id 查找存储路径使用比例列表 -->
+	<select id="select-storage-path-used-ratio-by-storage-id" parameterType="int" resultMap="storagePathUsedRatioMap">
+		SELECT 
+		  <include refid="storagePath-fields"/>,
+		  storage_size - storage_used_size AS FREE_SIZE,
+		  storage_used_size / storage_size AS USED_RATIO 
+		FROM
+		  t_storage_path 
+	    WHERE 
+	      storage_id = #{storageId} 
+	</select>
+	
+	<!-- 根据symbol查找设备在某存储介质上的使用情况 -->
+	<select id="select-device-list-on-storage-path-by-symbol" parameterType="String" resultMap="deviceStorageInfoMap">
+		SELECT 
+		  C.device_id device_id,
+		  C.device_cluster_identity device_cluster_identity,
+		  C.device_unique_id device_unique_id,
+		  C.device_client_computer_name clientComputerName, 
+		  C.device_ip ip,
+		  C.device_client_systype sysType,
+		  SUM(A.vmimg_current_length) totalUseSize,
+		  MAX(A.vmimg_create_time) lastSynchTime
+		FROM
+		  t_vmimg A 
+		  LEFT JOIN t_harddisk B 
+		    ON A.vmimg_harddisk_id = B.harddisk_id 
+		  LEFT JOIN t_device C 
+		    ON B.device_id = C.device_id 
+		WHERE A.vmimg_storage_symbol = #{symbol}
+		AND C.device_id IS NOT NULL
+		GROUP BY 
+		  C.device_id,
+		  C.device_cluster_identity,
+		  C.device_unique_id,
+		  C.device_client_computer_name,
+		  C.device_ip,
+		  C.device_client_systype 
+	</select>
+	
+	<!-- 根据Symbol查找在该介质上正在diskClone的总数 -->
+	<select id="select-online-diskclone-count-by-symbol" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM t_diskclone WHERE diskclone_target_path =  #{symbol} AND diskclone_is_online = 1
+	</select>
+	
+	<!-- 根据存储介质Id查找存储介质 -->
+	<select id="select-storage-path-by-id" parameterType="int" resultMap="storagePathMap">
+		SELECT 
+			<include refid="storagePath-fields"/>
+		FROM
+		  t_storage_path 
+		WHERE storage_path_id = #{pathId} 
+	</select>
+	
+	<!-- 查询所有的存储介质列表-->
+    <select id="select-all-storage-path" resultMap="storagePathMap">
+        SELECT 
+            <include refid="storagePath-fields"/>
+        FROM
+          t_storage_path 
+    </select>
+	
+	<select id="select-storage-path-and-storage-by-symbol" parameterType="map" resultMap="storagePathAndStorageMap">
+		SELECT 
+		  <include refid="storagePath-fields"></include>,
+		  t_storage.storage_unique_id,
+		  t_storage.storage_name,
+		  t_storage.storage_type,
+		  t_storage.storage_ip_lan,
+		  t_storage.storage_ip_net,
+		  t_storage.storage_state
+		FROM
+		  t_storage_path 
+		  LEFT JOIN t_storage 
+		    ON t_storage.storage_id = t_storage_path.storage_id 
+		WHERE storage_symbol IN 
+		<foreach collection="symbol" index="index" item="item" open="(" separator="," close=")">  
+            #{item}   
+    	</foreach> 
+    	AND t_storage.storage_state = #{state}
+	</select>
+	
+	<!-- 获得所有存储介质使用大小 -->
+	<select id="select-storage-path-all-sum-used-size" resultMap="storagePathMap">
+		SELECT
+		  storage_path_id,
+		  storage_id,
+		  storage_path,
+		  storage_symbol,
+		  storage_type,
+		  SUM(storage_size) as storage_size,
+		  SUM(storage_used_size) as storage_used_size,
+		  storage_recommand,
+		  storage_ip_lan,
+		  storage_ip2_net,
+		  redirected_root_symbol,
+		  storage_remark
+		FROM t_storage_path
+	</select>
+	
+	<!-- delete storagePath 删除存储介质 -->
+	<delete id="delete-storage-path-by-id"
+		parameterType="int">
+		DELETE
+		FROM
+		t_storage_path
+		WHERE storage_path_id = #{pathId}
+	</delete>
+	
+	<!-- 根据存储器id删除存储介质 -->
+	<delete id="delete-storage-path-by-storage-id" parameterType="int">
+		DELETE
+		FROM
+		t_storage_path
+		WHERE storage_id = #{storageId}
+	</delete>
+	
+	<!--  根据 symbol 删除存储介质-->
+	<delete id="delete-storage-path-by-symbol" parameterType="String">
+		DELETE
+		FROM
+		t_storage_path
+		WHERE storage_symbol = #{symbol}
+	</delete>
+
+	<!-- set recommand 设置默认存储路径 “1”为默认 -->
+	<update id="update-storage-path-recommand"
+		parameterType="storagePath">
+		UPDATE t_storage_path SET
+		storage_recommand = 1
+		WHERE
+		storage_path_id = #{pathId}
+	</update>
+	
+	<!-- reset-storage-path-recommand 重置某存储器下默认存储介质 -->
+	<update id="reset-storage-path-recommand-by-storage-id" parameterType="storagePath">
+		UPDATE  t_storage_path SET
+	    storage_recommand = 0 
+	    WHERE
+	    storage_id  = #{storageId}
+	</update>
+	
+	<!-- 重置系统默认介质 -->
+	<update id="reset-storage-path-recommand">
+        UPDATE  t_storage_path SET
+        storage_recommand = 0 
+    </update>
+	
+	<!-- update-storage-path-by-storage-path-id 更新存储介质 -->
+	<update id="update-storage-path-by-storage-path-id" parameterType="storagePath">
+		UPDATE  t_storage_path 
+	     <set>
+	             <if test="storageId  !=null">
+	                  storage_id=#{storageId},
+	             </if>
+	             <if test="path  !=null and '' != path">
+	                  storage_path=#{path},
+	             </if>
+	             <if test="symbol  !=null and '' != symbol">
+	                  storage_symbol=#{symbol},
+	             </if>
+	             <if test=" type !=null">
+	                  storage_type=#{type},
+	             </if>
+	             <if test="size  !=null">
+	                  storage_size=#{size},
+	             </if>
+	              <if test="usedSize  !=null">
+	                  storage_used_size=#{usedSize},
+	             </if>
+	             <if test="recommand  !=null">
+	                  storage_recommand=#{recommand},
+	             </if>
+	             <if test="remark  !=null and '' != remark">
+	                  storage_remark=#{remark},
+	             </if>
+	             <if test=" ipLan !=null">
+	                  storage_ip_lan=#{ipLan},
+	             </if>
+	              <if test="ipNet  !=null">
+	                  storage_ip2_net=#{ipNet},
+	             </if>
+	             <if test=" redirectedRootSymbol !=null and '' != redirectedRootSymbol">
+	                  redirected_root_symbol=#{redirectedRootSymbol},
+	             </if>
+	      </set>
+	    where storage_path_id = #{pathId}
+	</update>
+
+	<select id="select-now-storage-path-ip" parameterType="int" resultMap="storagePathMap">
+		SELECT
+		<include refid="storagePath-fields"/> 
+		FROM t_storage_path 
+		WHERE storage_symbol = 
+		(SELECT diskclone_target_path 
+		FROM t_diskclone WHERE diskclone_create_time = 
+		(SELECT MAX(diskclone_create_time) 
+		FROM t_diskclone 
+		WHERE device_id = #{deviceId})limit 0,1)
+	</select>
+
+</mapper>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+	<resultMap id="WarningLogMap" type="WarningLog">
+		<id property="warningLogId" column="warning_log_id"/>
+		<result property="warningDeviceId" column="warning_device_id"/>
+		<result property="warningUserName" column="warning_user_name"/>
+		<result property="warningLogContent" column="warning_log_content"/>
+		<result property="warningLogIp" column="warning_log_ip"/>
+		<result property="warningEventId" column="warning_event_id"/>
+		<result property="warningLogLevel" column="warning_log_level"/>
+		<result property="warningLogType" column="warning_log_type"/>
+		<result property="warningLogInsertTime" column="warning_log_insert_date_time"/>
+		<result property="warningLogRemark" column="warning_log_remark"/>
+	</resultMap>
+	
+	<sql id="warning-log-column">
+		t_warning_log.warning_log_id,
+		t_warning_log.warning_device_id,
+		t_warning_log.warning_user_name,
+		t_warning_log.warning_log_content,
+		t_warning_log.warning_log_ip,
+		t_warning_log.warning_event_id,
+		t_warning_log.warning_log_level,
+		t_warning_log.warning_log_type,
+		t_warning_log.warning_log_insert_date_time,
+		t_warning_log.warning_log_remark
+	</sql>
+	
+	<!-- 查询客户端日志总条数 -->
+	<select id="select-warning-log-all-split-page-count" parameterType="map" resultType="int">
+		SELECT COUNT(t_warning_log.warning_log_id) FROM t_warning_log
+			WHERE 1=1
+		<if test="warningLogLevel != 0 and warningLogLevel != null "  >
+			 AND t_warning_log.warning_log_level = #{warningLogLevel}
+		</if>
+		<if test="warningLogType != 0 and warningLogType != null "  >
+             AND t_warning_log.warning_log_type = #{warningLogType}
+        </if>
+		<if test="beginDate !=null and beginDate !='' and endDate == null or endDate == '' "  >
+			 AND t_warning_log.warning_log_insert_date_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate == null or beginDate == '' "  >
+			 AND t_warning_log.warning_log_insert_date_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND DATE_FORMAT(t_warning_log.warning_log_insert_date_time,'%Y-%m-%d') &gt;=  #{beginDate}
+			AND DATE_FORMAT(t_warning_log.warning_log_insert_date_time,'%Y-%m-%d') &lt;=  #{endDate}
+		</if>	
+	</select>
+	
+	<!-- 总条数 -->
+	<select id="select-warning-log-count" resultType="int">
+		SELECT COUNT(warning_log_id) FROM t_warning_log
+	</select>
+	
+	<!-- 查询预警日志+分页 -->
+	<select id="select-warning-log-all-split-page" parameterType="map" resultMap="WarningLogMap">
+		SELECT 
+			<include refid="warning-log-column"></include>
+		 FROM t_warning_log
+			WHERE 1=1
+		<if test="warningLogLevel != 0 and warningLogLevel != null "  >
+			 AND t_warning_log.warning_log_level = #{warningLogLevel}
+		</if>
+		<if test="warningLogType != 0 and warningLogType != null "  >
+             AND t_warning_log.warning_log_type = #{warningLogType}
+        </if>
+		<if test="beginDate !=null and beginDate !='' and endDate == null or endDate == '' "  >
+			 AND t_warning_log.warning_log_insert_date_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate == null or beginDate == '' "  >
+			 AND t_warning_log.warning_log_insert_date_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND DATE_FORMAT(t_warning_log.warning_log_insert_date_time,'%Y-%m-%d') &gt;=  #{beginDate}
+			AND DATE_FORMAT(t_warning_log.warning_log_insert_date_time,'%Y-%m-%d') &lt;=  #{endDate}
+		</if>
+		ORDER BY t_warning_log.warning_log_insert_date_time DESC
+		<if test="firstResult != null and maxResult != null">
+			limit  #{firstResult},#{maxResult} 
+		</if>
+	</select>
+	
+	<select id="select-warning-log-all" resultMap="WarningLogMap">
+		SELECT 
+			<include refid="warning-log-column"></include>
+		 FROM t_warning_log
+    	ORDER BY warning_log_insert_date_time DESC
+	</select>
+	
+	<insert id="insert-warning-log" parameterType="WarningLog">
+		INSERT INTO t_warning_log
+            (
+             warning_device_id,
+             warning_log_content,
+             warning_user_name,
+             warning_event_id,
+             warning_log_ip,
+             warning_log_level,
+             warning_log_type,
+             warning_log_insert_date_time,
+             warning_log_remark)
+		VALUES (
+			 #{warningDeviceId},
+			 #{warningLogContent},
+			 #{warningUserName},
+			 #{warningEventId},
+			 #{warningLogIp},
+			 #{warningLogLevel},
+			 #{warningLogType},
+			 now(),
+			 #{warningLogRemark}
+		     )
+		<selectKey resultType="int" keyProperty="warningLogId" >
+			select @@IDENTITY as id 
+		</selectKey>
+	</insert>
+	
+	<delete id="delete-warning-log-by-date" parameterType="map">
+		DELETE
+		FROM t_warning_log
+		WHERE DATE_FORMAT(warning_log_insert_date_time,'%Y-%m-%d') &gt;=  #{beginDate}
+		AND DATE_FORMAT(warning_log_insert_date_time,'%Y-%m-%d') &lt;=  #{endDate}
+	</delete>
+	
+	<!-- 删除预警日志 by xuyingan -->
+	<delete id="delete-warning-log-by-deldate" parameterType="string">
+		DELETE
+		FROM t_warning_log
+		WHERE warning_log_insert_date_time &lt;=  #{delDate}
+	</delete>
+	
+	
+</mapper>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="   
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd   
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd   
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+    
+    <!-- 采用注释的方式配置bean -->
+	<context:annotation-config />
+    <!-- 配置要扫描的包 -->
+    <context:component-scan base-package="com.datasure"/>
+    
+    <bean id="propertyConfigurer"  
+       class="com.datasure.websure.utils.util.filter.EncryptablePropertyPlaceholderConfigurer">  
+        <property name="locations">  
+            <list><value>classpath:jdbc.properties</value></list>  
+        </property>  
+    </bean>
+
+    <!--<context:property-placeholder location="classpath:jdbc.properties"/>
+	--><!-- 配置dbcp数据源 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<!-- 队列中的最小等待数 -->
+		<property name="minIdle" value="${jdbc.minIdle}"></property>
+		<!-- 队列中的最大等待数 -->
+		<property name="maxIdle" value="${jdbc.maxIdle}"></property>
+		<!-- 最长等待时间，单位毫秒 -->
+		<!--maxWait: 超时等待时间以毫秒为单位 6000毫秒/1000等于60秒-->  
+		<property name="maxWait" value="${jdbc.maxWait}"></property>
+		<!-- 最大活跃数 -->
+		<property name="maxActive" value="${jdbc.maxActive}"></property>
+		<property name="initialSize" value="${jdbc.initialSize}"></property>
+		<!--removeAbandoned: 是否自动回收超时连接-->  
+		<property name="removeAbandoned" value="true"/>  
+		<!--removeAbandonedTimeout: 超时时间(以秒数为单位)-->  
+		<property name="removeAbandonedTimeout" value="180"/>  
+		<property name="validationQuery">  
+		     <value>SELECT 1</value>  
+		</property>  
+		<property name="testOnBorrow">  
+		     <value>true</value>  
+		</property>  
+	</bean>
+	
+	<!-- 配置dbcp数据源  （预警数据库obstatus） -->
+	<bean id="mySqlDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.mysql.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<!-- 队列中的最小等待数 -->
+		<property name="minIdle" value="${jdbc.minIdle}"></property>
+		<!-- 队列中的最大等待数 -->
+		<property name="maxIdle" value="${jdbc.maxIdle}"></property>
+		<!-- 最长等待时间，单位毫秒 -->
+		<!--maxWait: 超时等待时间以毫秒为单位 6000毫秒/1000等于60秒-->  
+		<property name="maxWait" value="${jdbc.maxWait}"></property>
+		<!-- 最大活跃数 -->
+		<property name="maxActive" value="${jdbc.maxActive}"></property>
+		<property name="initialSize" value="${jdbc.initialSize}"></property>
+		<!--removeAbandoned: 是否自动回收超时连接-->  
+		<property name="removeAbandoned" value="true"/>  
+		<!--removeAbandonedTimeout: 超时时间(以秒数为单位)-->  
+		<property name="removeAbandonedTimeout" value="180"/>  
+		<property name="validationQuery">  
+		     <value>SELECT 1</value>  
+		</property>  
+		<property name="testOnBorrow">  
+		     <value>true</value>  
+		</property>  
+	</bean>
+	
+     <!-- 配置mybitasSqlSessionFactoryBean websure-->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:mybatis_conf/mybatis.xml"></property>
+	</bean>
+	 
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+	      <constructor-arg  ref="sqlSessionFactory"/>
+	</bean>
+	
+     <!-- 配置mybitasSqlSessionFactoryBean   (obstatus) -->
+	<bean id="sqlSessionFactoryObstatus" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="mySqlDataSource" />
+		<property name="configLocation" value="classpath:mybatis_conf/mybatis.xml"></property>
+	</bean>
+	 
+	<bean id="sqlSessionTemplateObstatus" class="org.mybatis.spring.SqlSessionTemplate">
+	      <constructor-arg  ref="sqlSessionFactoryObstatus"/>
+	</bean>
+	
+	<!-- 事务管理器配置 -->
+	<bean id="transactionManager"  
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
+        <property name="dataSource" ref="dataSource" />  
+    </bean>  
+    
+   <!-- 配置事务特性 ,配置add,delete和update开始的方法，事务传播特性为requerid -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="del*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="find*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<aop:pointcut id="allMethod" expression="execution(* com.datasure.websure.*.service.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="allMethod" />
+	</aop:config>
+	
+	    <!-- 异步线程池 -->  
+    <bean id="taskExecutor"  
+        class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">  
+        <!-- 核心线程数 -->  
+        <property name="corePoolSize" value="10" />  
+        <!-- 最大线程数 -->  
+        <property name="maxPoolSize" value="100" />  
+        <!-- 队列最大长度 >=mainExecutor.maxSize -->  
+        <property name="queueCapacity" value="1000" />  
+        <!-- 线程池维护线程所允许的空闲时间 -->  
+        <property name="keepAliveSeconds" value="300" />  
+        <!-- 线程池对拒绝任务(无线程可用)的处理策略 -->  
+        <property name="rejectedExecutionHandler">  
+            <bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy" />  
+        </property>  
+    </bean>  
+	
+	<!-- 包含Quartz 定时器 -->
+	
+	<import resource="applicationContext-quartz.xml"/>
+ </beans>
+ 

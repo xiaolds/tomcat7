@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="ModelMap" type="Model">
+		<id property="id"  column="model_id"/>               		       
+		<result property="name"  column="model_name"/>            
+		<result property="remark" column="model_remark"/> 
+		<result property="path"  column="model_path"/>    
+		<result property="parentId"  column="model_parent_model_id"/>
+		<result property="shortName"  column="model_short_name"/>
+		<result property="state"  column="model_state"/>    
+	</resultMap>
+	
+	<sql id="model-column">
+		t_model.mode_id,
+		t_model.model_name,                    
+	    t_model.model_remark,             
+	    t_model.model_path,              
+	    t_model.model_parent_model_id,            
+	    t_model.model_short_name,                 
+	    t_model.model_state          
+	</sql>
+		
+	<select id="select-model-by-modelid" resultMap="ModelMap" parameterType="int">
+		SELECT * FROM t_model WHERE model_id=#{modelId}
+	</select>
+	
+	<select id="select-all-models" resultMap="ModelMap">
+		SELECT * FROM t_model 
+	</select>	
+		
+</mapper>

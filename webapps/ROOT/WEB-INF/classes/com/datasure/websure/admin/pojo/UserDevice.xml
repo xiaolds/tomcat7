@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="UserDeviceMap" type="UserDevice">
+		<id property="id"  column="id"/>               
+		<result property="userId"  column="user_id"/>         
+		<result property="deviceId"  column="device_id"/>            
+		<result property="type"  column="type"/>    
+		<result property="remark"  column="remark"/>
+	</resultMap>
+	
+	<sql id="userdevice-column">
+		t_user_device.id,
+		t_user_device.user_id,                    
+	    t_user_device.device_id,                         
+	    t_user_device.type,            
+	    t_user_device.remark                           
+	</sql>
+		
+	<select id="select-userdevice-by-userid" resultMap="UserDeviceMap" parameterType="int">
+		SELECT * FROM t_user_device WHERE user_id=#{userId}
+	</select>
+	
+	<select id="select-count-of-userdevice-by-userid" resultMap="UserDeviceMap" parameterType="int">
+		SELECT count(*) FROM t_user_device WHERE user_id=#{userId}
+	</select>
+		
+	<select id="select-userdevice-by-userid-and-deviceid" resultMap="UserDeviceMap" parameterType="Map">
+		SELECT * FROM t_user_device WHERE user_id=#{userId} AND device_id=#{deviceId}
+	</select>	
+	
+	<insert id="insert-userdevice"  parameterType="UserDevice">
+		insert 
+			into 
+		t_user_device(              
+              user_id,
+              device_id,
+              type,
+              remark        
+			)values(
+			  #{userId},
+			  #{deviceId},		      
+			  #{type},
+			  #{remark}
+			)
+		<selectKey resultType="int" keyProperty="id">
+			select @@IDENTITY as id 
+		</selectKey>
+	</insert>
+		
+	 <delete id="delete-userdevice-by-userid-and-deviceid" parameterType="Map">
+         delete from t_user_device where user_id=#{userId} AND device_id=#{deviceId}
+	</delete>
+		
+</mapper>

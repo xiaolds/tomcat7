@@ -1,0 +1,257 @@
+/**
+ * Created by Nico on 15-11-6
+ * Version: 15116
+ * Date: 15-11-6
+ */
+.frame {
+	margin-top: 45px;
+	width: 100%;
+}
+
+.frame li {
+	float: left;
+	border-bottom: 2px solid #ddd;
+	border-left: 2px solid #ddd;
+	position: relative;
+	list-style: none;
+	height: 86px;
+	margin-bottom: 80px;
+	margin-top: 40px;
+	padding-right: 20px;
+	padding-left: 20px;
+}
+
+.frame li:last-child {
+	padding-right: 0px
+}
+
+.frame li:last-child .last_snap {
+	width:45px;
+	margin-right: 0;
+	background-image: url("/images/recovery/mount/3.png")
+}
+
+.frame li>span {
+	position: absolute;
+	display: block;
+	width: 90px;
+	top: -20px;
+	left: -45px;
+	text-align: center;
+	font-size: 12px;
+}
+
+.frame dl {
+	margin: 0;
+}
+
+.frame dl.close {
+	position: relative;
+	right: auto;
+	top: auto;
+	-float: left;
+	width: 40px;
+	height: 40px;
+	margin: 5px;
+	margin-top: 15px;
+	background: url("/images/recovery/mount/snapShot.png");
+}
+
+.frame dl.snapNull {
+	float: left;
+	width: 40px;
+	height: 40px;
+	margin: 5px;
+	margin-top: 15px;
+	background: url("/images/recovery/mount/snapNull.png");
+}
+
+.frame dl.close dd {
+	display: none;
+}
+
+.frame dl.close div div {
+	display: none;
+}
+
+.frame dl.close span.snap_time {
+	display: none;
+}
+
+.frame dl>div {
+	position: relative;  width:50px;
+}
+
+.frame dl span.snap_time {
+	display: block;
+	height: 105px;
+	left: 10px;
+	position: absolute;
+	text-align: center;
+	top: -69px;
+	width: 90px;
+	z-index: 1;
+	font-size: 12px;
+	color: #666;
+}
+
+.frame dl span.snap_time i {
+	display: block;
+	width: 45px;
+	height: 84px;
+	margin: 0;
+	margin-left: 39px;
+	background: none;
+	opacity: 1;
+	border-left: 2px solid #eee;
+	position: relative;
+	z-index: 1;
+	top: 4px;
+}
+
+.frame dd {
+	position: relative;
+	z-index: 11;
+	float: left;
+	width: 40px;
+	height: 40px;
+	margin: 5px;
+	margin-top: 15px;
+	background: url("/images/recovery/mount/snapShotExpend.png");
+}
+
+.frame i {
+	width: 100%;
+	display: block;
+	background: #2E3744;
+	opacity: 0.2;
+	filter: alpha(opacity =                                     20);
+	text-align: center;
+	color: #fff;
+	font-style: normal;
+	margin-top: 30px;
+}
+
+.frame .photo_null {
+	margin: 0 auto;
+	margin-top: 80px;
+	width: 430px;
+	height: 130px;
+	background: url("/images/recovery/mount/photo_null.png") no-repeat;
+}
+
+.frame .snap_time_wrap,.frame .snap_nt {
+	position: absolute;
+	z-index: 99999;
+	border-radius: 3px;
+	display: none;
+	border: 1px solid #eee;
+	background: #ddefef;
+	padding: 4px;
+	width: auto;
+	word-break: keep-all; /* 不换行 */
+	white-space: nowrap;
+	top: 40px;
+}
+
+.frame dd:hover {
+	z-index: 12;
+}
+
+.mount_over_hover {
+	position: relative;
+}
+
+.mount_over_hover .snap_time_wrap {
+	top: 58px;
+}
+
+.frame dd:hover .snap_time_wrap,.close:hover>span.snap_time_wrap,.mount_over_hover:hover .snap_time_wrap
+	{
+	display: block;
+}
+
+.frame .snap_nt_wrap {
+	display: block;
+	float: left;
+	position: relative;
+}
+
+.frame dl .snap_nt_wrap:hover {
+	z-index: 12;
+}
+
+.frame dl .snap_nt_wrap:hover .snap_nt {
+	display: block;
+	top: 60px;
+}
+
+.mountname_span_text {
+	display: none
+}
+
+.frame .last_snap:hover .snap_time_wrap {
+	display: none;
+}
+
+/*集群快照样式*/
+.font_top {
+	display: block;
+	height: 25px;
+	line-height: 26px;
+	border-left: 3px solid #0aa;
+	font-size: 14px;
+	color: #2e3744;
+	text-indent: 10px;
+	font-weight: bold;
+}
+
+.snap_wrap {
+	display: block;
+	margin: 3px 13px 13px 13px;
+}
+
+.snap_wrap dd {
+	position: relative;
+	width: 40px;
+	height: 40px;
+	float: left;
+	margin: 10px 10px 0 0;
+}
+
+.icon_snap {
+	display: block;
+	width: 40px;
+	height: 40px;
+	background: url(/images/recovery/mount/icon_vir.png);
+}
+
+.icon_mount_snap {
+	display: block;
+	width: 40px;
+	height: 40px;
+	background: url(/images/recovery/mount/icon_mount.png);
+}
+
+.snap_wrap dd span {
+	display: none;
+	position: absolute;
+	top: 42px;
+	padding: 4px;
+	width: auto;
+	border-radius: 3px;
+	border: 1px solid #eee;
+	background: #ddefef;
+	word-break: keep-all;
+	white-space: nowrap;
+	z-index: 99;
+}
+
+.snap_wrap dd:hover span {
+	display: block;
+}
+
+/*清除浮动代码*/
+.clearfloat {
+	clear: both
+}

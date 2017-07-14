@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+     <!--
+     <settings>
+	     <setting name="cacheEnabled" value="true"/>
+	 </settings>
+	-->
+
+	<typeAliases>
+	
+	    
+		<typeAlias alias="Mount" type="com.datasure.websure.recovery.pojo.Mount" />
+		<typeAlias alias="Vmdk" type="com.datasure.websure.recovery.pojo.Vmdk" />
+		<!-- 备份预警模块  begin-->
+		<typeAlias alias="Device" type="com.datasure.websure.backup.pojo.Device" />
+		<typeAlias alias="Group" type="com.datasure.websure.backup.pojo.Group" />
+		<typeAlias alias="HardDisk" type="com.datasure.websure.backup.pojo.HardDisk" />
+		<typeAlias alias="Partition" type="com.datasure.websure.backup.pojo.Partition" />
+		<typeAlias alias="DiskClone" type="com.datasure.websure.backup.pojo.DiskClone" />
+		<typeAlias alias="Cluster" type="com.datasure.websure.backup.pojo.Cluster" />
+		<typeAlias alias="ClusterHardDisk" type="com.datasure.websure.backup.pojo.ClusterHardDisk" />
+		<typeAlias alias="DiskCloneLog" type="com.datasure.websure.backup.pojo.DiskCloneLog" />
+		<typeAlias alias="HdwWarningConfig" type="com.datasure.websure.backup.pojo.HdwWarningConfig" />
+		<typeAlias alias="SysWarningConfig" type="com.datasure.websure.backup.pojo.SysWarningConfig" />
+		<typeAlias alias="ProcessWarningConfig" type="com.datasure.websure.backup.pojo.ProcessWarningConfig" />
+		<typeAlias alias="ServerWarningConfig" type="com.datasure.websure.backup.pojo.ServerWarningConfig" />
+		<typeAlias alias="WarningConfigInfo" type="com.datasure.websure.backup.pojo.WarningConfigInfo" />
+		<typeAlias alias="DeviceAndGroup" type="com.datasure.websure.backup.pojo.DeviceAndGroup" />
+		<typeAlias alias="DeviceAndMode" type="com.datasure.websure.backup.pojo.DeviceAndMode" />
+		<typeAlias alias="Volume" type="com.datasure.websure.backup.pojo.Volume" />
+		<typeAlias alias="VmingTag" type="com.datasure.websure.backup.pojo.VmingTag" />
+		<typeAlias alias="ClusterShareDisk" type="com.datasure.websure.backup.pojo.ClusterShareDisk" />
+
+		<typeAlias alias="BackupdbTask" type="com.datasure.websure.backup.pojo.BackupdbTask" />
+		<typeAlias alias="BackupdbInfo" type="com.datasure.websure.backup.pojo.BackupdbInfo" />
+		<typeAlias alias="WarningConfig" type="com.datasure.websure.backup.pojo.WarningConfig" />
+		<typeAlias alias="WarningLog" type="com.datasure.websure.backup.pojo.WarningLog" />
+		<typeAlias alias="deviceNetWorkCard"  type="com.datasure.websure.backup.pojo.DeviceNetWorkCard" />
+		<typeAlias alias="ManageLog" type="com.datasure.websure.log.pojo.ManageLog" />
+		<typeAlias alias="SystemVersion" type="com.datasure.websure.backup.pojo.SystemVersion" />
+		<!-- 备份预警模块  end-->
+		
+		<!-- 应急演练模块 begin -->
+		<typeAlias alias="vmManager" type="com.datasure.websure.emergency.pojo.VmManager" />
+		<typeAlias alias="vmAttachment" type="com.datasure.websure.emergency.pojo.VmAttachment" />
+		<typeAlias alias="computeNodes" type="com.datasure.websure.emergency.pojo.ComputeNodes" />
+		<typeAlias alias="computeNodesNic" type="com.datasure.websure.emergency.pojo.ComputeNodesNic" />
+		<typeAlias alias="vmManagerNic" type="com.datasure.websure.emergency.pojo.VmManagerNic" />
+		<typeAlias alias="deviceNic" type="com.datasure.websure.emergency.pojo.DeviceNic" />
+		<typeAlias alias="computeNodesRunState" type="com.datasure.websure.emergency.pojo.ComputeNodesRunState" />
+		<typeAlias alias="EmergencyLog" type="com.datasure.websure.emergency.pojo.EmergencyLog" />
+		<typeAlias alias="vmManagerSet"  type="com.datasure.websure.emergency.pojo.VmManagerSet" />
+		<typeAlias alias="vmManagerModel"  type="com.datasure.websure.emergency.pojo.VmManagerModel" />
+		<typeAlias alias="vmManagerClient"  type="com.datasure.websure.emergency.pojo.VmManagerClient" />
+		<typeAlias alias="clutserDiskCloneInfo" type="com.datasure.websure.emergency.pojo.ClusterDiskCloneInfo"/>
+		<typeAlias alias="computeNodesVirtualNic" type="com.datasure.websure.emergency.pojo.ComputeNodesVirtualNic"/>
+		<!-- 应急演练模块 end -->
+		
+		<!--恢复存储模块-->
+		<typeAlias alias="storage" type="com.datasure.websure.recovery.pojo.Storage" />
+		<typeAlias alias="storageLog" type="com.datasure.websure.recovery.pojo.StorageLog" />
+		<typeAlias alias="storagePath" type="com.datasure.websure.recovery.pojo.StoragePath" />
+		<typeAlias alias="deviceStorageInfo" type="com.datasure.websure.recovery.pojo.DeviceStorageInfo" />
+		<typeAlias alias="storageRunState" type="com.datasure.websure.recovery.pojo.StorageRunState" />
+		<typeAlias alias="SynchStoragePath" type="com.datasure.websure.recovery.pojo.SynchStoragePath" />
+		<typeAlias alias="Mount" type="com.datasure.websure.recovery.pojo.Mount" />
+		<typeAlias alias="Vmdk" type="com.datasure.websure.recovery.pojo.Vmdk" />
+		
+		<!-- 权限模块  -->
+		<typeAlias alias="Authority" type="com.datasure.websure.authorities.pojo.Authority" />
+		<typeAlias alias="Role" type="com.datasure.websure.authorities.pojo.Role" />
+		<typeAlias alias="Power" type="com.datasure.websure.authorities.pojo.Power" />		
+        <typeAlias alias="Model" type="com.datasure.websure.authorities.pojo.Model" />
+        
+        <!--用户模块 begin  -->
+		<typeAlias alias="User" type="com.datasure.websure.admin.pojo.User" />
+		<typeAlias alias="UserDevice" type="com.datasure.websure.admin.pojo.UserDevice" />
+		<typeAlias alias="UserGroup" type="com.datasure.websure.admin.pojo.UserGroup" />
+		<typeAlias alias="UserRole" type="com.datasure.websure.admin.pojo.UserRole" />
+    	<!-- 用户模块 end -->
+    	
+    	<!-- 系统配置 begin -->
+    	<typeAlias alias="SystemConfig" type="com.datasure.websure.config.pojo.SystemConfig"/>
+    	<typeAlias alias="SystemLog" type="com.datasure.websure.config.pojo.SystemLog"/>
+    	<typeAlias alias="MailConfig" type="com.datasure.websure.config.pojo.MailConfig"/>
+    	<typeAlias alias="SMSConfig" type="com.datasure.websure.config.pojo.SMSConfig" />
+    	<typeAlias alias="ReportlogConfig" type="com.datasure.websure.config.pojo.ReportlogConfig"/>
+    	<typeAlias alias="Menu" type="com.datasure.websure.admin.pojo.Menu"/>
+    	<typeAlias alias="LicenseDevice" type="com.datasure.websure.config.pojo.LicenseDevice" />
+    	<!-- 系统配置 end -->
+    	
+    	<!-- 日志模块 begin -->
+		<typeAlias alias="DiskCloneLog" type="com.datasure.websure.backup.pojo.DiskCloneLog" />
+		<typeAlias alias="WarningLog" type="com.datasure.websure.backup.pojo.WarningLog" />
+		<typeAlias alias="EmergencyLog" type="com.datasure.websure.emergency.pojo.EmergencyLog" />
+		<typeAlias alias="storageLog" type="com.datasure.websure.recovery.pojo.StorageLog" />
+		<typeAlias alias="SystemLog" type="com.datasure.websure.config.pojo.SystemLog"/>
+		<typeAlias alias="ManageLog" type="com.datasure.websure.log.pojo.ManageLog" />
+		<typeAlias alias="EntireWarning" type="com.datasure.websure.log.pojo.EntireWarning" />
+		<typeAlias alias="BackupDBLog" type="com.datasure.websure.log.pojo.BackupDBLog" />
+		<typeAlias alias="ClusterLog" type="com.datasure.websure.log.pojo.ClusterLog" />
+		<!-- 日志模块 end -->
+    	
+    	<!-- 预警模块 begin -->
+		<typeAlias alias="deviceLogSystem" type="com.datasure.websure.warning.pojo.DeviceLogSystem" />
+		<typeAlias alias="deviceHwMemInfo" type="com.datasure.websure.warning.pojo.DeviceHwMemInfo" />
+		<typeAlias alias="deviceHwDiskInfo" type="com.datasure.websure.warning.pojo.DeviceHwDiskInfo" />
+		<typeAlias alias="deviceHwCpuInfo" type="com.datasure.websure.warning.pojo.DeviceHwCpuInfo" />
+		<typeAlias alias="deviceHwNetInfo" type="com.datasure.websure.warning.pojo.DeviceHwNetInfo" />
+		<typeAlias alias="deviceMain" type="com.datasure.websure.warning.pojo.DeviceMain" />
+		<typeAlias alias="deviceScript" type="com.datasure.websure.warning.pojo.DeviceScript" />
+		<typeAlias alias="deviceScriptResult" type="com.datasure.websure.warning.pojo.DeviceScriptResult" />
+		<typeAlias alias="EntireWarning" type="com.datasure.websure.log.pojo.EntireWarning" />
+		<typeAlias alias="devicePolicy" type="com.datasure.websure.warning.pojo.DevicePolicy" />
+    	<!-- 预警模块 end -->
+    	
+    	<!-- 应急模块begin -->
+		<typeAlias alias="vmManager" type="com.datasure.websure.emergency.pojo.VmManager" />
+		<typeAlias alias="computeNodes" type="com.datasure.websure.emergency.pojo.ComputeNodes" />
+		<typeAlias alias="computeNodesNic" type="com.datasure.websure.emergency.pojo.ComputeNodesNic" />
+		<typeAlias alias="vmManagerNic" type="com.datasure.websure.emergency.pojo.VmManagerNic" />
+		<typeAlias alias="deviceNic" type="com.datasure.websure.emergency.pojo.DeviceNic" />
+		<typeAlias alias="computeNodesRunState" type="com.datasure.websure.emergency.pojo.ComputeNodesRunState" />
+		<typeAlias alias="EmergencyLog" type="com.datasure.websure.emergency.pojo.EmergencyLog" />
+		<!-- 应急模块 end -->
+		
+		<!-- 消息中心 begin-->
+		<typeAlias alias="notify" type="com.datasure.websure.msgcenter.pojo.Notify" />
+        <typeAlias alias="userAndNotify" type="com.datasure.websure.msgcenter.pojo.UserAndNotify" />
+        <typeAlias alias="UserNotifyModule" type="com.datasure.websure.config.pojo.UserNotifyModule" />
+        <typeAlias alias="NotifyModule" type="com.datasure.websure.config.pojo.NotifyModule" />
+        <!-- 消息中心 end-->
+        
+		
+    </typeAliases>
+	<mappers>
+		<mapper resource="com/datasure/websure/recovery/pojo/Mount.xml" />
+		<mapper resource="com/datasure/websure/recovery/pojo/Vmdk.xml" />
+		<!-- 备份预警模块  begin-->
+		<mapper resource="com/datasure/websure/backup/pojo/Device.xml" /> 
+		<mapper resource="com/datasure/websure/backup/pojo/Group.xml" />
+		<mapper resource="com/datasure/websure/backup/pojo/HardDisk.xml" />
+		<mapper resource="com/datasure/websure/backup/pojo/Partition.xml" />
+		<mapper resource="com/datasure/websure/backup/pojo/DiskClone.xml" />
+		<mapper resource="com/datasure/websure/backup/pojo/Cluster.xml" />
+		<mapper resource="com/datasure/websure/backup/pojo/DiskCloneLog.xml" />
+		<mapper resource="com/datasure/websure/backup/pojo/Monitor.xml" />
+		<mapper resource="com/datasure/websure/backup/pojo/Volume.xml" />
+		<mapper resource="com/datasure/websure/backup/pojo/WarningConfig.xml" /> 
+		<mapper resource="com/datasure/websure/backup/pojo/WarningLog.xml" /> 
+		<mapper resource="com/datasure/websure/backup/pojo/BackupdbTask.xml" /> 
+		<mapper resource="com/datasure/websure/backup/pojo/DeviceNetWorkCard.xml" /> 
+		<mapper resource="com/datasure/websure/log/pojo/EntireWarning.xml" />
+		<mapper resource="com/datasure/websure/log/pojo/ManageLog.xml" />
+		<mapper resource="com/datasure/websure/backup/pojo/SystemVersion.xml" />
+		<!-- 备份预警模块  end-->
+		
+		<!-- 应急演练模块  begin-->
+		<mapper resource="com/datasure/websure/emergency/pojo/EmergencyLog.xml" /> 
+		<mapper resource="com/datasure/websure/emergency/pojo/VmManager.xml"/>
+		<mapper resource="com/datasure/websure/emergency/pojo/VmAttachment.xml"/>
+		<mapper resource="com/datasure/websure/emergency/pojo/ComputeNodes.xml"/>
+		<mapper resource="com/datasure/websure/emergency/pojo/ComputeNodesNic.xml"/>
+		<mapper resource="com/datasure/websure/emergency/pojo/VmManagerNic.xml"/>
+		<mapper resource="com/datasure/websure/emergency/pojo/VmManagerSet.xml" />
+		<mapper resource="com/datasure/websure/emergency/pojo/VmManagerModel.xml" />
+		<mapper resource="com/datasure/websure/emergency/pojo/VmManagerClient.xml" />
+		<mapper resource="com/datasure/websure/emergency/pojo/ClusterDiskCloneInfo.xml"/>
+		<mapper resource="com/datasure/websure/emergency/pojo/ComputeNodesVirtualNic.xml"/>
+		<!-- 应急演练模块  end-->
+		
+		<!-- 恢复存储模块 -->
+		<mapper resource="com/datasure/websure/recovery/pojo/Storage.xml" />
+		<mapper resource="com/datasure/websure/recovery/pojo/StorageLog.xml" />
+		<mapper resource="com/datasure/websure/recovery/pojo/StoragePath.xml" />
+		<mapper resource="com/datasure/websure/recovery/pojo/StorageRunState.xml" />
+		<mapper resource="com/datasure/websure/recovery/pojo/Mount.xml" />
+		<mapper resource="com/datasure/websure/recovery/pojo/Vmdk.xml" />
+		
+		<!-- 权限模块  -->
+		<mapper resource="com/datasure/websure/authorities/pojo/Role.xml" />
+		<mapper resource="com/datasure/websure/authorities/pojo/Power.xml" />
+		<mapper resource="com/datasure/websure/authorities/pojo/Model.xml" />
+		
+		 <!--用户模块 begin  -->
+		<mapper resource="com/datasure/websure/admin/pojo/User.xml" />
+		<mapper resource="com/datasure/websure/admin/pojo/UserDevice.xml" />
+		<mapper resource="com/datasure/websure/admin/pojo/UserGroup.xml" />
+		<mapper resource="com/datasure/websure/admin/pojo/UserRole.xml" />
+		<!-- 用户模块 end -->
+		
+		<!-- 系统配置 begin -->
+		<mapper resource="com/datasure/websure/config/pojo/SystemConfig.xml" />
+		<mapper resource="com/datasure/websure/config/pojo/SystemLog.xml" />
+		<mapper resource="com/datasure/websure/config/pojo/MailConfig.xml" />
+		<mapper resource="com/datasure/websure/config/pojo/SMSConfig.xml" />
+		<mapper resource="com/datasure/websure/config/pojo/ReportlogConfig.xml" />
+		<mapper resource="com/datasure/websure/recovery/pojo/SynchStoragePath.xml" />
+		<mapper resource="com/datasure/websure/admin/pojo/Menu.xml" />
+		<mapper resource="com/datasure/websure/config/pojo/LicenseDevice.xml" />
+		<!-- 系统配置 end -->
+		
+		<!-- 日志模块 begin -->
+		<mapper resource="com/datasure/websure/log/pojo/ManageLog.xml" />
+		<mapper resource="com/datasure/websure/log/pojo/BackupDBLog.xml" />
+		<mapper resource="com/datasure/websure/log/pojo/ClusterLog.xml" />
+		<!-- 日志模块 end -->
+
+		<!-- 预警模块 begin -->
+		<mapper resource="com/datasure/websure/warning/pojo/DeviceLogSystem.xml" />
+		<mapper resource="com/datasure/websure/warning/pojo/DeviceHwMemInfo.xml" />
+		<mapper resource="com/datasure/websure/warning/pojo/DeviceHwDiskInfo.xml" />
+		<mapper resource="com/datasure/websure/warning/pojo/DeviceHwCpuInfo.xml" />
+		<mapper resource="com/datasure/websure/warning/pojo/DeviceHwNetInfo.xml" />
+		<mapper resource="com/datasure/websure/warning/pojo/DeviceMain.xml" />
+		<mapper resource="com/datasure/websure/warning/pojo/DeviceScript.xml" />
+		<mapper resource="com/datasure/websure/warning/pojo/DeviceScriptResult.xml" />
+		<mapper resource="com/datasure/websure/warning/pojo/DevicePolicy.xml" />
+		<!-- 预警模块 end -->
+		
+		
+		<!--消息中心模块  begin-->
+		<mapper resource="com/datasure/websure/msgcenter/pojo/Notify.xml" /> 
+        <mapper resource="com/datasure/websure/msgcenter/pojo/UserAndNotify.xml" /> 
+        <mapper resource="com/datasure/websure/config/pojo/UserNotifyModule.xml" /> 
+        <mapper resource="com/datasure/websure/config/pojo/NotifyModule.xml" /> 
+        
+	</mappers>
+</configuration>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure.emergency">
+
+	<resultMap id="vmModelMap" type="vmManagerModel">
+		<id property="id" column="id" />
+		<result property="modelName" column="model_name" />
+		<result property="deviceId" column="model_device_id" />
+		<result property="comNodeId" column="compute_node_id" />
+		<result property="state" column="model_state" />
+		<result property="sysType" column="model_system_type" />
+		<result property="sysBit" column="model_system_bit" />
+		<result property="cpuKernel" column="model_cpu_kernel" />
+		<result property="nicList" column="model_nic_list" />
+		<result property="memory" column="model_memory" />
+		<result property="nicDriver" column="model_nic_driver_type" />
+		<result property="cdDriver" column="model_cd_driver_type" />
+		<result property="diskType" column="model_disk_type" />
+		<result property="usbController" column="model_usb_controller" />
+		<result property="remark" column="model_remark" />
+	</resultMap>
+	<resultMap id="vmModelAndComNode" type="vmManagerModel" extends="vmModelMap">
+		<association property="comNodes" javaType="computeNodes">
+			<result property="logicCpu" column="compute_node_cpu_logic_num" />
+			<result property="coreCpu" column="compute_node_cpu_core_num" />
+			<result property="memSize" column="compute_node_mem_size" />
+			<result property="license"  column="co_sq_s"/>
+			<result property="nodeUniqueId"  column="compute_node_unique_id"/>
+			<result property="nodeId"  column="compute_node_id"/>
+			<result property="nodeName"  column="compute_node_name"/>
+			<result property="nodeIpLan"  column="compute_node_ip_lan"/>
+			<result property="nodeState"  column="compute_node_state"/>
+		</association>
+	</resultMap>
+	<sql id="vmManagerModel_fields">
+		t_vir_model.model_name,
+		t_vir_model.model_device_id,
+		t_vir_model.compute_node_id,
+		t_vir_model.model_state,
+		t_vir_model.model_system_type,
+		t_vir_model.model_system_bit,
+		t_vir_model.model_cpu_kernel,
+		t_vir_model.model_nic_list,
+		t_vir_model.model_memory,
+		t_vir_model.model_nic_driver_type,
+		t_vir_model.model_cd_driver_type,
+		t_vir_model.model_disk_type,
+		t_vir_model.model_usb_controller,
+		t_vir_model.model_remark
+         </sql>
+
+	<!-- 根据vmID查询虚拟机网卡信息 -->
+	<select id="select-vm-manager-model-by-deviceId" parameterType="int"
+		resultMap="vmModelAndComNode">
+		select
+		<include refid="vmManagerModel_fields" />,
+		t_compute_nodes.compute_node_cpu_logic_num,
+		t_compute_nodes.compute_node_cpu_core_num,
+		t_compute_nodes.compute_node_mem_size,
+		t_compute_nodes.compute_node_id,
+		t_compute_nodes.compute_node_unique_id,
+		t_compute_nodes.co_sq_s,
+		t_compute_nodes.compute_node_name,
+		t_compute_nodes.compute_node_ip_lan,
+		t_compute_nodes.compute_node_state
+		from
+		t_vir_model
+		left join t_compute_nodes
+		on t_vir_model.compute_node_id=t_compute_nodes.compute_node_id
+		where
+		t_vir_model.model_device_id=#{id}
+	</select>
+	<select id="select-vm-manager-model-count-by-deviceId" parameterType="int"
+		resultType="int">
+		select
+		count(*)
+		from
+		t_vir_model
+		where
+		model_device_id=#{id}
+		and model_state=1;
+	</select>
+
+
+	<!-- 增加虚拟网卡 -->
+	<insert id="insert-vmManagerModel" parameterType="vmManagerModel"
+		keyProperty="id" useGeneratedKeys="true">
+		insert into t_vir_model
+		(
+		t_vir_model.model_name,
+		t_vir_model.model_device_id,
+		t_vir_model.compute_node_id,
+		t_vir_model.model_state,
+		t_vir_model.model_system_type,
+		t_vir_model.model_system_bit,
+		t_vir_model.model_cpu_kernel,
+		t_vir_model.model_nic_list,
+		t_vir_model.model_memory,
+		t_vir_model.model_nic_driver_type,
+		t_vir_model.model_cd_driver_type,
+		t_vir_model.model_disk_type,
+		t_vir_model.model_usb_controller,
+		t_vir_model.model_remark
+		)
+		values
+		(
+		#{modelName},
+		#{deviceId},
+		#{comNodeId},
+		#{state},
+		#{sysType},
+		#{sysBit},
+		#{cpuKernel},
+		#{nicList},
+		#{memory},
+		#{nicDriver},
+		#{cdDriver},
+		#{diskType},
+		#{usbController},
+		#{remark}
+		);
+	 </insert>
+	<update id="update-vmManagerModel" parameterType="vmManagerModel">
+		UPDATE t_vir_model
+		SET
+		t_vir_model.compute_node_id=#{comNodeId},
+		t_vir_model.model_system_type=#{sysType},
+		t_vir_model.model_cpu_kernel=#{cpuKernel},
+		t_vir_model.model_nic_list=#{nicList},
+		t_vir_model.model_memory=#{memory},
+		t_vir_model.model_remark=#{remark}
+		WHERE model_device_id=#{deviceId}
+    </update>
+</mapper>

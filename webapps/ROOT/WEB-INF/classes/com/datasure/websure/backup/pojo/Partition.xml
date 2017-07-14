@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+	<resultMap id="PartitionDetailMap" type="Partition">
+		<result property="partitionId" column="partition_id"/>
+		<result property="diskcloneId" column="diskclone_id"/>
+		<result property="harddiskId" column="harddisk_id"/>
+		<result property="index" column="partition_index"/>
+		<result property="online" column="partition_is_online"/>
+		<result property="letter" column="partition_letter"/>
+		<result property="volumename" column="partition_volumename"/>
+		<result property="volumeLabel" column="partition_volume_label"/>
+		<result property="totalSector" column="partition_total_sector"/>
+		<result property="startSector" column="partition_start_sector"/>
+		<result property="runstate" column="partition_runstate"/>
+		<result property="partStandby" column="device_is_standby"/>
+		<result property="standbyPartitionId" column="device_standby_partition_id"/>
+		<result property="needbackup" column="partition_needbackup"/>
+		<result property="fileSystem" column="partition_filesystem"/>
+		<result property="remark" column="partition_remark"/>
+		<result property="partitionIsOS" column="partition_is_OS"/>
+		<result property="partitionStandbyModel" column="partition_standby_model"/>
+	</resultMap>
+	<select id="select-partition-by-id" parameterType="List" resultMap="PartitionDetailMap">
+		select 
+			partition_id,
+			diskclone_id,
+			harddisk_id,
+			partition_index,
+			partition_is_online,
+			partition_letter,
+			partition_is_online,
+			device_is_standby,
+			device_standby_partition_id,
+			partition_volumename,
+			partition_volume_label,
+			partition_total_sector,
+			partition_start_sector,
+			partition_runstate,
+			partition_needbackup,
+			partition_filesystem,
+			partition_remark,
+			partition_is_OS,
+			partition_standby_model
+		from 
+			t_partition where partition_id in
+		 <foreach collection="list" item="classIdList"  open="(" separator="," close=")">  
+        	#{classIdList}  
+     	</foreach>  
+	</select>
+	
+	<select id="select-partition-by-parid" parameterType="int" resultMap="PartitionDetailMap">
+		select 
+			partition_id,
+			diskclone_id,
+			harddisk_id,
+			partition_index,
+			partition_is_online,
+			partition_letter,
+			partition_volumename,
+			partition_volume_label,
+			partition_total_sector,
+			partition_start_sector,
+			partition_runstate,
+			partition_needbackup,
+			partition_filesystem,
+			partition_is_OS
+		from t_partition where partition_id=#{id}
+	</select> 
+	
+	<select id="select-partition-by-harddisklist" parameterType="List" resultMap="PartitionDetailMap">
+		select 
+			partition_id,
+			diskclone_id,
+			harddisk_id,
+			partition_index,
+			partition_is_online,
+			partition_letter,
+			partition_is_online,
+			device_is_standby,
+			device_standby_partition_id,
+			partition_volumename,
+			partition_volume_label,
+			partition_total_sector,
+			partition_start_sector,
+			partition_runstate,
+			partition_needbackup,
+			partition_filesystem,
+			partition_remark,
+			partition_is_OS,
+			partition_standby_model
+		from 
+			t_partition where harddisk_id in
+		 <foreach collection="list" item="hardDiskList"  open="(" separator="," close=")">  
+        	#{hardDiskList.hardDiskid}  
+     	</foreach>  
+	</select>
+	
+	<select id="select-partition-by-harddisk-and-type" parameterType="int" resultMap="PartitionDetailMap">
+		select
+			partition_id,
+			diskclone_id,
+			harddisk_id,
+			partition_index,
+			partition_is_online,
+			partition_letter,
+			partition_is_online,
+			device_is_standby,
+			device_standby_partition_id,
+			partition_volumename,
+			partition_volume_label,
+			partition_total_sector,
+			partition_start_sector,
+			partition_runstate,
+			partition_needbackup,
+			partition_filesystem,
+			partition_remark,
+			partition_is_OS,
+			partition_standby_model
+		from 
+			t_partition
+		where 
+			harddisk_id = #{hardDiskId}
+			And partition_is_online = 1
+	</select>
+	
+	<select id="select-partition-by-deviceid-and-partitioninfo" parameterType="Map" resultMap="PartitionDetailMap">
+		select 
+			partition_id,
+			diskclone_id,
+			harddisk_id,
+			partition_index,
+			partition_is_online,
+			partition_letter,
+			partition_is_online,
+			device_is_standby,
+			device_standby_partition_id,
+			partition_volumename,
+			partition_volume_label,
+			partition_total_sector,
+			partition_start_sector,
+			partition_runstate,
+			partition_needbackup,
+			partition_filesystem,
+			partition_remark,
+			partition_is_OS,
+			partition_standby_model
+		from 
+			t_partition 
+		where 
+			harddisk_id in(
+				SELECT
+					harddisk_id
+				FROM 
+					t_harddisk
+				WHERE 
+					device_id = #{deviceId}
+			) 
+		<if test="letter !=null and letter !='' " >
+			 	And partition_letter = #{letter}
+		</if>
+		<if test="fileSys !=null and fileSys !='' " >
+			 	And partition_filesystem = #{fileSys}
+		</if>
+		And partition_is_online = 1
+			
+		 
+	</select>
+	
+	<select id="select-partitions-by-harddisk-id" parameterType="int" resultMap="PartitionDetailMap">
+		SELECT 
+			partition_id,
+			diskclone_id,
+			harddisk_id,
+			partition_index,
+			partition_is_online,
+			partition_letter,
+			device_is_standby,
+			device_standby_partition_id,
+			partition_volumename,
+			partition_volume_label,
+			partition_total_sector,
+			partition_start_sector,
+			partition_runstate,
+			partition_needbackup,
+			partition_filesystem,
+			partition_remark,
+			partition_is_OS,
+			partition_standby_model
+		
+		FROM t_partition WHERE harddisk_id=#{value} AND partition_is_online=1 ORDER BY partition_start_sector ASC
+		
+	</select>
+	
+	
+	<select id="select-share-partitions-by-harddisk-id" parameterType="int" resultMap="PartitionDetailMap">
+		SELECT 
+			partition_id,
+			diskclone_id,
+			harddisk_id,
+			partition_index,
+			partition_is_online,
+			partition_letter,
+			device_is_standby,
+			device_standby_partition_id,
+			partition_volumename,
+			partition_volume_label,
+			partition_total_sector,
+			partition_start_sector,
+			partition_runstate,
+			partition_needbackup,
+			partition_filesystem,
+			partition_remark,
+			partition_is_OS,
+			partition_standby_model
+		
+		FROM t_partition WHERE harddisk_id=#{value} 
+		AND partition_is_online=1 
+		AND device_is_standby = 1
+		ORDER BY partition_start_sector ASC
+		
+	</select>
+	
+	
+		<select id="select-partitions-by-hardId-index" parameterType="Map" resultMap="PartitionDetailMap">
+			SELECT 
+				partition_id,
+				diskclone_id,
+				harddisk_id,
+				partition_index,
+				partition_is_online,
+				partition_letter,
+				partition_volumename,
+				partition_volume_label,
+				partition_total_sector,
+				partition_start_sector,
+				partition_runstate,
+				partition_needbackup,
+				partition_filesystem,
+				partition_is_OS,
+				partition_standby_model				
+			FROM t_partition 
+			WHERE harddisk_id=#{hardDiskId} 
+			AND partition_index=#{index}
+	</select>
+	
+	<select id="select-partitions-by-diskcloneid" parameterType="int" resultMap="PartitionDetailMap">
+		SELECT 
+			partition_id,
+			diskclone_id,
+			harddisk_id,
+			partition_index,
+			partition_is_online,
+			partition_letter,
+			partition_volumename,
+			partition_volume_label,
+			partition_total_sector,
+			partition_start_sector,
+			partition_runstate,
+			partition_needbackup,
+			partition_filesystem,
+			partition_is_OS,
+			partition_standby_model				
+		FROM t_partition 
+		WHERE partition_is_online=1 
+		AND diskclone_id IN (SELECT 
+								diskclone_id 
+							FROM 
+								t_diskclone  
+							WHERE 
+								diskclone_id = #{value} 
+							)
+</select>
+	
+	<select id="select-partition-letter-by-runstate" parameterType="int" resultType="String">
+		select 
+			partition_letter
+		from 
+			t_partition 
+		where 
+			diskclone_id in(
+				SELECT
+					diskclone_id
+				FROM 
+					t_diskclone
+				WHERE 
+					device_id = #{deviceId}
+				AND
+					diskclone_is_online = 1	
+			) 
+			And 
+				partition_is_online = 1
+			AND 
+				partition_runstate = 1
+			AND 
+				harddisk_id 
+				IN (
+				SELECT 
+				harddisk_id 
+				FROM t_harddisk 
+				WHERE device_id = #{deviceId}
+				AND harddisk_cluster_type = 0
+				)
+	</select>
+	
+	<!-- 根据分区卷标查找 分区标识 -->
+	<select id="select-partition-letter-by-harddisk-id-and-partition-volume-label" parameterType="java.util.Map" resultType="String"> 
+	   SELECT 
+		  partition_letter 
+		FROM
+		  t_partition 
+		WHERE harddisk_id = #{harddiskID} 
+		  AND partition_volume_label = #{partVolumeLabel}
+	</select>
+	
+	<update id="update-standby-partitionlist" parameterType="java.util.Map">
+		<foreach collection="partitionList" item="item" index="index" open="" close="" separator=";">
+	        update t_partition
+			<set>
+				device_standby_partition_id = #{item.standbyPartitionId},
+				partition_standby_model = #{item.partitionStandbyModel},
+				device_is_standby = 1
+			</set>	
+          	where 
+          		partition_id = #{item.partitionId}
+         </foreach>
+	</update>
+	
+	<update id="update-standby-by-partitionList-cancel" parameterType="Map">
+		<foreach collection="partitionList" item="item" index="index" open="" close="" separator=";">
+	        update t_partition 
+			<set>
+				device_is_standby = 2,
+				partition_standby_model = 0,
+				device_standby_partition_id = null
+			</set>	
+          	where partition_id = #{item.partitionId}
+         </foreach>
+	</update>
+	
+	<update id="update-needback-by-deviceId" parameterType="list">
+	        update t_partition 
+			<set>
+				partition_needbackup = 0
+			</set>	
+          	where harddisk_id in
+          	(
+          		select harddisk_id from t_harddisk where harddisk_is_online=1 AND device_id in
+	          	<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+	         	 	#{item}
+	         	</foreach>
+         	)
+	</update>
+	
+	<update id="update-needback-by-partitionId" parameterType="list">
+	        update t_partition 
+			<set>
+				partition_needbackup = 1
+			</set>	
+          	where partition_id in 
+          	<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+         	 	#{item}
+         	</foreach>
+	</update>
+	
+	<!-- 根据Partition修改磁盘镜像状态 -->
+	<update id="update-runstate-by-partitionId" parameterType="list">
+            update t_partition 
+            <set>
+                partition_runstate = 0
+            </set>  
+            where partition_id in 
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+    </update>
+	
+	<update id="update-needback-by-partitionlist" parameterType="java.util.Map">
+		<foreach collection="partitionList" item="item" index="index" open="" close="" separator=";">
+	        update t_partition
+			<set>
+				partition_needbackup = #{item.needbackup}
+			</set>	
+          	where 
+          		partition_id = #{item.partitionId}
+         </foreach>
+	</update>
+	
+	<update id="update-needback-by-partitionid-to-yes" parameterType="list">
+        update 
+        	t_partition 
+			<set>
+				partition_needbackup = 1
+			</set>	
+         	where 
+         		partition_id in
+          	<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+         	 	#{item}
+         	</foreach>
+	</update>
+	
+	<update id="update-needback-by-partitionid-to-no" parameterType="list">
+        update 
+        	t_partition 
+			<set>
+				partition_needbackup = 0
+			</set>	
+         	where 
+         		partition_id in
+          	<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+         	 	#{item}
+         	</foreach>
+	</update>
+	
+	<select id="select-partition-by-params" parameterType="java.util.Map"  resultType="String">
+		SELECT partition_letter 
+		FROM t_partition 
+		WHERE harddisk_id 
+		IN (
+		SELECT harddisk_id 
+		FROM t_harddisk 
+		WHERE device_id = #{deviceId} AND diskclone_id 
+		IN (
+		SELECT diskclone_id 
+		FROM t_diskclone 
+		WHERE device_id = #{deviceId} AND diskclone_is_online = 1) 
+		AND harddisk_index = #{diskIndex} )
+		AND partition_index = #{partIndex}
+	
+	</select>
+	
+	<select id="select-process-count-by-deviceId" parameterType="list" resultType="int">
+		SELECT count(*) 
+		FROM 
+		t_partition 
+		WHERE 
+		diskclone_id IN 
+		(SELECT diskclone_id 
+		FROM t_diskclone 
+		WHERE device_id IN
+		<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+         	 	#{item.deviceId}
+         </foreach>
+		AND diskclone_is_online = 1) 
+		AND partition_runstate IN (1,4)
+	
+	</select>
+</mapper>

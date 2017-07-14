@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+     
+    <package name="struts-syslog" extends="struts-base" namespace="/syslog">
+    
+		  <!-- 性能报表 -->
+		  <action name="toSystemReport" class="systemReportAction"/>
+		  <!-- 故障报表 -->
+		  <action name="toSystemEntire" class="systemEntireAction"/>
+		  <!-- 备份报表 -->
+		  <action name="toSystemBackupLog" class="systemBackupLogAction"/>
+		  <!-- 系统日志Action -->
+		  <action name="toSystemLog" class="systemLogAction"/>
+    </package> 
+</struts>    

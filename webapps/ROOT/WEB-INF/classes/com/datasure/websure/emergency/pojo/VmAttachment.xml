@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+		<resultMap id="vmAttachmentBaseMap"  type="vmAttachment">
+				<id property="id"  column="id"/>
+				<result property="vmManagerID"  column="vir_manager_id"/>
+				<result property="type"  column="type"/>
+				<result property="generation"  column="generation"/>
+				<result property="information"  column="information"/>
+				<result property="state"  column="state"/>
+				<result property="createTime"  column="create_time"/>
+				<result property="remark0"  column="remark0"/>
+				<result property="remark1"  column="remark1"/>
+				<result property="remark2"  column="remark2"/>
+		</resultMap>
+		
+		 <sql id="vmAttachment_fields" >
+			    t_vir_attachment.id,
+			    t_vir_attachment.type,
+			    t_vir_attachment.vir_manager_id,
+			    t_vir_attachment.generation,
+			    t_vir_attachment.information,
+			    t_vir_attachment.state,
+			    t_vir_attachment.create_time,
+			    t_vir_attachment.remark0,
+			    t_vir_attachment.remark1,
+			    t_vir_attachment.remark2
+			    
+		 </sql>
+		 
+		 <!-- 查询特定虚拟机附件 -->
+        <select id="select-attachments-by-manager-id" parameterType="int" resultMap="vmAttachmentBaseMap">
+            select 
+                   <include refid="vmAttachment_fields"/>
+            from  t_vir_attachment
+            where vir_manager_id=#{managerId}
+            order by create_time
+        </select>
+        
+        <!-- 通过ID查询特定虚拟机附件 -->
+        <select id="select-attachments-by-attachment-id" parameterType="int" resultMap="vmAttachmentBaseMap">
+            select 
+                   <include refid="vmAttachment_fields"/>
+            from  t_vir_attachment
+            where id=#{attachmentId}
+        </select>
+        
+        <!-- 删除附件 -->
+        <delete id="delete-attachment-by-attachment-id" parameterType="int">
+               delete from t_vir_attachment where id = #{attachmentId}
+        </delete>
+        
+        <!-- 删除附件 -->
+        <delete id="delete-attachment-by-manager-id" parameterType="int">
+               delete from t_vir_attachment where vir_manager_id = #{managerId}
+        </delete>
+        
+        <insert id="add-attachment"  parameterType="vmAttachment"  useGeneratedKeys="true"  keyProperty="id">
+              insert into  t_vir_attachment
+                   (
+	                t_vir_attachment.type,
+	                t_vir_attachment.vir_manager_id,
+	                t_vir_attachment.generation,
+	                t_vir_attachment.information,
+	                t_vir_attachment.state,
+	                t_vir_attachment.create_time,
+	                t_vir_attachment.remark0,
+	                t_vir_attachment.remark1,
+	                t_vir_attachment.remark2
+                   )
+                   values
+                   ( 
+                     #{type},
+                     #{vmManagerID},
+                     #{generation},
+                     #{information},
+                     #{state},
+                     #{createTime},
+                     #{remark0},
+                     #{remark1},
+                     #{remark2}
+                   )
+        </insert>
+		
+</mapper>

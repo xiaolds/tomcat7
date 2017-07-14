@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.datasure.websure">
+	<resultMap id="mountMap" type="Mount">
+		<id property="mountId" column="mount_id" />
+		<result property="mountName" column="mount_name" />
+		<result property="webMountName" column="mount_web_name" />
+		<result property="vmingId" column="vmimg_id" />
+		<result property="mountDestDeviceId" column="mount_dest_device_id" />
+		<result property="mountPartStartPos" column="mount_part_start_pos" />
+		<result property="mountPartSize" column="mount_part_size" />
+		<result property="mountPartLabel" column="mount_part_label" />
+		<result property="mountPartLetter" column="mount_part_letter" />
+		<result property="mountConnectionStr" column="connection_str" />
+		<result property="mountPartLinuxLoadPost" column="mount_part_linux_load_post" />
+		<result property="mountState" column="mount_state" />
+		<result property="mountPartUuid" column="mount_part_uuid" />
+		<result property="mountPartitionId" column="mount_partition_id" />
+		<result property="mountPower" column="mount_power" />
+		<result property="mountPartitionType" column="mount_partition_type" />
+		<result property="mountCreateTime" column="mount_create_time" />
+		<result property="mountUpdateTime" column="mount_update_time" />
+		<result property="mountRemark" column="mount_remark" />
+		<result property="mountDeviceName" column="mount_device_name" />
+		<result property="mountPartitionIndex" column="mount_partition_index" />
+		<result property="vmingFilePath" column="vmimg_file_path" />
+		<result property="sourceDeviceId" column="mount_source_device_id" />
+		<result property="sourceHardDiskId" column="mount_source_harddisk_id" />
+		<result property="mountPoint" column="mount_point" />
+	</resultMap>
+	<sql id="mount_fields">
+		t_mount.mount_id,
+		t_mount.mount_name,
+		t_mount.mount_web_name,
+		t_mount.mount_device_name,
+		t_mount.mount_partition_index,
+		t_mount.vmimg_id,
+		t_mount.vmimg_file_path,
+		t_mount.mount_dest_device_id,
+		t_mount.mount_part_start_pos,
+		t_mount.mount_part_size,
+		t_mount.mount_part_label,
+		t_mount.mount_part_letter,
+		t_mount.mount_connection_str,
+		t_mount.mount_part_linux_load_post,
+		t_mount.mount_state,
+		t_mount.mount_part_uuid,
+		t_mount.mount_partition_id,
+		t_mount.mount_power,
+		t_mount.mount_partition_type,
+		t_mount.mount_create_time,
+		t_mount.mount_update_time,
+		t_mount.mount_source_harddisk_id,
+		t_mount.mount_source_device_id,
+		t_mount.mount_remark,
+		t_mount.mount_point
+	 </sql>
+	<!--初始化查询数据库授权信息 -->
+	<select id="select-mount-By-All" resultMap="mountMap">
+		SELECT
+		mount_id,
+		mount_name,
+		mount_web_name,
+		mount_device_name,
+		mount_partition_index,
+		vmimg_id,
+		vmimg_file_path,
+		mount_dest_device_id,
+		mount_part_start_pos,
+		mount_part_size,
+		mount_part_label,
+		mount_part_letter,
+		mount_connection_str,
+		mount_part_linux_load_post,
+		mount_state,
+		mount_part_uuid,
+		mount_partition_id,
+		mount_power,
+		mount_partition_type,
+		mount_create_time,
+		mount_update_time,
+		mount_source_harddisk_id,
+		mount_source_device_id,
+		mount_remark,
+		mount_point
+		FROM t_mount
+	    </select>
+	<select id="select-mount-By-vmId" resultMap="mountMap"
+		parameterType="int">
+		SELECT
+		mount_id,
+		mount_name,
+		mount_device_name,
+		mount_partition_index,
+		vmimg_id,
+		vmimg_file_path,
+		mount_dest_device_id,
+		mount_part_start_pos,
+		mount_part_size,
+		mount_part_label,
+		mount_part_letter,
+		mount_connection_str,
+		mount_part_linux_load_post,
+		mount_state,
+		mount_part_uuid,
+		mount_partition_id,
+		mount_power,
+		mount_partition_type,
+		mount_create_time,
+		mount_update_time,
+		mount_remark,
+		mount_web_name
+		FROM t_mount
+		WHERE vmimg_id=#{vmingId}
+    	</select>
+	<select id="select-mount-By-Id" resultMap="mountMap"
+		parameterType="int">
+		SELECT
+		mount_id,
+		mount_name,
+		mount_device_name,
+		mount_partition_index,
+		vmimg_id,
+		vmimg_file_path,
+		mount_dest_device_id,
+		mount_part_start_pos,
+		mount_part_size,
+		mount_part_label,
+		mount_part_letter,
+		mount_connection_str,
+		mount_part_linux_load_post,
+		mount_state,
+		mount_part_uuid,
+		mount_partition_id,
+		mount_source_device_id,
+		mount_power,
+		mount_partition_type,
+		mount_create_time,
+		mount_update_time,
+		mount_remark,
+		mount_web_name
+		FROM t_mount
+		WHERE mount_id=#{mountId}
+    	</select>
+	<select id="select-Last-mount" resultType="int" parameterType="int">
+		SELECT MAX(mount_id)
+		FROM t_mount
+    	</select>
+	<select id="select-mount-count" resultType="int">
+		SELECT count(mount_id)
+		FROM t_mount
+    </select>
+	<select id="select-mount-by-vmdkIdList" resultType="int">
+		SELECT count(mount_id)
+		FROM t_mount
+		WHERE vmimg_id IN
+		<foreach item="vmdkIdList" index="index" collection="list"
+			open="(" separator="," close=")">
+			#{vmdkIdList}  
+			 </foreach>
+	</select>
+	
+	<!-- 
+		虚拟磁盘Idlist，查询挂载信息，用于判断快照集下是否有挂载信息
+		Auth:wangshaodong 
+	-->
+	<select id="select-mount-info-by-vmdkIdList" resultMap="mountMap">
+		SELECT 
+		<include refid="mount_fields" />
+		FROM t_mount
+		WHERE vmimg_id IN
+		<foreach item="vmdkIdList" index="index" collection="list"
+			open="(" separator="," close=")">
+			#{vmdkIdList}  
+			 </foreach>
+	</select>
+	<select id="select-same-mount-letter-count" resultType="int" parameterType="Mount">
+		SELECT count(mount_id)
+		FROM t_mount
+		WHERE mount_dest_device_id=#{mountDestDeviceId}
+		AND mount_part_letter=#{mountPartLetter}
+		AND mount_id!=#{mountId}
+    </select>
+	<select id="select-same-mount-name-count" resultType="int" parameterType="Mount">
+		SELECT count(mount_id)
+		FROM t_mount
+		<!--WHERE mount_dest_device_id=#{mountDestDeviceId}
+		AND mount_web_name=#{webMountName}    -->
+		WHERE mount_web_name=#{webMountName}
+		AND mount_id!=#{mountId}
+</select>
+    
+    <select id="select-mount-by-diskclone-id-and-set-id" parameterType="Map" resultMap="mountMap">
+        SELECT 
+		  t_mount.* 
+		FROM
+		  t_mount 
+		  LEFT JOIN t_vmimg 
+		    ON t_mount.vmimg_id = t_vmimg.vmimg_id 
+		WHERE t_vmimg.vmimg_diskclone_id = #{diskCloneId}
+		  AND t_vmimg.vmimg_snapshot_set_id = #{setId} 
+    </select>
+	
+	<update id="update-NewMount-By-mountId" parameterType="Map">
+		UPDATE t_mount
+		SET
+		mount_part_letter=#{letter},
+		mount_update_time=NOW(),
+		mount_power=#{power},
+		mount_partition_type=#{type},
+		mount_state=#{mountState},
+		mount_dest_device_id=#{tarId},
+		mount_web_name=#{webName},
+		mount_connection_str=#{conStr}
+		WHERE mount_id=#{mountId}
+    </update>
+
+	<update id="update-Mount-By-mountId" parameterType="Map">
+		UPDATE t_mount
+		SET
+		mount_part_letter=#{letter},
+		mount_update_time=NOW(),
+		mount_dest_device_id=#{tarId},
+		mount_connection_str=#{conStr},
+		mount_web_name=#{webName}
+		WHERE mount_id=#{mountId}
+    </update>
+
+	<update id="update-MountType-By-mountId" parameterType="Map">
+		UPDATE t_mount
+		SET
+		mount_partition_type=#{type}
+		WHERE mount_id=#{mountId}
+    </update>
+    <update id="update-MountR-By-mountId" parameterType="Map">
+		UPDATE t_mount
+		SET
+		mount_remark=#{remark}
+		WHERE mount_id=#{mountId}
+    </update>
+    <!--清空挂载配置信息  -->
+	<update id="clean-new-mount-info" parameterType="Mount">
+		UPDATE t_mount
+		SET
+		mount_dest_device_id=NULL,
+		mount_update_time=NOW(),
+		mount_power=#{power},
+		mount_partition_type=#{type},
+		mount_state=#{mountState},
+		mount_dest_device_id=#{tarId},
+		mount_web_name=#{webName},
+		mount_connection_str=#{conStr}
+		WHERE mount_id=#{mountId}
+    </update>
+	<insert id="insert-mount" parameterType="Mount" keyProperty="mountId"
+		useGeneratedKeys="true">
+		INSERT INTO t_mount
+		(mount_id,
+		mount_name,
+		mount_web_name,
+		mount_device_name,
+		mount_partition_index,
+		vmimg_id,
+		vmimg_file_path,
+		mount_dest_device_id,
+		mount_part_start_pos,
+		mount_part_size,
+		mount_part_label,
+		mount_part_letter,
+		mount_connection_str,
+		mount_part_linux_load_post,
+		mount_state,
+		mount_part_uuid,
+		mount_partition_id,
+		mount_power,
+		mount_partition_type,
+		mount_create_time,
+		mount_update_time,
+		mount_source_device_id,
+		mount_source_harddisk_id,
+		mount_remark)
+		VALUES (
+		#{mountId},
+		#{mountName},
+		#{webMountName},
+		#{mountDeviceName},
+		#{mountPartitionIndex},
+		#{vmingId},
+		#{vmingFilePath},
+		#{mountDestDeviceId},
+		#{mountPartStartPos},
+		#{mountPartSize},
+		#{mountPartLabel},
+		#{mountPartLetter},
+		#{mountConnectionStr},
+		#{mountPartLinuxLoadPost},
+		#{mountState},
+		#{mountPartUuid},
+		#{mountPartitionId},
+		#{mountPower},
+		#{mountPartitionType},
+		#{mountCreateTime},
+		#{mountUpdateTime},
+		#{sourceDeviceId},
+		#{sourceHardDiskId},
+		#{mountRemark}
+		);
+     </insert>
+	<delete id="delete-mount-by-id" parameterType="int">
+		DELETE
+		FROM
+		t_mount
+		WHERE mount_id=#{mountId}
+	</delete>
+</mapper>

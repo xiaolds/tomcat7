@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure.emergency">
+
+        <resultMap id="computeNodesNicBaseMap"  type="computeNodesNic" >
+               <id property="computeNicId"  column="compute_nic_id"/>
+               <result property="computeId"  column="compute_node_id"/>
+               <result property="computeNicIndex"  column="compute_nic_index"/>
+               <result property="computeNicName"  column="compute_nic_name"/>
+               <result property="computeNicUuid"  column="compute_nic_uuid"/>
+               <result property="computeNicMac"  column="compute_nic_mac"/>
+               <result property="computeNicIp"  column="compute_nic_ip"/>
+               <result property="computeNicNetmask"  column="compute_nic_netmask"/>
+               <result property="computeNicGateway"  column="compute_nic_gateway"/>
+               <result property="computeNicDns1"  column="compute_nic_dns1"/>
+               <result property="computeNicDns2"  column="compute_nic_dns2"/>
+               <result property="computeNicRemark"  column="compute_nic_remark"/>
+        </resultMap>
+         
+         <sql id="computeNodesNic_fields">
+                compute_nic_id,
+			    compute_node_id,
+			    compute_nic_index,
+			    compute_nic_name,
+			    compute_nic_uuid,
+			    compute_nic_mac,
+			    compute_nic_ip,
+			    compute_nic_netmask,
+			    compute_nic_gateway,
+			    compute_nic_dns1,
+			    compute_nic_dns2,
+			    compute_nic_remark
+         </sql>
+        
+        <!-- 根据节点ID查询计算节点网卡信息 -->
+        <select id="select-compute-nodes-nic-by-node-id"  parameterType="int"  resultMap="computeNodesNicBaseMap">
+               select 
+                   <include refid="computeNodesNic_fields"/>
+               from
+                   t_compute_nodes_nic
+               where   
+                   compute_node_id=#{computeId}  
+        </select>
+        
+         <!-- 根据节点ID查询计算节点网卡信息 -->
+        <select id="select-compute-nodes-nic-by-id"  parameterType="int"  resultMap="computeNodesNicBaseMap">
+               select 
+                   <include refid="computeNodesNic_fields"/>
+               from
+                   t_compute_nodes_nic
+               where   
+                   compute_nic_id=#{id}  
+        </select>
+        
+        <select id="select-compute-nodes-nic-not-in-id"  parameterType="int"  resultMap="computeNodesNicBaseMap">
+               select 
+                   <include refid="computeNodesNic_fields"/>
+               from
+                   t_compute_nodes_nic
+               where   
+                   compute_nic_id!=#{id}  
+        </select>
+</mapper>

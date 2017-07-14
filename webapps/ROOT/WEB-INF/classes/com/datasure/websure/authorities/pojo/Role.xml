@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="RoleMap" type="Role">
+		<id property="roleId"  column="role_id"/>               
+		<result property="roleName"  column="role_name"/>         
+		<result property="powerStr"  column="power_str"/>            
+		<result property="createTime" column="create_time"/> 
+		<result property="updateTime"  column="update_time"/>    
+		<result property="remark"  column="remark"/> 
+	</resultMap>
+	
+	<sql id="role-column">
+		t_role.role_id,                    
+	    t_role.role_name,             
+	    t_role.power_str,              
+	    t_role.create_time,            
+	    t_role.update_time,                 
+	    t_role.remark           
+	</sql>
+	
+	
+	<update id="update-role-powerstr-by-roleid" parameterType="Role">
+		update t_role set
+			power_str = #{powerStr},
+			update_time = now()
+		where role_id = #{roleId}
+	</update>
+	
+	<update id="update-role-info-by-roleid" parameterType="Role">
+		update t_role set
+			role_name = #{roleName},
+			remark = #{remark},
+			update_time = now()
+		where role_id = #{roleId}
+	</update>
+	
+	
+	<select id="select-role-by-roleid" resultMap="RoleMap" parameterType="int">
+		SELECT * FROM t_role WHERE role_id=#{roleId}
+	</select>
+		
+	
+	<select id="select-role-by-rolename" resultMap="RoleMap" parameterType="string">
+		SELECT * FROM t_role WHERE role_name=#{roleName}
+	</select>	
+	
+		
+	<select id="select-all-custom-roles" resultMap="RoleMap" >
+		SELECT * FROM t_role WHERE role_name not in('admin', 'security', 'auditor')
+	</select>
+	
+	
+	<select id="select-all-roles" resultMap="RoleMap" >
+		SELECT * FROM t_role 
+	</select>
+	
+	
+	<select id="select-count-of-all-roles" parameterType="java.util.Map" resultType="int">
+		SELECT count(*) FROM t_role where 1=1 		
+		<if test="roleName != null and '' != roleName">
+	  		 	and role_name LIKE CONCAT(CONCAT('%', #{roleName}),'%')
+	  	</if>
+	  	<if test="remark != null and '' != remark">
+	  		 	and remark LIKE CONCAT(CONCAT('%', #{remark}),'%')
+	  	</if>
+	</select>		
+		
+	<select id="select-all-roles-by-split-page" parameterType="java.util.Map" resultMap="RoleMap">
+		SELECT * FROM t_role where 1=1
+		<if test="roleName != null and '' != roleName">
+	  		 	and role_name LIKE CONCAT(CONCAT('%', #{roleName}),'%')
+	  	</if>
+	  	<if test="remark != null and '' != remark">
+	  		 	and remark LIKE CONCAT(CONCAT('%', #{remark}),'%')
+	  	</if>
+		limit #{firstResult},#{maxResult}
+	</select>
+	
+	<select id="select-count-of-all-roles-in-admin-mode" parameterType="java.util.Map" resultType="int">
+		SELECT count(*) FROM t_role where role_name not in('auditor', 'security') 		
+		<if test="roleName != null and '' != roleName">
+	  		 	and role_name LIKE CONCAT(CONCAT('%', #{roleName}),'%')
+	  	</if>
+	  	<if test="remark != null and '' != remark">
+	  		 	and remark LIKE CONCAT(CONCAT('%', #{remark}),'%')
+	  	</if>
+	</select>
+	
+	<select id="select-all-roles-by-split-page-in-admin-mode" parameterType="java.util.Map" resultMap="RoleMap">
+		SELECT * FROM t_role where role_name not in('auditor', 'security')
+		<if test="roleName != null and '' != roleName">
+	  		 	and role_name LIKE CONCAT(CONCAT('%', #{roleName}),'%')
+	  	</if>
+	  	<if test="remark != null and '' != remark">
+	  		 	and remark LIKE CONCAT(CONCAT('%', #{remark}),'%')
+	  	</if>
+		limit #{firstResult},#{maxResult}
+	</select>
+	
+	<insert id="insert-single-role"  parameterType="Role" >
+		insert 
+			into 
+		t_role(                                     
+			  role_name,
+			  power_str,
+			  create_time,
+			  remark          
+			)values(
+			  #{roleName},
+			  #{powerStr},
+			  now(),
+			  #{remark}
+			)
+		<selectKey resultType="int" keyProperty="roleId" >
+			select @@IDENTITY as id 
+		</selectKey>
+	</insert>
+	
+	
+	<delete id="delete-role-by-roleid" parameterType="int">
+         delete from t_role where role_id=#{roleId}
+	</delete>
+	
+	
+</mapper>

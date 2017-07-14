@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure.emergency">
+
+        <resultMap id="computeNodesVirtualNicMap"  type="computeNodesVirtualNic" >
+               <id property="computeVirtualNicId"  column="compute_virtual_nic_id"/>
+               <result property="computeId"  column="compute_node_id"/>
+               <result property="computeVirtualNicName"  column="compute_virtual_nic_name"/>
+               <result property="computeVirtualNicGateWay"  column="compute_virtual_nic_gateway"/>
+        </resultMap>
+         
+         <sql id="computeNodesVirtualNic_fields">
+                compute_virtual_nic_id,
+			    compute_node_id,
+			    compute_virtual_nic_name,
+			    compute_virtual_nic_gateway
+         </sql>
+        
+        <!-- 添加计算节点虚拟网段 -->
+        <insert id="insert-compute-nodes-virtual-nic"  parameterType="computeNodesVirtualNic">
+            INSERT INTO t_compute_nodes_virtual_nic (
+			  compute_node_id,
+			  compute_virtual_nic_name,
+			  compute_virtual_nic_gateway
+			) 
+			VALUES(
+			  #{computeId}, 
+			  #{computeVirtualNicName},
+			  #{computeVirtualNicGateWay}
+			  )
+	        <selectKey resultType="int" keyProperty="computeVirtualNicId">
+	            select @@IDENTITY as
+	            compute_virtual_nic_id 
+	        </selectKey>
+        </insert>
+        
+        <!-- 根据计算节点ID查询计算节点虚拟子网信息 -->
+        <select id="select-compute-nodes-virtual-nic-by-node-id"  parameterType="int"  resultMap="computeNodesVirtualNicMap">
+               select 
+                   <include refid="computeNodesVirtualNic_fields"/>
+               from
+                   t_compute_nodes_virtual_nic
+               where   
+                   compute_node_id=#{computeId}  
+        </select>
+        
+         <!-- 根据虚拟网段ID查询虚拟子网信息 -->
+        <select id="select-compute-nodes-virtual-nic-by-id"  parameterType="int"  resultMap="computeNodesVirtualNicMap">
+               select 
+                   <include refid="computeNodesVirtualNic_fields"/>
+               from
+                   t_compute_nodes_virtual_nic
+               where   
+                   compute_virtual_nic_id=#{id}  
+        </select>
+        
+        <!-- 根据虚拟子网名称查找虚拟子网 -->
+        <select id="select-compute-nodes-vir-net-by-name" parameterType="string" resultMap="computeNodesVirtualNicMap">
+	            select 
+	                   <include refid="computeNodesVirtualNic_fields"/>
+	            from
+	                t_compute_nodes_virtual_nic
+	            where   
+	                compute_virtual_nic_name=#{virNetName}
+        </select>
+        
+        <!-- 根据虚拟子网网关查找虚拟子网 -->
+        <select id="select-compute-nodes-vir-net-by-gateway" parameterType="string" resultMap="computeNodesVirtualNicMap">
+                select 
+                       <include refid="computeNodesVirtualNic_fields"/>
+                from
+                    t_compute_nodes_virtual_nic
+                where   
+                    compute_virtual_nic_gateway=#{gateway}
+        </select>
+        
+        <!-- 根据虚拟子网ID删除虚拟子网 -->
+        <delete id="del-compute-nodes-virtual-nic-by-id" parameterType="int">
+            DELETE 
+			FROM
+			  t_compute_nodes_virtual_nic 
+			WHERE compute_virtual_nic_id = #{virtualNicId}
+			LIMIT 1 ;
+        </delete>
+        
+        <!-- 更新计算节点虚拟网卡信息 -->        
+        <update id="update-compute-nodes-virtual-nic" parameterType="computeNodesVirtualNic">
+	        UPDATE 
+			  t_compute_nodes_virtual_nic 
+			<set>
+			     <if test="computeVirtualNicName  !=null and '' != computeVirtualNicName">
+                      compute_virtual_nic_name=#{computeVirtualNicName},
+                 </if>
+                 <if test="computeVirtualNicGateWay  !=null and '' != computeVirtualNicGateWay">
+                      compute_virtual_nic_gateway=#{computeVirtualNicGateWay}
+                 </if>
+			</set>
+			WHERE compute_virtual_nic_id = #{computeVirtualNicId}
+        </update>
+        
+</mapper>

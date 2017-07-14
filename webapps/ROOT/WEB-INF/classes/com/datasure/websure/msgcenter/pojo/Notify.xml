@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="NotifyMap" type="notify">
+		<id property="notifyId"  column="id"/>
+		<result property="title"  column="title"/>
+		<result property="notifyType"  column="notify_type"/>     
+		<result property="notifySource"  column="notify_source"/>         
+		<result property="notifyState"  column="notify_state"/>      
+		<result property="notifyMsgType"  column="notify_msg_type"/> 
+		<result property="content"  column="content"/>    
+		<result property="notifyTime"  column="notify_time"/> 
+		<result property="isRead"  column="is_read"/>   
+		<result property="moduleType"  column="module_type"/>   
+		<result property="sourceId"  column="sourceId"/>  
+		<result property="remark"  column="remark"/>  
+		<result property="scriptName"  column="script_name"/>  
+		<result property="continueTime"  column="continue_time"/>  
+		<result property="used"  column="used"/>  
+		<result property="usedSize"  column="usedSize"/>  
+		<result property="count"  column="count"/>  
+	</resultMap>
+	
+	<resultMap id="NotifyDeviceMap" type="notify" extends="NotifyMap">
+		<association property="warningConfigInfo" javaType="warningConfigInfo">
+			<result property="deviceId"  column="device_id"/>
+			<result property="configModelId"  column="config_model_id"/>
+			<result property="configTargetId"  column="config_target_id"/>
+			<result property="configRunTimeInterval"  column="config_run_time_interval"/>
+			<result property="configRunTimeIntervalUnit"  column="config_run_time_interval_unit"/>
+			<result property="configContRunTimeInterval"  column="config_cont_run_time_interval"/>
+			<result property="configContRunTimeIntervalUnit"  column="config_cont_run_time_interval_unit"/>
+		</association>
+	</resultMap>
+	
+	<sql id="notify-fields">
+		  t_notify.id,
+		  t_notify.title,
+		  t_notify.notify_type,
+		  t_notify.notify_source,
+		  t_notify.notify_state,
+		  t_notify.notify_msg_type,
+		  t_notify.content,
+		  t_notify.notify_time,
+		  t_notify.is_read,
+		  t_notify.module_type,
+		  t_notify.sourceId,
+		  t_notify.remark,
+		  t_notify.script_name,
+		  t_notify.continue_time,
+		  t_notify.used
+	</sql>
+	
+	<!-- 查找所有的通知 -->
+	<select id="select-notify-all" resultMap="NotifyMap">
+		SELECT
+			<include refid="notify-fields"/>
+		FROM t_notify
+		ORDER BY notify_time DESC
+	</select>
+	
+	<!-- 根据sourceId查询最大时间 -->
+	<select id="select-notify-max-notify-tiem-by-sourceId" resultMap="NotifyMap" parameterType="map">
+		SELECT
+		  t_notify.id,
+		  t_notify.title,
+		  t_notify.notify_type,
+		  t_notify.notify_source,
+		  t_notify.notify_state,
+		  t_notify.notify_msg_type,
+		  t_notify.content,
+		  t_notify.notify_time,
+		  t_notify.is_read,
+		  t_notify.module_type,
+		  t_notify.sourceId,
+		  t_notify.remark,
+		  t_notify.script_name,
+		  t_notify.continue_time,
+		  t_notify.used
+		FROM t_notify
+		WHERE sourceId = #{sourceId}
+			AND module_type =#{moduleType}
+			ORDER BY notify_time DESC
+			LIMIT 0,1
+	</select>
+	
+	<!-- 根据模块类型和对应id查询通知消息 -->
+	<select id="select-notify-by-module-type-and-sourceId" resultMap="NotifyMap" parameterType="map">
+		SELECT
+			<include refid="notify-fields"/>
+		FROM t_notify
+		WHERE sourceId = #{sourceId}
+		AND module_type = #{moduleType}
+	</select>
+	
+	<!-- 根据模块类型查询通知 -->
+	<select id="select-notify-by-module-type" resultMap="NotifyMap" parameterType="int">
+		SELECT
+			<include refid="notify-fields"/>
+		FROM t_notify
+		WHERE module_type = #{moduleType}
+	</select>
+	
+	<!-- 增加一条通知 -->
+	<insert id="insert-notify" parameterType="notify">
+		INSERT INTO t_notify
+		 (title,
+		  notify_type,
+		  notify_source,
+		  notify_state,
+		  notify_msg_type,
+		  content,
+		  notify_time,
+		  is_read,
+		  module_type,
+		  sourceId,
+		  remark,
+		  script_name,
+		  continue_time,
+		  used)
+		VALUES 
+		(#{title},
+		 #{notifyType},
+		 #{notifySource},
+		 #{notifyState},
+		 #{notifyMsgType},
+		 #{content},
+		 #{notifyTime},
+		 #{isRead},
+		 #{moduleType},
+		 #{sourceId},
+		 #{remark},
+		 #{scriptName},
+		 #{continueTime},
+		 #{used})
+		 <selectKey resultType="int" keyProperty="notifyId">
+			select @@IDENTITY as id 
+		</selectKey>
+	</insert>
+	
+	<!-- 根据消息级别，获取消息列表 -->
+	<select id="select-notify-by-notify-state" parameterType="int" resultMap="NotifyMap">
+		SELECT
+		 	<include refid="notify-fields"/>
+		FROM t_notify
+		WHERE notify_state = #{notifyState}
+		ORDER BY notify_time DESC
+	</select>
+	
+	<!-- 根据消息发送状态，返回相应状态的消息列表 -->
+	<select id="select-notify-by-send-state" parameterType="int" resultMap="NotifyMap">
+	   SELECT DISTINCT
+	       <include refid="notify-fields"/>
+       FROM t_notify LEFT JOIN t_user_notify
+       ON t_notify.id = t_user_notify.notify_id
+       WHERE t_user_notify.sms_email_send = #{sendState}
+       ORDER BY t_notify.notify_time DESC
+	</select>
+	
+	<!-- 查询用户消息通知个数 -->
+	<select id="select-user-notifty-all-split-page-count" parameterType="Map" resultType="int">
+	   SELECT count(t_notify.id) 
+	       FROM t_notify LEFT JOIN t_user_notify
+	   ON t_notify.id = t_user_notify.notify_id
+	   WHERE t_user_notify.user_id = #{userId}
+	   AND t_user_notify.is_msg_notify = 2
+	</select>
+	
+	<!-- 分页查询用户消息通知 -->
+	<select id="select-user-notify-all-split-page" parameterType="Map" resultMap="NotifyMap">
+	    SELECT
+	    	  t_notify.id,
+	          t_notify.title,
+	          t_notify.notify_type,
+	          t_notify.notify_source,
+	          t_notify.notify_state,
+	          t_notify.notify_msg_type,
+	          t_notify.content,
+	          t_notify.notify_time,
+	          t_notify.module_type,
+	          t_notify.sourceId,
+	          t_notify.remark,
+	          t_notify.script_name,
+	          t_notify.continue_time,
+	          t_notify.used,
+	          t_user_notify.msg_read is_read
+       FROM t_notify LEFT JOIN t_user_notify
+       ON t_notify.id = t_user_notify.notify_id
+       WHERE t_user_notify.user_id = #{userId}
+       AND t_user_notify.is_msg_notify = 2
+       ORDER BY t_user_notify.msg_read ASC,
+                t_notify.notify_time DESC
+       <if test="firstResult != null and maxResult != null">
+           limit  #{firstResult},#{maxResult} 
+       </if>        
+	</select>
+	
+	<!-- 根据参数，查询通知 -->
+	<select id="select-notify-by-notify-params" parameterType="notify" resultMap="NotifyMap">
+		SELECT
+			<include refid="notify-fields"/>
+		FROM t_notify
+		WHERE 1 = 1
+			<if test="moduleType != 0 ">
+				AND module_type = #{moduleType}
+			</if>
+			<if test="sourceId != 0">
+				AND sourceId = #{sourceId}
+			</if>
+			<if test="notifyState != 0 ">
+				AND notify_state = #{notifyState}
+			</if>
+			<if test="scriptName != null and scriptName != '' ">
+				AND script_name = #{scriptName}
+			</if>
+			<if test="notifyTime != null and notifyTime != '' ">
+				AND notify_time >= #{notifyTime}
+			</if>
+	</select>
+	
+	<!-- 根据模块类型和设备id集合查询信息 -->
+	<select id="select-notify-by-module-type-and-device-id-list" parameterType="map" resultMap="NotifyMap">
+		SELECT
+			COUNT(notify_state) AS COUNT,
+			notify_state
+		FROM t_notify
+		WHERE module_type = #{moduleType}
+			AND sourceId IN 
+			<foreach item="item" index="index" collection="sourceIds" open="(" separator="," close=")"> 
+                    #{item}
+          </foreach> 
+       	<if test="scriptName != null and scriptName !='' ">
+		 	AND script_name LIKE CONCAT(CONCAT('%', #{scriptName}),'%')  
+		</if>
+          <if test="beginDate != null and beginDate != '' ">
+       		AND notify_time >= #{beginDate}
+       	</if>
+		GROUP BY notify_state
+	</select>
+	
+	<select id="select-notify-by-module-type-and-sourceid-and-state-count" parameterType="map" resultMap="NotifyMap">
+		SELECT
+			COUNT(notify_state) as count,
+  			notify_state
+		FROM t_notify
+		WHERE module_type = #{moduleType}
+			AND sourceId = #{sourceId}
+		GROUP BY notify_state
+	</select>
+	
+	<!-- 报表日志-性能报表-导出 -->
+	<select id="select-notify-by-report-export" parameterType="Map" resultMap="NotifyMap">
+		SELECT 
+		  t_notify.id,
+		  t_notify.title,
+		  t_notify.notify_type,
+		  t_notify.notify_source,
+		  MIN(notify_state) AS notify_state,
+		  t_notify.notify_msg_type,
+		  t_notify.content,
+		  t_notify.notify_time,
+		  t_notify.is_read,
+		  t_notify.module_type,
+		  t_notify.sourceId,
+		  t_notify.remark,
+		  t_notify.script_name,
+		  t_notify.continue_time,
+		  t_notify.used,
+		  COUNT(notify_state) COUNT
+		 FROM 
+		(
+			SELECT 
+				<include refid="notify-fields"/>
+			FROM
+			  t_notify 
+			WHERE module_type = #{moduleType} 
+			  AND sourceId = #{sourceId}
+			  AND notify_state != 1
+	       	<if test="notifyTime != null and notifyTime != '' ">
+	       		AND notify_time >= #{notifyTime}
+	       	</if>
+		  ) t_notify 
+		  WHERE content LIKE '%CPU%' 
+			  OR content LIKE '%内存%'
+		  GROUP BY content,DATE_FORMAT(t_notify.notify_time,'%Y-%m-%d')
+	</select>
+	
+	<!-- 报表日志-故障报表-导出 -->
+	<select id="select-notify-by-entire-export" parameterType="Map" resultMap="NotifyMap">
+		SELECT 
+			t_notify.id,
+			t_notify.title,
+			t_notify.notify_type,
+			t_notify.notify_source,
+			MIN(notify_state) AS notify_state,
+			t_notify.notify_msg_type,
+			t_notify.content,
+			t_notify.notify_time,
+			t_notify.is_read,
+			t_notify.module_type,
+			t_notify.sourceId,
+			t_notify.remark,
+			t_notify.script_name,
+			t_notify.continue_time,
+			t_notify.used,
+			COUNT(notify_state) COUNT
+		 FROM 
+		(
+			SELECT 
+				<include refid="notify-fields"/>
+			FROM
+			  t_notify 
+			WHERE module_type = #{moduleType} 
+			  AND sourceId = #{sourceId}
+			  AND notify_state != 1
+			  <if test="notifyTime != null and notifyTime != '' ">
+	       		AND notify_time >= #{notifyTime}
+	       	</if>
+		  ) t_notify 
+		  GROUP BY DATE_FORMAT(t_notify.notify_time,'%Y-%m-%d')
+	</select>
+	
+	<select id="select-notify-by-module-type-and-device-id-and-time" parameterType="map" resultMap="NotifyMap">
+		SELECT 
+	       <include refid="notify-fields"/>
+       FROM t_notify
+       WHERE module_type = #{moduleType}
+       	AND sourceId = #{sourceId}
+       	<if test="notifyState != 0">
+	       	AND notify_state != #{notifyState}
+       	</if>
+       	<if test="beginDate != null and beginDate !='' and endDate == null or endDate == '' "  >
+		 	AND notify_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+		</if>
+		<if test="endDate != null and endDate !='' and beginDate == null or beginDate == '' "  >
+			 AND notify_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND date_format(t_notify.notify_time,#{format}) &gt;= #{beginDate}
+			AND date_format(t_notify.notify_time,#{format}) &lt;= #{endDate}
+		</if>
+		ORDER BY notify_time DESC
+	</select>
+	
+	<!-- 查询预警所有故障和警告信息总数，  用于 分页 -->
+	<select id="select-notify-and-warning-config-info-by-params-page-count" parameterType="Map" resultType="int">
+		SELECT 
+			COUNT(t_notify.id)
+		FROM
+		  t_notify
+		  LEFT JOIN t_warning_config_info
+		  ON t_notify.sourceId = t_warning_config_info.device_id
+		  WHERE t_warning_config_info.config_model_id = #{configModelId}
+		  AND t_warning_config_info.device_id = #{deviceId}
+		  AND t_notify.module_type = #{moduleType}
+		  AND t_notify.notify_state != 1
+		  <if test="scriptName != null and scriptName != '' ">
+			  AND t_notify.script_name NOT LIKE '%.%'
+		  </if>
+		  <if test="beginDate != null and beginDate !='' and endDate == null or endDate == '' "  >
+		 	AND t_notify.notify_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+		  </if>
+		  <if test="endDate != null and endDate !='' and beginDate == null or beginDate == '' "  >
+			 AND t_notify.notify_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+		  </if>
+		  <if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND date_format(t_notify.notify_time,#{format}) &gt;= #{beginDate}
+			AND date_format(t_notify.notify_time,#{format}) &lt;= #{endDate}
+		  </if>
+	</select>
+	
+	<!-- 查询预警所有故障和警告信息 + 分页 -->
+	<select id="select-notify-and-warning-config-info-by-params" parameterType="Map" resultMap="NotifyDeviceMap">
+		SELECT 
+			<include refid="notify-fields"/>,
+			t_warning_config_info.device_id,
+			t_warning_config_info.config_model_id,
+			t_warning_config_info.config_run_time_interval,
+			t_warning_config_info.config_run_time_interval_unit,
+			t_warning_config_info.config_cont_run_time_interval,
+			t_warning_config_info.config_cont_run_time_interval_unit
+		FROM
+		  t_notify
+		  LEFT JOIN t_warning_config_info
+		  ON t_notify.sourceId = t_warning_config_info.device_id
+		  WHERE t_warning_config_info.config_model_id = #{configModelId}
+		  AND t_warning_config_info.device_id = #{deviceId}
+		  AND t_notify.module_type = #{moduleType}
+		  AND t_notify.notify_state != 1
+		  <if test="scriptName != null and scriptName != '' ">
+			  AND t_notify.script_name NOT LIKE '%.%'
+		  </if>
+		  <if test="beginDate != null and beginDate !='' and endDate == null or endDate == '' "  >
+		 	AND t_notify.notify_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+		  </if>
+		  <if test="endDate != null and endDate !='' and beginDate == null or beginDate == '' "  >
+			 AND t_notify.notify_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+		  </if>
+		  <if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND date_format(t_notify.notify_time,#{format}) &gt;= #{beginDate}
+			AND date_format(t_notify.notify_time,#{format}) &lt;= #{endDate}
+		  </if>
+		  ORDER BY t_notify.notify_time DESC
+		  <if test="firstResult != null and maxResult != null">
+           limit  #{firstResult},#{maxResult} 
+      	 </if>
+	</select>
+	
+	<!-- 查询预警消息，不包含脚本 -->
+	<select id="select-notify-by-params-and-order-by-asc" parameterType="map" resultMap="NotifyMap">
+		SELECT 
+			<include refid="notify-fields"/>,
+			MAX(t_notify.used) as usedSize
+		FROM
+		  t_notify
+		  WHERE module_type = #{moduleType}
+			AND sourceId = #{sourceId}
+			AND notify_state != 1
+			AND script_name NOT LIKE '%.%'
+			<if test="beginDate != null and beginDate !='' and endDate == null or endDate == '' "  >
+		 	AND t_notify.notify_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+		  </if>
+		  <if test="endDate != null and endDate !='' and beginDate == null or beginDate == '' "  >
+			 AND t_notify.notify_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+		  </if>
+		  <if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND date_format(t_notify.notify_time,#{format}) &gt;= #{beginDate}
+			AND date_format(t_notify.notify_time,#{format}) &lt;= #{endDate}
+		  </if>
+		  GROUP BY date_format(t_notify.notify_time,#{format}),t_notify.content
+	</select>
+	
+	<delete id="delete-specif-date-ago-notify" parameterType="java.util.Date">
+       DELETE FROM t_notify WHERE notify_time &lt;= DATE_FORMAT(#{oneMonthAgo},'%Y-%m-%d')
+    </delete>
+	
+</mapper>

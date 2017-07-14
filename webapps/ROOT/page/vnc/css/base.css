@@ -1,0 +1,172 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	background: #303030;
+	color: #999;
+	font-size: 16px;
+	font-family: "microsoft yahei";
+}
+
+ul,li,dl,dd {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.main {
+	margin: 0 auto;
+	margin-top:60px;
+	-width: 1024px;
+	height: 800px;
+	background: url("/images/vnc/vnc_main.png") no-repeat center 200px;
+	text-align:center;
+}
+
+.vnc_top {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 40px;
+	background: #000;
+	line-height: 40px;
+}
+
+.vnc_title {
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+
+.left_btn_wrap {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 40px;
+	padding: 4px 0 0 4px;
+}
+
+.left_btn {
+	float: left;
+	position: relative;
+}
+
+.right_btn_wrap {
+	position: fixed;
+	top: 0;
+	right: 0;
+	padding-right: 10px;
+}
+
+.right_btn_wrap a {
+	display: block;
+	float: left;
+	cursor: pointer;
+	padding: 0 5px;
+	color:#fff;
+}
+
+.btn_top_icon {
+	display: inline-block;
+	position: relative;
+	margin: 0 5px;
+	width: 12px;
+	height: 12px;
+	background: url("/images/vnc/btn_icon.png") no-repeat 0 0;
+}
+
+.icon_send {
+	height: 14px;
+	background-position: 0 -68px;
+}
+
+.icon_vd {
+	background-position: 0 -143px;
+}
+
+.icon_connect {
+	background-position: 0 -212px;
+}
+
+.icon_refresh {
+	background-position: 0 -248px;
+}
+
+.icon_arrow {
+	background-position: 0 -306px;
+}
+.icon_connect_stop {
+    background-position: 0 -322px;
+}
+.vnc_btn {
+	padding: 6px 10px;
+	cursor: pointer;
+}
+
+.vnc_btn:hover {
+	border-top: 2px solid #00aaaa;
+	background: #444;
+	color: #fff;
+}
+
+.left_btn.active .vnc_btn {
+	border-top: 2px solid #00aaaa;
+	background: #444;
+	color: #fff;
+}
+
+.left_btn.active .vnc_btn .icon_operate {
+	background-position: 0 -34px;
+}
+
+.left_btn.active .vnc_btn .icon_send {
+	background-position: 0 -106px;
+}
+
+.left_btn.active .vnc_btn .icon_arrow {
+	background-position: 0 -278px;
+}
+
+.left_btn.active .vnc_btn .icon_vd {
+	background-position: 0 -178px;
+}
+
+.left_btn dl {
+	display: none;
+	position: absolute;
+	top: 36px;
+	background: #444;
+}
+
+.left_btn.active dl {
+	display: block;
+}
+
+.left_btn dl dd {
+	width: 150px;
+	color: #aaa;
+	background: #444;
+	text-indent: 16px;
+	font-size: 14px;
+	border-bottom: 1px solid #555;
+	cursor: pointer;
+}
+.left_btn dl dd>a{
+	color:#999;
+}
+.left_btn dl dd:hover a {
+	color: #fff;
+}
+
+.left_btn dl dd:last-child {
+	border-bottom: none;
+}
+.vnc_ie8{
+	font-size:24px;
+	color:#fff;
+	margin-top:100px;
+}

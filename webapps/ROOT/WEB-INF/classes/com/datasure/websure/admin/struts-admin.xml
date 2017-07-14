@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "struts-2.1.dtd">
+<struts>
+	<package name="struts-admin" extends="struts-base" namespace="/admin">
+	    <action name="toUserAction" class="userAction"></action>
+	    <action name="toMenuAction" class="menuAction"></action>
+    </package> 
+	
+</struts>  

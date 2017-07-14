@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="deviceHwCpuInfoMap" type="deviceHwCpuInfo">
+		<id property="deviceCpuId"  column="device_cpu_id"/>            
+		<result property="deviceId"  column="device_id"/>     
+		<result property="deviceHwCpuRate"  column="device_hw_cpu_rate"/>         
+		<result property="deviceTime" column="device_time"/> 
+		<result property="deviceReserver2" column="device_reserver2"/> 
+		<result property="deviceReserver3" column="device_reserver3"/> 
+		<result property="deviceReserver4" column="device_reserver4"/> 
+	</resultMap>
+	
+	<select id="select-device-hw-cpu-info-by-device-id" parameterType="map" resultMap="deviceHwCpuInfoMap">
+		SELECT 
+		    device_cpu_id,
+		    device_id,
+		    ROUND(AVG(RIGHT(device_hw_cpu_rate,3))) AS device_hw_cpu_rate,
+		    device_time 
+		  FROM
+	      t_device_hw_cpu_info  
+		  	WHERE device_id = #{deviceId}
+		  	AND RIGHT(device_hw_cpu_rate,3) &lt; #{cpuThreshold}
+		  	<if test="beginDate != null and beginDate !='' and endDate == null or endDate == '' "  >
+			 	AND device_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+			</if>
+			<if test="endDate != null and endDate !='' and beginDate == null or beginDate == '' "  >
+				 AND device_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+			</if>
+			<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+				AND date_format(device_time,#{format}) &gt;= #{beginDate}
+				AND date_format(device_time,#{format}) &lt;= #{endDate}
+			</if>
+			GROUP BY date_format(device_time,#{format})
+		
+	</select>
+	
+	<select id="select-device-hw-cpu-info-by-device-mac" parameterType="map" resultMap="deviceHwCpuInfoMap">
+		SELECT 
+			device_cpu_id,
+			device_id,
+			RIGHT(device_hw_cpu_rate, 3) AS device_hw_cpu_rate,
+			device_time
+		FROM
+			t_device_hw_cpu_info t
+		where
+			RIGHT(device_hw_cpu_rate, 3) > #{cpuThreshold}
+		AND
+			t.device_id in
+			  (SELECT 
+			    device_id
+			  FROM
+			    t_device_main 
+			  WHERE 
+			  	device_unique_id = #{deviceMac} 
+		)
+	</select>
+	
+	<select id="select-device-hw-cpu-info-by-device-mac-and-time" parameterType="map" resultMap="deviceHwCpuInfoMap">
+		SELECT 
+			device_cpu_id,
+			device_id,
+			RIGHT(device_hw_cpu_rate, 3) AS device_hw_cpu_rate,
+			device_time
+		FROM
+			t_device_hw_cpu_info
+		where
+			RIGHT(device_hw_cpu_rate, 3) > #{cpuThreshold}
+			AND device_id in 
+			(
+				SELECT device_id FROM t_device_main  WHERE device_unique_id = #{deviceMac} 
+			)
+			<if test="beginDate != null and beginDate != '' and endDate == null or endDate == ''  "  >
+			 	AND t_device_hw_cpu_info.device_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+			</if>
+			<if test="endDate != null and endDate != '' and beginDate == null or beginDate == ''  "  >
+				 AND t_device_hw_cpu_info.device_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+			</if>
+			<if test="endDate != null and endDate != '' and beginDate != null and beginDate != '' "  >
+				AND DATE_FORMAT(t_device_hw_cpu_info.device_time,#{format}) &gt;=  #{beginDate}
+				AND DATE_FORMAT(t_device_hw_cpu_info.device_time,#{format}) &lt;=  #{endDate}
+			</if>
+	</select>	
+	
+	<!-- 暂无用 -->
+	<select id="select-device-hw-cpu-info-max-by-device-id" parameterType="map" resultMap="deviceHwCpuInfoMap">
+		SELECT 
+			device_id,
+		  	MAX(device_time) AS device_time,
+		  	device_hw_cpu_rate 
+		FROM
+			 (SELECT 
+			    MAX(RIGHT(device_hw_cpu_rate, 3)) AS device_hw_cpu_rate,
+			    device_time ,
+			    device_id
+			  FROM
+			    t_device_hw_cpu_info 
+			  WHERE device_id = #{deviceId} 
+		 		GROUP BY device_time 
+		  		ORDER BY device_time DESC
+		  	) t_device_hw_cpu_info 
+	</select>
+	
+	<!-- 根据时间删除数据  begin-->
+	<delete id="delete-cpu-log-by-date" parameterType="map">
+	   DELETE FROM
+        t_device_hw_cpu_info 
+       WHERE device_time &lt;#{time} 
+	</delete>
+	<!-- 根据时间删除数据  end-->
+</mapper>

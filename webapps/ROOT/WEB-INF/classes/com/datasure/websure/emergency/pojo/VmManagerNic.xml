@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure.emergency">
+        
+        <resultMap id="vmNicBaseMap" type="vmManagerNic">
+               <id property="vmNicId"  column="vir_nic_id"/>
+               <result property="vmId"  column="vir_id"/>
+               <result property="deviceNicId"  column="device_nic_id"/>
+               <result property="computeNicId"  column="compute_nic_id"/>
+               <result property="vmNicType"  column="vir_nic_type"/>
+               <result property="vmNicIndex"  column="vir_nic_index"/>
+               <result property="vmNicRemark"  column="vir_nic_remark"/>
+        </resultMap>
+         
+         <resultMap id="vmAndDeviceAndComputeNicMap"   type="vmManagerNic"  extends="vmNicBaseMap">
+               <association property="deviceNic"  javaType="deviceNic">
+		             <id property="deviceNicId"  column="device_id"/>            
+				     <result property="deviceNicName"  column="device_nic_name"/>
+				     <result property="deviceNicIp"  column="device_nic_ip"/>
+				     <result property="deviceNicMac"  column="device_nic_mac"/>
+		         </association>
+		         <association property="computeNodesNic"  javaType="computeNodesNic">
+		             <id property="computeNicId"  column="compute_nic_id"/>  
+		             <result property="computeId"  column="compute_node_id"/>          
+				     <result property="computeNicName"  column="compute_nic_name"/>
+				     <result property="computeNicIndex"  column="compute_nic_index"/>
+				     <result property="computeNicIp"  column="compute_nic_ip"/>
+				     <result property="computeNicMac"  column="compute_nic_mac"/>
+		         </association>
+         </resultMap>
+         
+         <resultMap id="vmAndDeviceAndComputeVirNetMap"   type="vmManagerNic"  extends="vmNicBaseMap">
+               <association property="deviceNic"  javaType="deviceNic">
+                     <id property="deviceNicId"  column="device_id"/>            
+                     <result property="deviceNicName"  column="device_nic_name"/>
+                     <result property="deviceNicIp"  column="device_nic_ip"/>
+                     <result property="deviceNicMac"  column="device_nic_mac"/>
+                 </association>
+                 <association property="computeNodesVirtualNic"  javaType="computeNodesVirtualNic">
+                     <id property="computeVirtualNicId"  column="compute_virtual_nic_id"/>
+                     <result property="computeId"  column="compute_node_id"/>
+                     <result property="computeVirtualNicName"  column="compute_virtual_nic_name"/>
+                     <result property="computeVirtualNicGateWay"  column="compute_virtual_nic_gateway"/>
+                 </association>
+         </resultMap>
+         
+         <sql id="vmManagerNic_fields">
+              t_vir_nic.vir_nic_id,
+              t_vir_nic.vir_id,
+              t_vir_nic.device_nic_id,
+              t_vir_nic.compute_nic_id,
+              t_vir_nic.vir_nic_type,
+              t_vir_nic.vir_nic_index,
+              t_vir_nic.vir_nic_remark
+         </sql>
+         
+         <!-- 根据vmID查询虚拟机网卡信息 -->
+        <select id="select-vm-manager-nic-by-id"  parameterType="int"  resultMap="vmAndDeviceAndComputeNicMap">
+                select 
+                     <include refid="vmManagerNic_fields"/>,
+                     t_device_nic.device_nic_id,
+                     t_device_nic.device_nic_name,
+					 t_device_nic.device_nic_ip,
+					 t_device_nic.device_nic_mac,
+					 t_compute_nodes_nic.compute_nic_id,
+					 t_compute_nodes_nic.compute_node_id,
+					 t_compute_nodes_nic.compute_nic_index,
+					 t_compute_nodes_nic.compute_nic_name,
+					 t_compute_nodes_nic.compute_nic_ip,
+					 t_compute_nodes_nic.compute_nic_mac
+               from  
+                    t_vir_nic 
+               left join 
+                    t_device_nic 
+               on
+                    t_vir_nic.device_nic_id = t_device_nic.device_nic_id 
+               left join 
+                    t_compute_nodes_nic 
+               on 
+                    t_vir_nic.compute_nic_id = t_compute_nodes_nic.compute_nic_id 
+               where 
+                    t_vir_nic.vir_id=#{vmId}
+     </select>
+     
+     <!-- 根据vmID查询虚拟机网卡信息,包括虚拟子网信息 -->
+     <select id="select-vm-manager-nic-include-vm-net-by-id"  parameterType="int"  resultMap="vmAndDeviceAndComputeVirNetMap">
+                select 
+                     <include refid="vmManagerNic_fields"/>,
+                     t_device_nic.device_nic_id,
+                     t_device_nic.device_nic_name,
+                     t_device_nic.device_nic_ip,
+                     t_device_nic.device_nic_mac,
+                     t_compute_nodes_virtual_nic.compute_virtual_nic_id,
+                     t_compute_nodes_virtual_nic.compute_node_id,
+                     t_compute_nodes_virtual_nic.compute_virtual_nic_name,
+                     t_compute_nodes_virtual_nic.compute_virtual_nic_gateway
+               from  
+                    t_vir_nic 
+               left join 
+                    t_device_nic 
+               on
+                    t_vir_nic.device_nic_id = t_device_nic.device_nic_id 
+               left join 
+                    t_compute_nodes_virtual_nic
+               on    
+                    t_vir_nic.compute_virtual_nic_id = t_compute_nodes_virtual_nic.compute_virtual_nic_id
+               where 
+                    t_vir_nic.vir_id=#{vmId}
+     </select>
+     
+      <!-- 根据vmNicID查询虚拟机网卡信息 -->
+        <select id="select-vm-manager-nic-by-vm-nic-id"  parameterType="int"  resultMap="vmAndDeviceAndComputeNicMap">
+                select 
+                     <include refid="vmManagerNic_fields"/>,
+                     t_device_nic.device_nic_id,
+                     t_device_nic.device_nic_name,
+					 t_device_nic.device_nic_ip,
+					 t_device_nic.device_nic_mac,
+					 t_compute_nodes_nic.compute_nic_id,
+					 t_compute_nodes_nic.compute_node_id,
+					 t_compute_nodes_nic.compute_nic_index,
+					 t_compute_nodes_nic.compute_nic_name,
+					 t_compute_nodes_nic.compute_nic_ip,
+					 t_compute_nodes_nic.compute_nic_mac
+               from  
+                    t_vir_nic 
+               left join 
+                    t_device_nic 
+               on
+                    t_vir_nic.device_nic_id = t_device_nic.device_nic_id 
+               left join 
+                    t_compute_nodes_nic 
+               on 
+                    t_vir_nic.compute_nic_id = t_compute_nodes_nic.compute_nic_id 
+               where 
+                    t_vir_nic.vir_nic_id=#{vmNicId}
+     </select>
+      <!-- 根据vmNicID查询虚拟机网卡信息 -->
+        <select id="select-vm-manager-nic-not-in-nic-id"  parameterType="int"  resultMap="vmAndDeviceAndComputeNicMap">
+                select 
+                     <include refid="vmManagerNic_fields"/>,
+                     t_device_nic.device_nic_id,
+                     t_device_nic.device_nic_name,
+					 t_device_nic.device_nic_ip,
+					 t_device_nic.device_nic_mac,
+					 t_compute_nodes_nic.compute_nic_id,
+					 t_compute_nodes_nic.compute_node_id,
+					 t_compute_nodes_nic.compute_nic_index,
+					 t_compute_nodes_nic.compute_nic_name,
+					 t_compute_nodes_nic.compute_nic_ip,
+					 t_compute_nodes_nic.compute_nic_mac
+               from  
+                    t_vir_nic 
+               left join 
+                    t_device_nic 
+               on
+                    t_vir_nic.device_nic_id = t_device_nic.device_nic_id 
+               left join 
+                    t_compute_nodes_nic 
+               on 
+                    t_vir_nic.compute_nic_id = t_compute_nodes_nic.compute_nic_id 
+               where 
+                    t_vir_nic.vir_nic_id !=#{vmNicId}
+                    AND t_vir_nic.vir_id=#{virId}
+     </select>     
+     <!-- 根据ID修改计算节点网卡 -->
+     <update id="update-vm-manager-node-nic"  parameterType="vmManagerNic">
+              update t_vir_nic
+              set 
+                  compute_nic_id=#{computeNicId} 
+                  <!-- vir_nic_index =#{vmNicIndex} ,-->  
+             where vir_nic_id =#{vmNicId}
+     </update>
+     
+    <!-- 增加虚拟网卡 -->  
+  	<insert id="insert-vmManagerNic" parameterType="vmManagerNic" keyProperty="vmNicId" useGeneratedKeys="true">
+		insert into t_vir_nic
+	            (
+	             vir_id,
+	             device_nic_id,
+	             compute_nic_id,
+	             vir_nic_type,
+	             vir_nic_index,
+	             vir_nic_remark,
+	             compute_virtual_nic_id
+	             )
+		values
+		       (
+		        #{vmId},
+		        #{deviceNicId},
+		        #{computeNicId},
+		        #{vmNicType},
+		        #{vmNicIndex},
+		        #{vmNicRemark},
+		        #{computeVirtualNicId}
+		        );
+	 </insert>  
+	       
+    <!-- 根据虚拟网卡删除虚拟网卡信息 -->
+    <delete id="delete-vm-manager-nic"  parameterType="int" >
+        delete from t_vir_nic where vir_nic_id= #{vmNicId}
+    </delete>
+    
+    <!--  根据虚拟机ID删除所有虚拟网卡信息 -->
+    <delete id="delete-vm-manager-nic-by-vm-id"  parameterType="int" >
+        delete from t_vir_nic where vir_id= #{vmId}
+    </delete>
+    
+    <delete id="delete-vmManagerNic-by-vmListId"  >
+             DELETE 
+		     FROM t_vir_nic
+             WHERE vir_nic_id IN 
+              <foreach item="nicList" index="index" collection="list" open="(" separator="," close=")">  
+			  	#{nicList}  
+			 </foreach>
+             
+    </delete>        
+</mapper>

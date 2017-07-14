@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.datasure.websure">
+	<resultMap id="DiskCloneDetailMap" type="DiskClone">
+		<id property="diskcloneId" column="diskclone_id"/>
+		<result property="deviceId" column="device_id"/>
+		<result property="uuid" column="diskclone_uuid"/>
+		<result property="online" column="diskclone_is_online"/>
+		<result property="state" column="diskclone_state"/>
+		<result property="workState" column="diskclone_work_state"/>
+		<result property="workDesc" column="diskclone_work_desc"/>
+		<result property="systemDesc" column="diskclone_system_desc"/>
+		<result property="synchrEnable" column="diskclone_synchr_enable"/>
+		<result property="synchrIntervalType" column="diskclone_synchr_interval_type"/>
+		<result property="synchrIntervalValue" column="diskclone_synchr_interval_value"/>
+		<result property="keepfullbackupEnable" column="diskclone_keepfullbackup_enable"/>
+		<result property="keepfullbackupType" column="diskclone_keepfullbackup_type"/>
+		<result property="keepfullbackupNum" column="diskclone_keepfullbackup_num"/>
+		<result property="keepsnapEnable" column="diskclone_keepsnap_enable"/>
+		<result property="keepsnapType" column="diskclone_keepsnap_type"/>
+		<result property="keepsnapNum" column="diskclone_keepsnap_num"/>
+		<result property="snapEnable" column="diskclone_snap_enable"/>
+		<result property="snapIntervalType" column="diskclone_snap_interval_type"/>
+		<result property="snapIntervalValue" column="diskclone_snap_interval_value"/>
+		<result property="snapIncreOldSnap" column="diskclone_snap_incre_old_snap"/>
+		<result property="saveDataType" column="save_data_type"/>
+		<result property="targetType" column="diskclone_target_type"/>
+		<result property="targetPath" column="diskclone_target_path"/>
+		<result property="diskcloneStoragePath" column="diskclone_storage_path"/>
+		<result property="diskCloneCreateTime" column="diskclone_create_time"/>
+		<result property="limitedBackupSpeed"   column="enable_limited_backup_speed"/>
+		<result property="limitedBackupSpeedKb" column="limited_backup_speed_kb"/>
+		<result property="enableLimitedBackupTime" column="enable_limited_backup_time"/>
+		<result property="limitedBackupTime" column="limited_backup_time"/>
+		<result property="snapTimeRange" column="snap_time_range"/>
+		<result property="particlesDataPartition" column="particles_data_partition"/>
+		<result property="checkDiskState" column="check_disk_state"/>
+		<result property="isParticlesData" column="is_particles_data"/>
+		<result property="isNew" column="is_new"/>
+		<result property="enableLimitedSnapTime" column="enable_limited_snap_time"/>
+		<result property="currentLength" column="current_length"/>
+	</resultMap>
+	
+	<resultMap id="DiskCloneAndVmdkMap" type="DiskClone">
+		<id property="diskcloneId" column="diskclone_id"/>
+		<result property="deviceId" column="device_id"/>
+		<result property="uuid" column="diskclone_uuid"/>
+		<result property="online" column="diskclone_is_online"/>
+		<result property="state" column="diskclone_state"/>
+		<result property="workState" column="diskclone_work_state"/>
+		<result property="workDesc" column="diskclone_work_desc"/>
+		<result property="systemDesc" column="diskclone_system_desc"/>
+		<result property="synchrEnable" column="diskclone_synchr_enable"/>
+		<result property="synchrIntervalType" column="diskclone_synchr_interval_type"/>
+		<result property="synchrIntervalValue" column="diskclone_synchr_interval_value"/>
+		<result property="keepfullbackupEnable" column="diskclone_keepfullbackup_enable"/>
+		<result property="keepfullbackupType" column="diskclone_keepfullbackup_type"/>
+		<result property="keepfullbackupNum" column="diskclone_keepfullbackup_num"/>
+		<result property="keepsnapEnable" column="diskclone_keepsnap_enable"/>
+		<result property="keepsnapType" column="diskclone_keepsnap_type"/>
+		<result property="keepsnapNum" column="diskclone_keepsnap_num"/>
+		<result property="snapEnable" column="diskclone_snap_enable"/>
+		<result property="snapIntervalType" column="diskclone_snap_interval_type"/>
+		<result property="snapIntervalValue" column="diskclone_snap_interval_value"/>
+		<result property="snapIncreOldSnap" column="diskclone_snap_incre_old_snap"/>
+		<result property="saveDataType" column="save_data_type"/>
+		<result property="targetType" column="diskclone_target_type"/>
+		<result property="targetPath" column="diskclone_target_path"/>
+		<result property="limitedBackupSpeed"   column="enable_limited_backup_speed"/>
+		<result property="limitedBackupSpeedKb" column="limited_backup_speed_kb"/>
+		<result property="limitedBackupTime" column="limited_backup_time"/>
+		<result property="diskCloneCreateTime" column="diskclone_create_time"/>
+		<result property="currentLength" column="current_length"/>
+		<association property="vmdk" javaType="Vmdk">
+			<id property="vmimgId" column="vmimg_id"/>
+		    <result property="vmimgDiskcloneId" column="vmimg_diskclone_id"/>
+		    <result property="vmimgSnapshotIndex" column="vmimg_snapshot_index"/>
+		    <result property="vmimgSnapshotSetId" column="vmimg_snapshot_set_id"/>
+		    <result property="vmimgVirId" column="vmimg_vir_id"/>
+		    <result property="vmimgHarddiskId" column="vmimg_harddisk_id"/>
+		    <result property="vmimgType" column="vmimg_type"/>
+		    <result property="vmimgIsStandby" column="vmimg_is_standby"/>
+		    <result property="deviceStandbyVmimgId" column="device_standby_vmimg_id"/>
+		    <result property="vmimgStorageSymbol" column="vmimg_storage_symbol"/>
+		    <result property="vmimgFileName" column="vmimg_file_name"/>
+		    <result property="vmimgFilePath" column="vmimg_file_path"/>
+		    <result property="vmimgHaveOs" column="vmimg_have_os"/>
+		    <result property="vmimgDataSize" column="vmimg_data_size"/>
+		    <result property="vmimgBackupPartition" column="vmimg_backup_partition"/>
+		    <result property="vmimgCreateTime" column="vmimg_create_time"/>
+		    <result property="vmimgModifyTime" column="vmimg_modify_time"/>
+		    <result property="vmimgParentId" column="vmimg_parent_id"/>
+	   	    <result property="vmimgRemark" column="vmimg_remark"/>
+	   	    <result property="vmimgCurrentLength" column="vmimg_current_length"/>
+		</association>
+	</resultMap>
+	
+	<select id="select-diskclone-by-id" parameterType="int" resultMap="DiskCloneDetailMap">
+		select
+			diskclone_id,
+			device_id,
+			diskclone_uuid,
+			diskclone_is_online,
+			diskclone_state,
+			diskclone_work_state,
+			diskclone_work_desc,
+			diskclone_system_desc,
+			diskclone_synchr_enable,
+			diskclone_synchr_interval_type,
+			diskclone_synchr_interval_value,
+			diskclone_keepfullbackup_enable,
+			diskclone_keepfullbackup_type,
+			diskclone_keepfullbackup_num,
+			diskclone_keepsnap_enable,
+			diskclone_keepsnap_type,
+			diskclone_keepsnap_num,
+			diskclone_storage_path,
+			diskclone_create_time,
+			diskclone_snap_enable,
+			diskclone_snap_interval_type,
+			diskclone_snap_interval_value,
+			diskclone_snap_incre_old_snap,
+			diskclone_target_type,
+			diskclone_target_path,
+			enable_limited_backup_speed,
+			limited_backup_speed_kb,
+			enable_limited_backup_time,
+			is_new,
+			limited_backup_time,
+			enable_limited_snap_time,
+			is_particles_data,
+			limited_snap_time
+		from t_diskclone where diskclone_id=#{diskCloneId} limit 0,1
+	</select>
+	
+	<select id="select-diskclone-by-device-id" parameterType="int" resultMap="DiskCloneDetailMap">
+		select
+			diskclone_id,
+			device_id,
+			diskclone_uuid,
+			diskclone_is_online,
+			diskclone_state,
+			diskclone_work_state,
+			diskclone_work_desc,
+			diskclone_system_desc,
+			diskclone_synchr_enable,
+			diskclone_synchr_interval_type,
+			diskclone_synchr_interval_value,
+			diskclone_keepfullbackup_enable,
+			diskclone_keepfullbackup_type,
+			diskclone_keepfullbackup_num,
+			diskclone_keepsnap_enable,
+			diskclone_keepsnap_type,
+			diskclone_keepsnap_num,
+			diskclone_snap_enable,
+			diskclone_snap_interval_type,
+			diskclone_snap_interval_value,
+			diskclone_snap_incre_old_snap,
+			diskclone_target_type,
+			diskclone_target_path,
+			diskclone_storage_path,
+			diskclone_create_time,
+			is_particles_data,
+			check_disk_state,
+			enable_limited_backup_speed,
+			limited_backup_speed_kb,
+			particles_data_partition,
+			enable_limited_backup_time,
+			limited_backup_time,
+			snap_time_range,
+			is_new,
+			enable_limited_snap_time,
+			limited_snap_time,
+			byEnableLanfree,
+			remark
+		from t_diskclone where device_id=#{deviceId} and diskclone_is_online=1 limit 0,1
+	</select>
+	
+	<select id="select-diskclone-state-by-device-id" parameterType="int" resultType="int">
+		select
+			diskclone_state
+		from 
+			t_diskclone 
+		where 
+			device_id=#{deviceId} 
+		and 
+			diskclone_is_online=1 limit 0,1
+	</select>
+	
+	<select id="select-diskclone-createTime-device-id" parameterType="int" resultType="Map">
+		SELECT MIN(diskclone_create_time) MINTIME,
+		       MAX(diskclone_create_time) MAXTIME
+		FROM t_diskclone
+		WHERE device_id	=#{deviceId}
+	</select>
+	
+	<select id="select-all-diskclone-by-device-id" parameterType="int" resultMap="DiskCloneDetailMap">
+		select
+			diskclone_id,
+			device_id,
+			diskclone_uuid,
+			diskclone_is_online,
+			diskclone_state,
+			diskclone_work_state,
+			diskclone_work_desc,
+			diskclone_system_desc,
+			diskclone_synchr_enable,
+			diskclone_synchr_interval_type,
+			diskclone_synchr_interval_value,
+			diskclone_keepfullbackup_enable,
+			diskclone_keepfullbackup_type,
+			diskclone_keepfullbackup_num,
+			diskclone_keepsnap_enable,
+			diskclone_keepsnap_type,
+			diskclone_keepsnap_num,
+			diskclone_storage_path,
+			diskclone_snap_enable,
+			diskclone_snap_interval_type,
+			diskclone_snap_interval_value,
+			diskclone_snap_incre_old_snap,
+			diskclone_target_type,
+			diskclone_target_path,
+			enable_limited_backup_speed,
+			limited_backup_speed_kb,
+			enable_limited_backup_time,
+			limited_backup_time,
+			is_new,
+			enable_limited_snap_time,
+			limited_snap_time,
+			is_particles_data,
+			diskclone_create_time
+		from t_diskclone where device_id=#{deviceId}
+  </select>
+	
+	<select id="select-all-configed-diskclone-by-device-id" parameterType="int" resultMap="DiskCloneDetailMap">
+        select
+            diskclone_id,
+            device_id,
+            diskclone_uuid,
+            diskclone_is_online,
+            diskclone_state,
+            diskclone_work_state,
+            diskclone_work_desc,
+            diskclone_system_desc,
+            diskclone_synchr_enable,
+            diskclone_synchr_interval_type,
+            diskclone_synchr_interval_value,
+            diskclone_keepfullbackup_enable,
+            diskclone_keepfullbackup_type,
+            diskclone_keepfullbackup_num,
+            diskclone_keepsnap_enable,
+            diskclone_keepsnap_type,
+            diskclone_keepsnap_num,
+            diskclone_storage_path,
+            diskclone_snap_enable,
+            diskclone_snap_interval_type,
+            diskclone_snap_interval_value,
+            diskclone_snap_incre_old_snap,
+            diskclone_target_type,
+            diskclone_target_path,
+            enable_limited_backup_speed,
+            limited_backup_speed_kb,
+            enable_limited_backup_time,
+            limited_backup_time,
+            is_new,
+            enable_limited_snap_time,
+            limited_snap_time,
+            diskclone_create_time
+        from t_diskclone where device_id=#{deviceId}
+                         and is_new = 1
+    </select>
+	
+	<select id="select-disclone-and-vmdk-by-deviceId" parameterType="int" resultMap="DiskCloneAndVmdkMap">
+		SELECT
+			A.diskclone_id,
+			A.device_id,
+			A.diskclone_uuid,
+			A.diskclone_is_online,
+			A.diskclone_state,
+			A.diskclone_work_state,
+			A.diskclone_work_desc,
+			A.diskclone_system_desc,
+			A.diskclone_synchr_enable,
+			A.diskclone_synchr_interval_type,
+			A.diskclone_synchr_interval_value,
+			A.diskclone_keepfullbackup_enable,
+			A.diskclone_keepfullbackup_type,
+			A.diskclone_keepfullbackup_num,
+			A.diskclone_keepsnap_enable,
+			A.diskclone_keepsnap_type,
+			A.diskclone_keepsnap_num,
+			A.diskclone_snap_enable,
+			A.diskclone_snap_interval_type,
+			A.diskclone_snap_interval_value,
+			A.diskclone_snap_incre_old_snap,
+			A.diskclone_target_type,
+			A.diskclone_target_path,
+			A.enable_limited_backup_speed,
+			A.limited_backup_speed_kb,
+			A.limited_backup_time,
+			A.diskclone_create_time,
+			B.vmimg_id,
+		    B.vmimg_diskclone_id,
+		    B.vmimg_snapshot_index,
+		    B.vmimg_snapshot_set_id,
+		    B.vmimg_vir_id,
+		    B.vmimg_harddisk_id,
+		    B.vmimg_type,
+		    B.device_standby_vmimg_id,
+		    B.vmimg_storage_symbol,
+		    B.vmimg_file_name,
+		    B.vmimg_file_path,
+		    B.vmimg_have_os,
+		    B.vmimg_data_size,
+		    B.vmimg_backup_partition,
+		    B.vmimg_create_time,
+		    B.vmimg_modify_time,
+		    B.vmimg_parent_id,
+		    B.vmimg_remark
+		FROM t_diskclone A
+		LEFT  JOIN  t_vmimg B
+		ON A.diskclone_id=B.vmimg_diskclone_id
+		WHERE A.device_id=#{deviceId}
+		ORDER BY A.diskclone_create_time
+	</select>
+	<select id="select-all-used-symbol" resultType="String" >
+		SELECT
+		   diskclone_target_path
+		FROM 
+			t_diskclone t
+		WHERE 
+			t.diskclone_is_online = 1
+		GROUP BY 
+			diskclone_target_path
+	</select>
+	
+	<select id="select-disk-clone-and-vmdk-by-device-id" parameterType="int" resultMap="DiskCloneAndVmdkMap">
+		SELECT 
+		  t_diskclone.diskclone_id,
+		  t_diskclone.device_id,
+		  t_diskclone.diskclone_uuid,
+		  t_diskclone.diskclone_is_online,
+		  t_diskclone.diskclone_state,
+		  t_diskclone.diskclone_work_state,
+		  t_diskclone.diskclone_work_desc,
+		  t_diskclone.diskclone_system_desc,
+		  t_diskclone.diskclone_synchr_enable,
+		  t_diskclone.diskclone_synchr_interval_type,
+		  t_diskclone.diskclone_synchr_interval_value,
+		  t_diskclone.diskclone_keepfullbackup_enable,
+		  t_diskclone.diskclone_keepfullbackup_type,
+		  t_diskclone.diskclone_keepfullbackup_num,
+		  t_diskclone.diskclone_keepsnap_enable,
+		  t_diskclone.diskclone_keepsnap_type,
+		  t_diskclone.diskclone_keepsnap_num,
+		  t_diskclone.diskclone_snap_enable,
+		  t_diskclone.diskclone_snap_interval_type,
+		  t_diskclone.diskclone_snap_interval_value,
+		  t_diskclone.diskclone_snap_incre_old_snap,
+		  t_diskclone.diskclone_target_type,
+		  GROUP_CONCAT(t_diskclone.diskclone_target_path) AS diskclone_target_path,
+		  t_diskclone.diskclone_storage_path,
+		  t_vmimg.vmimg_id,
+	      t_vmimg.vmimg_diskclone_id,
+	      t_vmimg.vmimg_snapshot_index,
+	      t_vmimg.vmimg_snapshot_set_id,
+	      t_vmimg.vmimg_vir_id,
+	      SUM(vmimg_current_length) as current_length,
+	      MAX(vmimg_modify_time) AS diskclone_create_time,
+	      MAX(t_diskclone.diskclone_create_time) AS diskclone_c_time
+		FROM
+		  t_diskclone 
+		  LEFT JOIN 
+		    (SELECT 
+		      t_vmimg.vmimg_id,
+		      t_vmimg.vmimg_diskclone_id,
+		      t_vmimg.vmimg_snapshot_index,
+		      t_vmimg.vmimg_snapshot_set_id,
+		      t_vmimg.vmimg_vir_id,
+		      SUM(vmimg_current_length) AS vmimg_current_length,
+		      MAX(t_vmimg.vmimg_modify_time) AS vmimg_modify_time,
+		      t_diskclone.diskclone_id,
+		      t_diskclone.device_id,
+		      t_diskclone.diskclone_uuid,
+		      t_diskclone.diskclone_is_online,
+		      t_diskclone.diskclone_state,
+		      t_diskclone.diskclone_work_state,
+		      t_diskclone.diskclone_synchr_interval_type,
+		      t_diskclone.diskclone_snap_interval_value,
+		      t_diskclone.diskclone_synchr_interval_value,
+		      t_diskclone.diskclone_create_time 
+		    FROM
+		      t_vmimg 
+		      LEFT JOIN t_diskclone 
+		        ON t_diskclone.diskclone_id = t_vmimg.vmimg_diskclone_id 
+		    GROUP BY vmimg_diskclone_id) t_vmimg 
+		    ON t_vmimg.vmimg_diskclone_id = t_diskclone.diskclone_id 
+		    WHERE t_diskclone.device_id = #{deviceId}
+		    GROUP BY t_diskclone.device_id
+	</select>
+	
+	<update id="update-diskclone-info" parameterType="DiskClone"> 
+	        UPDATE t_diskclone 
+				<set> 
+					<if test="online!=null and online!='' ">  
+		            	diskclone_is_online = #{online},
+		        	</if>
+		        	<if test="state!=null">  
+		            	diskclone_state = #{state},
+		        	</if>
+		        	<if test="workState!=null">  
+		            	diskclone_work_state = #{workState},
+		        	</if> 
+		        	<if test="workDesc!=null and workDesc!='' ">  
+		            	diskclone_work_desc = #{workDesc},
+		        	</if>
+		        	<if test="systemDesc!=null and systemDesc!='' ">  
+		            	diskclone_system_desc = #{systemDesc},
+		        	</if>   
+		        	<if test="synchrEnable !=null">
+					 	 diskclone_synchr_enable = #{synchrEnable},
+					</if>
+		        	<if test="synchrIntervalType !=null">
+					 	 diskclone_synchr_interval_type = #{synchrIntervalType},
+					</if>
+		        	<if test="synchrIntervalValue !=null">
+					 	 diskclone_synchr_interval_value = #{synchrIntervalValue},
+					</if>
+		        	<if test="keepfullbackupEnable !=null">
+					 	 diskclone_keepfullbackup_enable = #{keepfullbackupEnable},
+					</if>
+		        	<if test="keepfullbackupType !=null">
+					 	 diskclone_keepfullbackup_type = #{keepfullbackupType},
+					</if>
+		        	<if test="keepfullbackupNum !=null">
+					 	 diskclone_keepfullbackup_num = #{keepfullbackupNum},
+					</if>
+		        	<if test="keepsnapEnable !=null">
+					 	 diskclone_keepsnap_enable = #{keepsnapEnable},
+					</if>
+		        	<if test="keepsnapType !=null">
+					 	 diskclone_keepsnap_type = #{keepsnapType},
+					</if>
+		        	<if test="keepsnapNum !=null">
+					 	 diskclone_keepsnap_num = #{keepsnapNum},
+					</if>
+		        	<if test="snapEnable !=null">
+					 	 diskclone_snap_enable = #{snapEnable},
+					</if>
+		        	<if test="snapIntervalType !=null">
+					 	 diskclone_snap_interval_type = #{snapIntervalType},
+					</if>
+		        	<if test="snapIntervalValue !=null">
+					 	 diskclone_snap_interval_value = #{snapIntervalValue},
+					</if>
+		        	<if test="snapIncreOldSnap !=null">
+					 	 diskclone_snap_incre_old_snap = #{snapIncreOldSnap},
+					</if>
+		        	<if test="targetType !=null">
+					 	 diskclone_target_type = #{targetType},
+					</if>
+		        	<if test="targetPath !=null and targetPath!='' ">
+					 	 diskclone_target_path = #{targetPath},
+					</if>
+		        	<if test="diskcloneStoragePath !=null and diskcloneStoragePath!='' ">
+					 	 diskclone_storage_path = #{diskcloneStoragePath},
+					</if>
+		        	<if test="isParticlesData !=null ">
+					 	 is_particles_data = #{isParticlesData},
+					</if>
+		        	<if test="checkDiskState !=null ">
+					 	 check_disk_state = #{checkDiskState},
+					</if>
+		        	<if test="limitedBackupSpeed !=null ">
+					 	 enable_limited_backup_speed = #{limitedBackupSpeed},
+					</if>
+		        	<if test="limitedBackupSpeedKb !=null ">
+					 	 limited_backup_speed_kb = #{limitedBackupSpeedKb},
+					</if>
+		        	<if test="enableLimitedBackupTime !=null ">
+					 	 enable_limited_backup_time = #{enableLimitedBackupTime},
+					</if>
+		        	<if test="limitedBackupTime !=null and limitedBackupTime != '' ">
+					 	 limited_backup_time = #{limitedBackupTime},
+					</if>
+		        	<if test="enableLimitedSnapTime !=null ">
+					 	 enable_limited_snap_time = #{enableLimitedSnapTime},
+					</if>
+					<if test="snapTimeRange !=null and snapTimeRange != '' ">
+                         snap_time_range = #{snapTimeRange},
+                    </if>
+					<if test="isNew !=null">
+					 	 is_new = #{isNew},
+					</if>
+					<if test="byEnableLanfree !=null">
+					 	 byEnableLanfree = #{byEnableLanfree},
+					</if>
+				  	diskclone_update_time = now()
+		       </set>
+	         WHERE 
+	         	diskclone_id = #{diskcloneId}
+	  </update>
+	  
+	  <update id="update-diskclone-state-by-device-id" parameterType="DiskClone">
+		update 
+			t_diskclone 
+		set
+			diskclone_state=#{state}
+		where 
+			diskclone_is_online=1
+		and
+			device_id = #{deviceId}
+	</update>
+	
+	<insert id="insert-vming-tag-info" parameterType="VmingTag">
+		INSERT INTO t_vming_tag
+            (
+             tag_type,
+             vmimg_id,
+             tag_content,
+             tag_create_time,
+             tag__modify_time,
+             tag_remark1,
+             tag_remark2
+            )
+		VALUES (
+		        #{type},
+		        #{vmingId},
+		        #{content},
+		        now(),
+		        now(),
+		        #{remark1},
+		        #{remark2}
+		      );
+		<selectKey resultType="int" keyProperty="id">
+			select @@IDENTITY as id 
+		</selectKey>
+	</insert>
+	
+	<select id="find-diskclone-by-uuids" resultMap="DiskCloneDetailMap">
+    		SELECT
+ 			diskclone_id,
+			device_id,
+			diskclone_uuid,
+			diskclone_is_online,
+			diskclone_state,
+			diskclone_work_state,
+			diskclone_work_desc,
+			diskclone_system_desc,
+			diskclone_synchr_enable,
+			diskclone_synchr_interval_type,
+			diskclone_synchr_interval_value,
+			diskclone_keepfullbackup_enable,
+			diskclone_keepfullbackup_type,
+			diskclone_keepfullbackup_num,
+			diskclone_keepsnap_enable,
+			diskclone_keepsnap_type,
+			diskclone_keepsnap_num,
+			diskclone_storage_path,
+			diskclone_create_time,
+			diskclone_snap_enable,
+			diskclone_snap_interval_type,
+			diskclone_snap_interval_value,
+			diskclone_snap_incre_old_snap,
+			diskclone_target_type,
+			diskclone_target_path,
+			enable_limited_backup_speed,
+			limited_backup_speed_kb,
+			enable_limited_backup_time,
+			is_new,
+			limited_backup_time,
+			enable_limited_snap_time,
+			is_particles_data,
+			limited_snap_time
+  		 	from  t_diskclone
+    		WHERE diskclone_uuid in 
+    		<foreach collection="UUIDs" item="uuid" open="(" close=")" separator=",">
+    			#{uuid}
+    		</foreach>
+    </select>
+	
+	<select id="find-anymaster-by-diskcloneids" resultMap="DiskCloneDetailMap">
+	SELECT
+			diskclone_id,
+			a.device_id,
+			diskclone_uuid,
+			diskclone_is_online,
+			diskclone_state,
+			diskclone_work_state,
+			diskclone_work_desc,
+			diskclone_system_desc,
+			diskclone_synchr_enable,
+			diskclone_synchr_interval_type,
+			diskclone_synchr_interval_value,
+			diskclone_keepfullbackup_enable,
+			diskclone_keepfullbackup_type,
+			diskclone_keepfullbackup_num,
+			diskclone_keepsnap_enable,
+			diskclone_keepsnap_type,
+			diskclone_keepsnap_num,
+			diskclone_storage_path,
+			diskclone_create_time,
+			diskclone_snap_enable,
+			diskclone_snap_interval_type,
+			diskclone_snap_interval_value,
+			diskclone_snap_incre_old_snap,
+			diskclone_target_type,
+			diskclone_target_path,
+			enable_limited_backup_speed,
+			limited_backup_speed_kb,
+			enable_limited_backup_time,
+			is_new,
+			limited_backup_time,
+			enable_limited_snap_time,
+			is_particles_data,
+			limited_snap_time
+	FROM 
+	t_diskclone a,
+	t_device b 
+	WHERE 
+	a.diskclone_id IN
+	<foreach collection="diskClones" item="item" open="(" close=")" separator=",">
+    	#{item.diskCloneId}
+    </foreach>
+	AND  a.device_id = b.device_id 
+	AND b.device_standby_model = 1 
+	LIMIT 0,1
+	</select>
+	
+	<select id="select-count-cluster-harddisk" parameterType="String" resultType="int">
+	SELECT COUNT(*) 
+	FROM 
+	t_diskclone a,t_harddisk b 
+	WHERE a.diskclone_id = #{diskcloneId}
+	AND a.device_id = b.device_id 
+	AND a.diskclone_id = b.diskclone_id 
+	AND b.harddisk_cluster_type = 1
+	</select>
+	
+	<select id="select-all-diskclone" resultMap="DiskCloneDetailMap">
+			select
+			diskclone_id,
+			device_id,
+			diskclone_uuid,
+			diskclone_is_online,
+			diskclone_state,
+			diskclone_work_state,
+			diskclone_work_desc,
+			diskclone_system_desc,
+			diskclone_synchr_enable,
+			diskclone_synchr_interval_type,
+			diskclone_synchr_interval_value,
+			diskclone_keepfullbackup_enable,
+			diskclone_keepfullbackup_type,
+			diskclone_keepfullbackup_num,
+			diskclone_keepsnap_enable,
+			diskclone_keepsnap_type,
+			diskclone_keepsnap_num,
+			diskclone_snap_enable,
+			diskclone_snap_interval_type,
+			diskclone_snap_interval_value,
+			diskclone_snap_incre_old_snap,
+			diskclone_target_type,
+			diskclone_target_path,
+			diskclone_storage_path,
+			diskclone_create_time,
+			is_particles_data,
+			check_disk_state,
+			enable_limited_backup_speed,
+			limited_backup_speed_kb,
+			particles_data_partition,
+			enable_limited_backup_time,
+			limited_backup_time,
+			snap_time_range,
+			is_new,
+			enable_limited_snap_time,
+			limited_snap_time,
+			byEnableLanfree,
+			remark
+			from t_diskclone
+	</select>
+	
+</mapper>

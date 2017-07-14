@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<data>
+  <srcPath version="">C:</srcPath> <!--  待复制目录   --> 
+  <destPath version="">E:</destPath> <!--  目标目录  --> 
+  <version-date></version-date>
+ 
+ <path>
+  <srcFileName version="">\updata.sql</srcFileName>  <!--  待复制文件位置   --> 
+  <destFileName version="">\FF\updata.sql</destFileName> <!--  目标文件位置 --> 
+  </path>
+ <path>
+  <srcFileName version="">\updata\1.txt</srcFileName> 
+  <destFileName version="">\FF\updata\1.txt</destFileName> 
+  </path>
+ <path>
+  <srcFileName version="">\updata1</srcFileName> 
+  <destFileName version="">\FF\updata1</destFileName> 
+  </path>
+  </data>

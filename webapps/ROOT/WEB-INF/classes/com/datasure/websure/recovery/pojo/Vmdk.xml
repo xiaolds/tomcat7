@@ -1,0 +1,815 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="vmdkDetailMap" type="Vmdk">
+		<id property="vmimgId" column="vmimg_id" />
+		<result property="vmimgDiskcloneId" column="vmimg_diskclone_id" />
+		<result property="vmimgSnapshotIndex" column="vmimg_snapshot_index" />
+		<result property="vmimgSnapshotSetId" column="vmimg_snapshot_set_id" />
+		<result property="vmimgVirId" column="vmimg_vir_id" />
+		<result property="vmimgHarddiskId" column="vmimg_harddisk_id" />
+		<result property="vmimgType" column="vmimg_type" />
+		<result property="vmimgUseType" column="vmimg_use_type" />
+		<result property="vmimgIsStandby" column="vmimg_is_standby" />
+		<result property="deviceStandbyVmimgId" column="device_standby_vmimg_id" />
+		<result property="vmimgStorageSymbol" column="vmimg_storage_symbol" />
+		<result property="vmimgFileName" column="vmimg_file_name" />
+		<result property="vmimgFilePath" column="vmimg_file_path" />
+		<result property="vmimgHaveOs" column="vmimg_have_os" />
+		<result property="vmimgDataSize" column="vmimg_data_size" />
+		<result property="vmimgBackupPartition" column="vmimg_backup_partition" />
+		<result property="vmimgCreateTime" column="vmimg_create_time" />
+		<result property="vmimgModifyTime" column="vmimg_modify_time" />
+		<result property="vmimgParentId" column="vmimg_parent_id" />
+		<result property="vmimgRemark" column="vmimg_remark" />
+		<result property="vmimgCurrentLength" column="vmimg_current_length" />
+	</resultMap>
+
+	<!--虚拟磁盘跟挂载一对多的关系 -->
+	<resultMap id="vmdkMap" type="Vmdk" extends="vmdkDetailMap">
+		<association property="mount" javaType="Mount">
+			<id property="mountId" column="mount_id" />
+			<result property="mountName" column="mount_name" />
+			<result property="vmingId" column="vmimg_id" />
+			<result property="mountDestDeviceId" column="mount_dest_device_id" />
+			<result property="mountPartStartPos" column="mount_part_start_pos" />
+			<result property="mountPartSize" column="mount_part_size" />
+			<result property="mountPartLabel" column="mount_part_label" />
+			<result property="mountFlag" column="mount_part_letter" />
+			<result property="scstTargetId" column="scst_target_id" />
+			<result property="mountPartLinuxLoadPost" column="mount_part_linux_load_post" />
+			<result property="mountState" column="mount_state" />
+			<result property="mountPartUuid" column="mount_part_uuid" />
+			<result property="mountPartitionId" column="mount_partition_id" />
+			<result property="mountPower" column="mount_power" />
+			<result property="mountPartitionType" column="mount_partition_type" />
+			<result property="mountCreateTime" column="mount_insert_time" />
+			<result property="mountUpdateTime" column="mount_update_time" />
+		</association>
+	</resultMap>
+
+	<!--虚拟磁盘跟挂载一对一的关系 -->
+	<resultMap id="vmdkMapOneToOne" type="Vmdk" extends="vmdkDetailMap">
+		<result property="mount.mountId" column="mount_id" />
+		<result property="mount.mountName" column="mount_name" />
+		<result property="mount.vmingId" column="vmimg_id" />
+		<result property="mount.mountDestDeviceId" column="mount_dest_device_id" />
+		<result property="mount.mountPartStartPos" column="mount_part_start_pos" />
+		<result property="mount.mountPartSize" column="mount_part_size" />
+		<result property="mount.mountPartLabel" column="mount_part_label" />
+		<result property="mount.mountFlag" column="mount_part_letter" />
+		<result property="mount.scstTargetId" column="scst_target_id" />
+		<result property="mount.mountPartLinuxLoadPost" column="mount_part_linux_load_post" />
+		<result property="mount.mountState" column="mount_state" />
+		<result property="mount.mountPartUuid" column="mount_part_uuid" />
+		<result property="mount.mountPartitionId" column="mount_partition_id" />
+		<result property="mount.mountPower" column="mount_power" />
+		<result property="mount.mountPartitionType" column="mount_partition_type" />
+		<result property="mount.mountCreateTime" column="mount_insert_time" />
+		<result property="mount.mountUpdateTime" column="mount_update_time" />
+	</resultMap>
+
+
+	<resultMap id="vmdkAndhardDiskMap" type="Vmdk" extends="vmdkDetailMap">
+		<association property="hardDisk" javaType="HardDisk">
+			<result property="hardDiskid" column="harddisk_id" />
+			<result property="name" column="harddisk_name" />
+			<result property="index" column="harddisk_index" />
+			<result property="deviceId" column="device_id" />
+			<result property="type" column="harddisk_type" />
+			<result property="sector" column="harddisk_sector" />
+			<result property="clusterType" column="harddisk_cluster_type" />
+		</association>
+	</resultMap>
+
+	<resultMap id="vmdkAndPathMap" type="Vmdk" extends="vmdkDetailMap">
+		<result property="vmimgFullPath" column="vmdk_full_path" />
+	</resultMap>
+
+	<sql id="vmdk_fields">
+		t_vmimg.vmimg_id,
+		t_vmimg.vmimg_diskclone_id,
+		t_vmimg.vmimg_snapshot_index,
+		t_vmimg.vmimg_snapshot_set_id,
+		t_vmimg.vmimg_vir_id,
+		t_vmimg.vmimg_harddisk_id,
+		t_vmimg.vmimg_type,
+		t_vmimg.vmimg_use_type,
+		t_vmimg.vmimg_is_standby,
+		t_vmimg.device_standby_vmimg_id,
+		t_vmimg.vmimg_storage_symbol,
+		t_vmimg.vmimg_file_name,
+		t_vmimg.vmimg_file_path,
+		t_vmimg.vmimg_have_os,
+		t_vmimg.vmimg_data_size,
+		t_vmimg.vmimg_backup_partition,
+		t_vmimg.vmimg_create_time,
+		t_vmimg.vmimg_modify_time,
+		t_vmimg.vmimg_parent_id,
+		t_vmimg.vmimg_remark,
+		t_vmimg.vmimg_current_length
+	 </sql>
+	 
+	<select id="select-vmimg-by-hardDiskId" parameterType="int" resultMap="vmdkDetailMap">
+		SELECT
+		<include refid="vmdk_fields" />
+		 FROM t_vmimg 
+		 WHERE
+		 vmimg_harddisk_id = #{hardDiskid}
+		 ORDER BY vmimg_create_time
+		 ASC
+	</select>
+	 
+	 <select id="select-setId-by-diskCloneId"  parameterType="String" resultType="int">
+		SELECT 
+		COUNT(DISTINCT vmimg_snapshot_set_id) 
+		FROM 
+		t_vmimg 
+		WHERE
+		vmimg_diskclone_id=#{diskCloneId}
+	</select>
+
+	<select id="select_vmdk_By_id" resultMap="vmdkDetailMap"
+		parameterType="int">
+		select
+		<include refid="vmdk_fields" />
+		from
+		t_vmimg
+		where vmimg_id=#{vmId}
+	</select>
+
+	<select id="select_vmdk_and_mount" resultMap="vmdkMapOneToOne">
+		SELECT
+		<include refid="vmdk_fields" />
+		,
+		B.mount_id,
+		B.mount_name,
+		B.vmimg_id,
+		B.mount_dest_device_id,
+		B.mount_part_start_pos,
+		B.mount_part_size,
+		B.mount_part_label,
+		B.mount_part_letter,
+		B.scst_target_id,
+		B.mount_part_linux_load_post,
+		B.mount_state,
+		B.mount_part_uuid,
+		B.mount_partition_id,
+		B.mount_power,
+		B.mount_partition_type,
+		B.mount_update_time
+		FROM t_vmimg , t_mount B
+		WHERE t_vmimg.vmimg_id=B.vmimg_id
+	</select>
+	<select id="select_all_mount" resultType="Mount">
+		SELECT
+		B.mount_id,
+		B.mount_name,
+		B.vmimg_id,
+		B.mount_dest_device_id,
+		B.mount_part_start_pos,
+		B.mount_part_size,
+		B.mount_part_label,
+		B.mount_part_letter,
+		B.scst_target_id,
+		B.mount_part_linux_load_post,
+		B.mount_state,
+		B.mount_part_uuid,
+		B.mount_partition_id,
+		B.mount_power,
+		B.mount_partition_type,
+		B.mount_update_time
+		FROM t_mount B
+   </select>
+	<select id="select_vmdk_and_MultMount" resultMap="vmdkMap">
+		SELECT
+		A.vmimg_id ,
+		A.vmimg_diskclone_id ,
+		A.vmimg_snapshot_index ,
+		A.vmimg_snapshot_set_id ,
+		A.vmimg_vir_id ,
+		A.vmimg_harddisk_id ,
+		A.vmimg_type ,
+		A.vmimg_is_standby ,
+		A.device_standby_vmimg_id ,
+		A.vmimg_storage_symbol ,
+		A.vmimg_file_name ,
+		A.vmimg_file_path ,
+		A.vmimg_have_os ,
+		A.vmimg_data_size ,
+		A.vmimg_backup_partition ,
+		A.vmimg_create_time ,
+		A.vmimg_modify_time ,
+		A.vmimg_parent_id ,
+		A.vmimg_remark,
+		A.vmimg_current_length,
+		B.mount_id,
+		B.mount_name,
+		B.vmimg_id,
+		B.mount_dest_device_id,
+		B.mount_part_start_pos,
+		B.mount_part_size,
+		B.mount_part_label,
+		B.mount_part_letter,
+		B.scst_target_id,
+		B.mount_part_linux_load_post,
+		B.mount_state,
+		B.mount_part_uuid,
+		B.mount_partition_id,
+		B.mount_power,
+		B.mount_partition_type,
+		B.mount_update_time
+		FROM t_vmimg A
+		LEFT JOIN
+		t_mount B
+		ON A.vmimg_id=B.vmimg_id
+   </select>
+
+	<select id="select-hardDiskId-by-vmId" resultType="int"
+		parameterType="int">
+		SELECT vmimg_harddisk_id
+		FROM t_vmimg
+		WHERE
+		vmimg_id=#{vmId}
+   	
+   </select>
+	<select id="select-VmingFilePath-by-vmId" resultType="String"
+		parameterType="int">
+		SELECT vmimg_file_path
+		FROM t_vmimg
+		WHERE vmimg_id=#{vmId}
+
+	</select>
+	<select id="select-backupPartitionby-vmId" resultType="String"
+		parameterType="int">
+		SELECT vmimg_backup_partition
+		FROM t_vmimg
+		WHERE
+		vmimg_id=#{vmId}
+   	
+   </select>
+
+	<!-- 根据虚拟机ID查询虚拟机磁盘状态 -->
+	<select id="select-vir-vmimg-status-by-vir-id" parameterType="Vmdk"
+		resultMap="vmdkAndhardDiskMap">
+		select
+		<include refid="vmdk_fields" />
+		,
+		t_harddisk.harddisk_index,
+		t_harddisk.device_id
+		from
+		t_vmimg
+		left join
+		t_harddisk
+		on t_vmimg.vmimg_diskclone_id=t_harddisk.diskclone_id
+		where
+		t_vmimg.vmimg_vir_id=#{vmimgVirId}
+		and t_vmimg.vmimg_type=#{vmimgType}
+		and t_vmimg.vmimg_use_type=#{vmimgUseType}
+	</select>
+
+	<!-- 根据虚拟机ID查询所属的应急主机临时快照 -->
+	<select id="select-vir-vmimg-by-vir-id" parameterType="int"
+		resultMap="vmdkAndPathMap">
+		select
+		<include refid="vmdk_fields" />
+		,
+		concat(t_storage_path.storage_path, t_vmimg.vmimg_file_path) as
+		vmdk_full_path
+		from
+		t_vmimg
+		left join
+		t_storage_path
+		on
+		t_vmimg.vmimg_storage_symbol = t_storage_path.storage_symbol
+		where
+		vmimg_vir_id=#{vmId}
+		and vmimg_use_type=2
+		and vmimg_type=3
+	</select>
+
+	<!-- 根据多个虚拟磁盘ID查询虚拟磁盘 -->
+	<select id="select-vmimg-by-ids"  parameterType="int"
+		resultMap="vmdkAndPathMap">
+		select
+		<include refid="vmdk_fields" />
+		,
+		CONCAT(t_storage_path.storage_path, t_vmimg.vmimg_file_path) AS
+		vmdk_full_path
+		FROM
+		t_vmimg 
+		LEFT JOIN
+		t_storage_path
+		ON
+		t_vmimg.vmimg_storage_symbol = t_storage_path.storage_symbol
+		WHERE
+		vmimg_id IN 
+		(SELECT vmimg_parent_id	FROM  t_vmimg WHERE vmimg_vir_id=#{virId})
+		AND vmimg_use_type=1
+		AND vmimg_type IN (1,2)
+	</select>
+
+	<!-- 根据多个虚拟磁盘ID查询应急主机磁盘 -->
+	<select id="select-vm-vmimg-temp-by-ids" parameterType="string"
+		resultMap="vmdkAndPathMap">
+		select
+		<include refid="vmdk_fields" />
+		,
+		concat(t_storage_path.storage_path, t_vmimg.vmimg_file_path) as
+		vmdk_full_path
+		from
+		t_vmimg
+		left join
+		t_storage_path
+		on
+		t_vmimg.vmimg_storage_symbol = t_storage_path.storage_symbol
+		where
+		vmimg_vir_id in (#{vmIds})
+		and vmimg_use_type=2
+		and vmimg_type = 3
+	</select>
+
+	<!-- 快照集ID查询虚拟机磁盘，HarddiskId -->
+	<select id="select-vmimg-and-harddisk-by-setId" parameterType="Vmdk"
+		resultMap="vmdkAndhardDiskMap">
+		select
+		<include refid="vmdk_fields" />
+		,
+		t_harddisk.harddisk_index,
+		t_harddisk.harddisk_id,
+		t_harddisk.harddisk_name,
+		t_harddisk.harddisk_type,
+		t_harddisk.harddisk_cluster_type,
+		t_harddisk.harddisk_sector,
+		t_harddisk.device_id
+		from
+		t_vmimg
+		left
+		join
+		t_harddisk
+		on t_vmimg.vmimg_harddisk_id=t_harddisk.harddisk_id
+		where
+		t_vmimg.vmimg_snapshot_set_id=#{vmimgSnapshotSetId}
+		and
+		t_vmimg.vmimg_diskclone_id=#{vmimgDiskcloneId}
+		and
+		t_vmimg.vmimg_use_type=#{vmimgUseType}
+	</select>
+	<!-- 快照集ID查询虚拟机磁盘，HarddiskId -->
+	<select id="select-vmimg-by-cloneId-and-setId" parameterType="Vmdk"
+		resultMap="vmdkAndhardDiskMap">
+		select
+		<include refid="vmdk_fields" />
+		,
+		t_harddisk.harddisk_index,
+		t_harddisk.harddisk_id,
+		t_harddisk.harddisk_type,
+		t_harddisk.harddisk_sector
+		from
+		t_vmimg
+		left
+		join
+		t_harddisk
+		on t_vmimg.vmimg_harddisk_id=t_harddisk.harddisk_id
+		where
+		t_vmimg.vmimg_snapshot_set_id=#{vmimgSnapshotSetId}
+		and
+		t_vmimg.vmimg_diskclone_id=#{vmimgDiskcloneId}
+	</select>
+	<select id="select-vmdk-by-device-id-harddisk-index-and-symbol"
+		parameterType="Map" resultMap="vmdkDetailMap">
+		select
+		vmimg_id ,
+		vmimg_diskclone_id ,
+		vmimg_snapshot_index ,
+		vmimg_snapshot_set_id ,
+		vmimg_vir_id ,
+		vmimg_harddisk_id ,
+		vmimg_use_type ,
+		vmimg_type ,
+		vmimg_is_standby ,
+		device_standby_vmimg_id ,
+		vmimg_storage_symbol ,
+		vmimg_file_name ,
+		vmimg_file_path ,
+		vmimg_have_os ,
+		vmimg_data_size ,
+		vmimg_backup_partition ,
+		vmimg_create_time ,
+		vmimg_modify_time ,
+		vmimg_parent_id ,
+		vmimg_current_length
+		from
+		t_vmimg
+		where
+		vmimg_harddisk_id in
+		(select
+		harddisk_id
+		from
+		t_harddisk
+		where device_id =
+		#{deviceId}
+		and harddisk_index = #{index})
+		and vmimg_storage_symbol =
+		#{symbol}
+	</select>
+
+	<select id="select-device-last-synch-date-by-device-id-and-symbol"
+		parameterType="Map" resultType="Date">
+		select
+		max(vmimg_modify_time)
+		from
+		t_vmimg
+		where vmimg_storage_symbol = #{symbol}
+		and vmimg_diskclone_id in
+		(select
+		diskclone_id
+		from
+		t_diskclone
+		where device_id = #{deviceId})
+	</select>
+
+	<!-- 根据symbol查找新磁盘列表 -->
+	<select id="select-new-disk-list-by-symbol" parameterType="String"
+		resultMap="vmdkDetailMap">
+		SELECT
+		A.vmimg_id ,
+		A.vmimg_diskclone_id ,
+		A.vmimg_snapshot_index ,
+		A.vmimg_snapshot_set_id ,
+		A.vmimg_vir_id ,
+		A.vmimg_harddisk_id ,
+		A.vmimg_type ,
+		A.vmimg_is_standby ,
+		A.device_standby_vmimg_id ,
+		A.vmimg_storage_symbol ,
+		A.vmimg_file_name ,
+		A.vmimg_file_path ,
+		A.vmimg_have_os ,
+		A.vmimg_data_size ,
+		A.vmimg_backup_partition ,
+		A.vmimg_create_time ,
+		A.vmimg_modify_time ,
+		A.vmimg_parent_id ,
+		A.vmimg_current_length
+		FROM
+		t_vmimg A
+		LEFT JOIN
+		t_harddisk B
+		ON A.vmimg_harddisk_id = B.harddisk_id
+		WHERE
+		A.vmimg_storage_symbol = #{symbol}
+		AND B.harddisk_id IS NULL 
+	</select>
+	<select id="select_vmdk_By_diskCloneId" resultMap="vmdkDetailMap" parameterType="int">
+		SELECT
+		<include refid="vmdk_fields" />
+		FROM 
+		t_vmimg
+		WHERE 
+		vmimg_diskclone_id=#{diskCloneId}
+		ORDER BY 
+		vmimg_create_time
+		ASC 
+   </select>
+
+	<select id="select_vmdk_By_hardDiskId" resultMap="vmdkDetailMap"
+		parameterType="Vmdk">
+		SELECT
+		A.vmimg_id ,
+		A.vmimg_diskclone_id ,
+		A.vmimg_snapshot_index ,
+		A.vmimg_snapshot_set_id ,
+		A.vmimg_vir_id ,
+		A.vmimg_harddisk_id ,
+		A.vmimg_type ,
+		A.vmimg_is_standby ,
+		A.device_standby_vmimg_id ,
+		A.vmimg_storage_symbol ,
+		A.vmimg_file_name ,
+		A.vmimg_file_path ,
+		A.vmimg_have_os ,
+		A.vmimg_data_size ,
+		A.vmimg_backup_partition ,
+		A.vmimg_create_time ,
+		A.vmimg_modify_time ,
+		A.vmimg_parent_id ,
+		A.vmimg_use_type ,
+		A.vmimg_current_length
+		FROM
+		t_vmimg A
+		WHERE vmimg_harddisk_id=#{vmimgHarddiskId}
+		AND
+		vmimg_snapshot_set_id=#{vmimgSnapshotSetId}
+		AND vmimg_use_type=1
+	</select>
+	<select id="select_mount_By_diskCloneId" resultType="int"
+		parameterType="int">
+		SELECT COUNT(*)
+		FROM t_vmimg
+		WHERE
+		vmimg_diskclone_id=#{diskCloneId}
+		AND vmimg_use_type IN (2,3,4)
+	</select>
+	<select id="select_vmdkCount_By_path" resultType="int"
+		parameterType="String">
+		SELECT COUNT(*)
+		FROM t_vmimg
+		WHERE vmimg_file_path=#{path}
+	</select>
+	<update id="update-VmingConfig-By-Id" parameterType="Map">
+		UPDATE
+		t_vmimg
+		SET
+		vmimg_type=#{type},
+		vmimg_modify_time=NOW()
+		WHERE
+		vmimg_id=#{vmId}
+    </update>
+	<update id="update-Vmimg-By-Id" parameterType="Vmdk">
+		UPDATE t_vmimg
+		SET
+		vmimg_vir_id=#{vmimgVirId},
+		vmimg_modify_time=NOW()
+		WHERE
+		vmimg_id=#{vmimgId}
+    </update>
+	<insert id="insert-vmdk" parameterType="Vmdk" keyProperty="vmimgId"
+		useGeneratedKeys="true">
+		INSERT INTO t_vmimg
+		(
+		vmimg_diskclone_id,
+		vmimg_snapshot_index,
+		vmimg_snapshot_set_id,
+		vmimg_vir_id,
+		vmimg_harddisk_id,
+		vmimg_use_type,
+		vmimg_type,
+		vmimg_is_standby,
+		device_standby_vmimg_id,
+		vmimg_storage_symbol,
+		vmimg_file_name,
+		vmimg_file_path,
+		vmimg_have_os,
+		vmimg_data_size,
+		vmimg_backup_partition,
+		vmimg_create_time,
+		vmimg_modify_time,
+		vmimg_parent_id,
+		vmimg_remark,
+		vmimg_current_length
+		)
+		VALUES (
+		#{vmimgDiskcloneId},
+		#{vmimgSnapshotIndex},
+		#{vmimgSnapshotSetId},
+		#{vmimgVirId},
+		#{vmimgHarddiskId},
+		#{vmimgUseType},
+		#{vmimgType},
+		#{vmimgIsStandby},
+		#{deviceStandbyVmimgId},
+		#{vmimgStorageSymbol},
+		#{vmimgFileName},
+		#{vmimgFilePath},
+		#{vmimgHaveOs},
+		#{vmimgDataSize},
+		#{vmimgBackupPartition},
+		NOW(),
+		NOW(),
+		#{vmimgParentId},
+		#{vmimgRemark},
+		#{vmimgCurrentLength}
+		);
+		</insert>
+
+	<select id="select-Last-vmdk" resultType="int" parameterType="int">
+		SELECT MAX(vmimg_id)
+		FROM t_vmimg
+    	</select>
+	<select id="select-mount-vmdk-by-parentId" resultType="int"
+		parameterType="int">
+		SELECT count(vmimg_id)
+		FROM t_vmimg
+		WHERE
+		vmimg_parent_id=#{parId}
+		AND (vmimg_use_type=3||vmimg_use_type=4)
+	</select>
+
+	<!--判断当前快照下是否有应急的临时磁盘-->
+	<select id="select-emergency-vmdk-by-parentId" resultType="int"
+		parameterType="int">
+		SELECT count(vmimg_id)
+		FROM
+		t_vmimg
+		WHERE
+		vmimg_parent_id=#{parId}
+		AND vmimg_use_type=2
+		</select>
+
+	<select id="select-temp-vmdk-by-parentId" resultType="int"
+		parameterType="int">
+		SELECT count(vmimg_id)
+		FROM
+		t_vmimg
+		WHERE
+		vmimg_parent_id=#{parId}
+		AND vmimg_type=3
+	</select>
+	<select id="select-addVmdk-by-parentId" resultType="int"
+		parameterType="int">
+		SELECT 
+		  <include refid="vmdk_fields" />
+		FROM
+		t_vmimg
+		WHERE
+		vmimg_parent_id=#{parId}
+		AND vmimg_use_type=1
+		AND vmimg_type=2
+		</select>
+	
+	<select id="select-setId-vmdk-by-diskcloneId" resultType="string"
+		parameterType="int">
+		SELECT DISTINCT vmimg_snapshot_set_id
+		FROM
+		t_vmimg
+		WHERE
+		vmimg_diskclone_id=#{id}
+		ORDER BY vmimg_snapshot_set_id
+		ASC 
+		</select>
+
+	<!-- 查询某个存储介质上的vmdk数量 -->
+	<select id="select-vmdk-count-by-symbol" resultType="int"
+		parameterType="String">
+		SELECT count(vmimg_id)
+		FROM
+		t_vmimg
+		WHERE
+		vmimg_storage_symbol=#{symbol}
+        </select>
+
+	<!-- 根据diskCloneId 查找实时快照工作点 -->
+	<select id="select-real-time-vmdk-by-diskClone-id"
+		parameterType="int" resultMap="vmdkDetailMap">
+		SELECT
+		<include refid="vmdk_fields" />
+		FROM
+		t_vmimg
+		LEFT JOIN t_diskclone
+		ON t_vmimg.vmimg_diskclone_id =
+		t_diskclone.diskclone_id
+		WHERE t_diskclone.diskclone_is_online = 1
+		AND
+		t_diskclone.diskclone_id = #{diskCloneId}
+		AND t_vmimg.vmimg_type IN (1,
+		2)
+		ORDER BY t_vmimg.vmimg_create_time DESC
+		LIMIT 0,1
+	</select>
+
+    <select id="select-vmdk-by-vir-id" parameterType="int" resultMap="vmdkDetailMap">
+	    SELECT
+	        <include refid="vmdk_fields" />
+	        FROM
+		  t_vmimg 
+		WHERE vmimg_vir_id = #{virId}
+    </select>
+    
+    <select id="select-vmdk-by-vmdk-file-path" parameterType="String" resultMap="vmdkDetailMap">
+    SELECT 
+	  * 
+	FROM
+	  t_vmimg 
+	WHERE vmimg_file_path = #{vmdkFilePath} LIMIT 1
+    </select>
+
+	<delete id="delete-vmdk-by-parentId" parameterType="int">
+		DELETE
+		FROM
+		t_vmimg
+		WHERE vmimg_parent_id=#{parentId}
+		AND (vmimg_use_type=2)
+	</delete>
+	
+	<delete id="delete-mountTempVmdk-by-parentId-and-useType" parameterType="int">
+		DELETE
+		FROM
+		t_vmimg
+		WHERE vmimg_parent_id=#{parentId}
+		AND (vmimg_use_type=3 OR vmimg_use_type=4)
+	</delete>	
+	
+	<delete id="delete-vmdk-by-virId" parameterType="int">
+		DELETE
+		FROM
+		t_vmimg
+		WHERE vmimg_vir_id=#{virId}
+		AND (vmimg_use_type=2)
+	</delete>
+	<delete id="delete-vmdk-by-id" parameterType="int">
+		DELETE
+		FROM
+		t_vmimg
+		WHERE vmimg_id=#{vmimgId}
+		</delete>
+	<!-- 根据存储介质别名及设备id删除vmdk -->
+	<delete id="delete-vmdk-by-symbol-and-device-id" parameterType="Map">
+		DELETE
+		FROM
+		t_vmimg
+		WHERE t_vmimg.vmimg_id IN
+		(SELECT
+		D.id
+		FROM
+		(SELECT
+		A.vmimg_id id
+		FROM
+		t_vmimg A
+		LEFT JOIN t_harddisk B
+		ON A.vmimg_harddisk_id
+		= B.harddisk_id
+		LEFT JOIN t_device C
+		ON B.device_id = C.device_id
+		WHERE
+		A.vmimg_storage_symbol = #{symbol}
+		AND C.device_id = #{deviceId}) D)
+	</delete>
+	
+	<select id="select-all-used-symbol_for_vmdk" resultType="String">
+		SELECT 
+			vmimg_storage_symbol
+		FROM 
+			t_vmimg t
+		GROUP BY 
+			vmimg_storage_symbol
+	</select>
+
+  <!-- 根据多个虚拟磁盘ID查询应急主机磁盘 -->
+	<select id="select-vmimgs-in-vmimgIds" 
+		resultMap="vmdkAndPathMap">
+		select
+		<include refid="vmdk_fields" />
+		from
+		t_vmimg
+		where
+		vmimg_parent_id in
+		<foreach item="vmdkIdList" index="index" collection="list"
+			open="(" separator="," close=")">
+			#{vmdkIdList}  
+		</foreach>
+		and vmimg_use_type=1
+	</select>
+	
+	<select id="select-vmimg-by-conditions" resultMap="vmdkDetailMap" >
+	select
+	<include refid="vmdk_fields" />
+	from
+	t_vmimg
+	where
+	1=1
+	 <if test="vmimgDiskcloneId != null">  
+    AND vmimg_diskclone_id = #{vmimgDiskcloneId}  
+  	</if>  
+  	<if test="vmimgSnapshotSetId != null ">  
+    AND vmimg_snapshot_set_id = #{vmimgSnapshotSetId}  
+  	</if>
+  	<if test="vmimgHarddiskId != null ">  
+    AND vmimg_harddisk_id = #{vmimgHarddiskId}  
+  	</if>  
+	</select> 
+	
+	<select id="select-vmdk-by-diskcloneid-snapshotsetid-and-harddiskid" resultMap="vmdkDetailMap" parameterType="Map">
+	SELECT 
+	  <include refid="vmdk_fields" /> 
+	FROM
+	  t_vmimg 
+	WHERE vmimg_diskclone_id = #{diskCloneId}
+	  AND vmimg_snapshot_set_id = #{snapShotSetId}
+	  AND vmimg_harddisk_id = #{harddiskId}
+	  AND vmimg_use_type = 1
+    </select>
+    
+    <select id="select-vmimgs-by-diskClones" resultMap="vmdkDetailMap" parameterType="list">
+    	SELECT 
+	  <include refid="vmdk_fields" /> 
+		FROM
+	  	t_vmimg
+	  	WHERE vmimg_diskclone_id IN
+		<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+         	 	#{item.diskcloneId}
+         </foreach>
+    </select>
+    
+    <select id="select-vmdk-by-vmdkid" parameterType="int" resultMap="vmdkDetailMap">
+    SELECT 
+	  	<include refid="vmdk_fields" /> 
+		FROM
+	  	t_vmimg
+	  	WHERE
+	  	vmimg_id = #{id}
+    </select>
+
+</mapper>

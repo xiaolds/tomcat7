@@ -1,0 +1,722 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="DeviceMap" type="Device">
+		<id property="deviceId"  column="device_id"/>            
+		<result property="uniqueId"  column="device_unique_id"/>     
+		<result property="status"  column="device_state"/>         
+		<result property="markDel"  column="device_mark_del"/>      
+		<result property="mac"  column="device_mac"/>          
+		<result property="ip"  column="device_ip"/>           
+		<result property="computerName" column="device_client_computer_name"/> 
+		<result property="isStandby"  column="device_is_standby"/>    
+		<result property="standbyId"  column="device_standby_id"/>    
+		<result property="licenseFlag"  column="device_license_flag"/>  
+		<result property="clientSystype"  column="device_client_systype"/> 
+		<result property="clientSysversion"  column="device_client_sysversion"/> 
+		<result property="clientVersion"  column="device_client_version"/> 
+		<result property="clientRegister"  column="device_client_register"/> 
+		<result property="clientSteupDateTime"  column="device_client_steup_date_time"/> 
+		<result property="clientOfflineTime"  column="offline_time"/> 
+		<result property="clientWorkgroup"  column="device_client_workgroup"/> 
+		<result property="fcConnectionStr"  column="fc_connection_str"/>    
+		<result property="iscsiConnectionStr"  column="iscsi_connection_str"/> 
+		<result property="sortIndex"  column="device_sort_index"/>   
+		<result property="remark"  column="device_remark"/>  
+		<result property="standbyModel"  column="device_standby_model"/>  
+		<result property="description"  column="device_description"/>  
+		<result property="deviceType"  column="devic_type"/>  
+		<result property="deviceIsNew"  column="device_is_new"/>  
+		<result property="license"  column="cl_sq_s"/>  
+		<result property="clusterIdentity"  column="device_cluster_identity"/>  
+		<result property="clientUpgradeState"  column="device_client_upgrade_state"/>  
+	</resultMap>
+	
+	<resultMap id="DeviceAndModeMap" type="DeviceAndMode">
+		<id property="deviceModeId"  column="device_mode_id"/>            
+		<result property="deviceId"  column="device_id"/>     
+		<result property="modeId"  column="mode_id"/>         
+		<result property="deviceModeCreate"  column="device_mode_createTime"/>      
+	</resultMap>
+	
+	<resultMap id="DeviceAndGroupMap" type="DeviceAndGroup">
+		<id property="id"  column="id"/>            
+		<result property="deviceId"  column="device_id"/>     
+		<result property="groupId"  column="group_id"/>         
+		<result property="type"  column="type"/>      
+	</resultMap>
+
+	<resultMap id="DeviceAndDiskCloneMap"  type="Device" extends="DeviceMap">
+		<result property="diskClone.diskcloneId" column="diskclone_id"/>
+		<result property="diskClone.deviceId" column="deviceId"/>
+		<result property="diskClone.uuid" column="diskclone_uuid"/>
+		<result property="diskClone.online" column="diskclone_is_online"/>
+		<result property="diskClone.state" column="diskclone_state"/>
+		<result property="diskClone.workState" column="diskclone_work_state"/>
+		<result property="diskClone.synchrIntervalType" column="diskclone_synchr_interval_type"/>
+		<result property="diskClone.snapIntervalValue" column="diskclone_snap_interval_value"/>
+		<result property="diskClone.synchrIntervalValue" column="diskclone_synchr_interval_value"/>
+		<result property="diskClone.targetPath" column="diskclone_target_path"/>
+	</resultMap>
+
+	<sql id="device-column">
+		t_device.device_id,
+	    t_device.device_unique_id,
+	    t_device.device_state,
+	    t_device.device_mark_del,
+	    t_device.device_mac,
+	    t_device.device_ip,
+	    t_device.device_client_computer_name,
+	    t_device.device_is_standby,
+	    t_device.device_standby_id,
+	    t_device.device_license_flag,
+	    t_device.device_client_systype,
+	    t_device.device_client_sysversion,
+	    t_device.device_client_version,
+	    t_device.device_client_register,
+	    t_device.device_client_steup_date_time,
+	    t_device.offline_time,
+	    t_device.device_client_workgroup,
+	    t_device.fc_connection_str,
+	    t_device.iscsi_connection_str,
+	    t_device.device_sort_index,
+	    t_device.device_remark,
+	    t_device.device_standby_model,
+	    t_device.device_description,
+	    t_device.devic_type,
+	    t_device.device_is_new,
+	    t_device.cl_sq_s,
+	    t_device.device_cluster_identity,
+	    t_device.device_client_upgrade_state
+	</sql>
+	
+	<select id="select-device-by-device-id" parameterType="int" resultMap="DeviceMap">
+		select
+			<include refid="device-column"></include>
+		from 
+			t_device
+		where device_id =#{deviceId}
+	</select>
+	
+	<select id="select-device-by-device-mac" parameterType="int" resultMap="DeviceMap">
+		select
+			<include refid="device-column"></include>
+		from 
+			t_device
+		where device_mac =#{deviceMac}
+	</select>
+	
+	<select id="select-device-id-by-state" parameterType="int" resultType="int">
+		select
+			device_id
+		from 
+			t_device
+		where device_state =#{state}
+	</select>
+	
+	<select id="select-device-by-user" parameterType="String" resultMap="DeviceMap">
+		select
+			<include refid="device-column"></include>
+		from 
+			t_device
+	</select>
+	
+	<select id="select-device-state-by-deviceid" parameterType="int" resultType="int">
+		select
+			device_state
+		from 
+			t_device
+		where device_id =#{deviceId}
+	</select>
+	
+	<select id="select-device-by-deviceid" parameterType="int" resultMap="DeviceMap">
+		select
+			<include refid="device-column"></include>
+		from 
+			t_device
+		where device_id = #{deviceId}
+	</select>
+	
+	<select id="select-device-by-param" parameterType="Map" resultMap="DeviceMap">
+		select
+			device_id,           
+			device_unique_id,     
+			device_state,         
+			device_mark_del,      
+			device_mac,          
+			device_ip,           
+			device_client_computer_name, 
+			device_is_standby,    
+			device_standby_id,    
+			device_license_flag,  
+			device_client_systype, 
+			device_client_sysversion, 
+			device_client_version, 
+			device_client_register, 
+			device_client_steup_date_time, 
+			offline_time,
+			device_client_workgroup, 
+			fc_connection_str,    
+			iscsi_connection_str, 
+			device_sort_index,   
+			device_remark,
+			device_standby_model,
+			device_description,
+			devic_type,
+			device_cluster_identity,
+			device_client_upgrade_state
+		from 
+			t_device
+		where device_mark_del = 0
+			AND device_is_standby != 1
+		<if test="deviceId !=null and deviceId !='' " >
+			 	AND  device_id != #{deviceId}
+		</if>
+		<if test="type == 2" >
+			 	AND  device_client_systype in (
+			 		select 
+			 			device_client_systype 
+			 		from 
+			 			t_device 
+			 		where 
+			 			device_id = #{deviceId})
+		</if>
+		AND device_id IN(
+			SELECT 
+				device_id 
+			FROM 
+				t_device_and_group 
+			WHERE 
+				group_id IN
+			<foreach collection="GroupIdList" item="GroupIdList" index="index"
+	            open="(" close=")" separator=",">
+	            #{GroupIdList}
+        	</foreach>
+        	)
+	</select>
+	
+	<select id="select-device-by-client-systype"   resultMap="DeviceMap">
+		select
+			<include refid="device-column"></include>
+		from 
+			t_device
+		where device_id IN (
+			SELECT device_id FROM t_device_and_group 
+			WHERE group_id IN 
+				<foreach collection="groupIdList" index="index" item="groupIdList" open="(" separator="," close=")">  
+            		#{groupIdList}   
+    			</foreach> 
+		)
+		and device_client_systype IN 
+		<foreach collection="sysType" index="index" item="sysType" open="(" separator="," close=")">  
+            #{sysType}   
+    	</foreach> 
+	</select>
+	
+	<select id="select-device-by-check-sys" parameterType="Map" resultMap="DeviceMap">
+		select
+			<include refid="device-column"></include>
+		from 
+			t_device
+		where device_id in (#{tarDeviceId},#{souDeviceId})
+	</select>
+	
+	<select id="select-deviceid-by-group-id" parameterType="Map" resultMap="DeviceAndGroupMap">
+		select
+			id,
+			device_id,           
+			group_id,     
+			type
+		from 
+			t_device_and_group
+		where 
+			group_id = #{groupId}
+	</select>
+	
+	<select id="select-device-info-by-Clusterid" parameterType="int" resultMap="DeviceMap">
+		select
+			<include refid="device-column"></include>
+		from 
+			t_device
+		WHERE device_id IN 
+		  (SELECT 
+		    device_id 
+		  FROM
+		    t_device_and_group 
+		  WHERE group_id = #{item}
+		  )
+	</select>
+	
+	<update id="update-devicegroup-by-deviceidlist" parameterType="Map">
+		<foreach collection="deviceidList" item="item" index="index" open="" close="" separator=";">
+	        update t_device_and_group 
+			<set>
+				group_id = 1
+			</set>	
+          	where device_id = #{item}
+         </foreach>
+	</update>
+	
+	<!-- 将默认分组中的机器类型都修改为普通类型 -->
+	<update id="update-default-group-device-cluster-type">
+	   update 
+		  t_device 
+		set
+		  t_device.device_cluster_identity = 0 
+		where t_device.device_id in 
+		  (select 
+		    t_device_and_group.device_id 
+		  from
+		    t_device_and_group 
+		  where group_id = 1) ;
+	</update>
+	
+	<update id="update-device-des-by-id" parameterType="Map">
+	        update t_device
+			<set>
+				device_description = #{desValue}
+			</set>	
+          	where device_id = #{deviceId}
+	</update>
+	
+	<delete id="delete-group-by-group-id" parameterType="int">
+		     DELETE 
+		     	FROM 
+					t_group 
+			 WHERE 
+			 	group_id=#{groupId}
+	</delete>
+	
+	<select id="select-all-devices"  resultMap="DeviceMap">
+		select
+			<include refid="device-column"></include>
+		from 
+			t_device
+	</select>
+	<!-- 查询权限内所有设备 -->
+	<select id="select-all-devices-by-groupIdList"  resultMap="DeviceMap">
+		select
+			<include refid="device-column"></include>
+		from 
+			t_device
+		where device_id IN (
+			SELECT device_id FROM t_device_and_group 
+			WHERE group_id IN 
+				<foreach collection="list" index="index" item="groupIdList" open="(" separator="," close=")">  
+            		#{groupIdList}   
+    			</foreach> 
+    		
+		)
+	</select>
+	
+	<select id="select-device-by-group-id" parameterType="int" resultMap="DeviceMap">
+		select 
+			d.device_id,           
+			d.device_unique_id,     
+			d.device_state,         
+			d.device_mark_del,      
+			d.device_mac,          
+			d.device_ip,           
+			d.device_client_computer_name, 
+			device_is_standby,    
+			device_standby_id, 
+			d.device_license_flag,  
+			d.device_client_systype, 
+			d.device_client_sysversion, 
+			d.device_client_version, 
+			d.device_client_register, 
+			d.device_client_steup_date_time, 
+			d.offline_time,
+			d.device_client_workgroup, 
+			d.device_sort_index,   
+			d.device_remark,
+			d.device_standby_model,
+			d.device_description,
+			devic_type,
+			cl_sq_s,
+			device_is_new,
+			device_cluster_identity,
+			d.device_client_upgrade_state
+		from
+		 t_device d
+		where
+			 d.device_id 
+				in (
+					select 
+						tg.device_id 
+					from 
+						t_device_and_group tg
+					where 
+						tg.group_id=#{groupId})
+		ORDER BY device_state ASC,device_id DESC
+	</select>
+	
+	<update id="update-standby-by-devicelist" parameterType="Map">
+		<foreach collection="deviceList" item="item" index="index" open="" close="" separator=";">
+	        update t_device 
+			<set>
+				device_is_standby = 1,
+				device_standby_id = #{item.standbyId},
+				device_standby_model = #{item.standbyModel},
+				device_is_new = #{item.deviceIsNew}
+			</set>	
+          	where device_id = #{item.deviceId}
+         </foreach>
+	</update>
+	
+	<update id="update-standby-by-devicelist-cancel" parameterType="Map">
+		<foreach collection="deviceIdList" item="item" index="index" open="" close="" separator=";">
+	        update t_device 
+			<set>
+				device_is_standby = 2,
+				device_standby_model = 0,
+				device_standby_id = null
+			</set>	
+          	where device_id = #{item}
+         </foreach>
+	</update>
+	
+	<update id="update-is-new-by-deviceid" parameterType="int">
+	        update t_device 
+			<set>
+				device_is_new = 2
+			</set>	
+          	where device_id = #{item}
+	</update>
+	
+	<select id="select-device-by-storage-path-symbol" parameterType="String" resultMap="DeviceMap">
+		select 
+			  d.device_id,
+			  d.device_unique_id,
+			  d.device_state,
+			  d.device_mark_del,
+			  d.device_mac,
+			  d.device_ip,
+			  d.device_client_computer_name,
+			  device_is_standby,
+			  device_standby_id,
+			  d.device_license_flag,
+			  d.device_client_systype,
+			  d.device_client_sysversion,
+			  d.device_client_version,
+			  d.device_client_register,
+			  d.device_client_steup_date_time,
+			  d.offline_time,
+			  d.device_client_workgroup,
+			  d.device_sort_index,
+			  d.device_remark,
+			  d.device_standby_model,
+			  d.device_description,
+			  devic_type,
+			  device_cluster_identity,
+			  d.device_client_upgrade_state
+			from
+			  t_device d 
+			where d.device_id in (
+			    (select 
+			      device_id 
+			    from
+			      t_diskclone 
+			    where t_diskclone.diskclone_id in 
+			      (select 
+			        t_vmimg.vmimg_diskclone_id 
+			      from
+			        t_vmimg 
+			      where t_vmimg.vmimg_storage_symbol = #{symbol}))
+			  )
+	</select>
+	<select id="select-device-by-diskCloneId" parameterType="int" resultMap="DeviceMap">
+		select 
+			  d.device_id,
+			  d.device_unique_id,
+			  d.device_state,
+			  d.device_mark_del,
+			  d.device_mac,
+			  d.device_ip,
+			  d.device_client_computer_name,
+			  device_is_standby,
+			  device_standby_id,
+			  d.device_license_flag,
+			  d.device_client_systype,
+			  d.device_client_sysversion,
+			  d.device_client_version,
+			  d.device_client_register,
+			  d.device_client_steup_date_time,
+			  d.offline_time,
+			  d.device_client_workgroup,
+			  d.device_sort_index,
+			  d.device_remark,
+			  device_standby_model,
+			  devic_type,
+			  device_cluster_identity,
+			  d.device_client_upgrade_state
+			from
+			  t_device d 
+			where d.device_id in (
+			    (select 
+			      device_id 
+			    from
+			      t_diskclone 
+			    where t_diskclone.diskclone_id =#{diskCloneId} 
+			      )
+			  )
+	</select>
+	
+	<insert id="insert-extra-device" parameterType="Device" useGeneratedKeys="true" keyProperty="deviceId" >
+		INSERT INTO
+			 t_device(
+				device_state,         
+				device_mac,
+				device_unique_id,
+				device_mark_del,        
+				device_ip,           
+				device_client_computer_name, 
+				device_client_systype, 
+				device_client_steup_date_time, 
+				device_description,
+				devic_type,
+				cl_sq_s
+	             )
+		VALUES (
+		        #{status},
+		        #{mac},
+		        #{uniqueId},
+		        #{markDel},
+		        #{ip},
+		        #{computerName},
+		        #{clientSystype},
+		        now(),
+		        #{description},
+		        #{deviceType},
+		        #{license}
+		        )
+		
+		<selectKey resultType="int" order="AFTER" keyProperty="deviceId"> 
+	        SELECT LAST_INSERT_ID() 
+	    </selectKey>
+	</insert>
+		
+	<insert id="insert-device-mode" parameterType="Map">
+		INSERT INTO
+			 t_device_mode(
+				device_id,
+				mode_id,         
+				device_mode_createTime
+	             )
+		VALUES (
+		        #{deviceId},
+		        #{taskMode},
+		        now()
+		        );
+		</insert>
+		
+	<insert id="insert-device-group" parameterType="Map">
+		INSERT INTO
+			 t_device_and_group(
+				device_id,
+				group_id
+	             )
+		VALUES (
+		        #{deviceId},
+		        #{groupId}
+		        );
+	</insert>
+	
+	<update id="update-extra-device-info" parameterType="Device">
+	        update t_device 
+			<set>
+				<!-- device_ip = #{ip}, -->
+				device_client_computer_name = #{computerName},
+				device_client_systype = #{clientSystype},
+				device_description = #{description}
+			</set>	
+          	where device_id = #{deviceId}
+	</update>
+	
+	<update id="update-device-mode" parameterType="Map">
+	        update t_device_mode 
+			<set>
+				mode_id = #{taskModeValue}
+			</set>	
+          	where device_id = #{deviceId}
+	</update>
+	
+	<select id="select-device-mode" parameterType="int" resultMap="DeviceAndModeMap">
+		select 
+			  device_mode_id,
+			  device_id,
+			  mode_id,
+			  device_mode_createTime
+			from
+			  t_device_mode 
+			where device_id = #{deviceId}
+	</select>
+	
+	<select id="select-device-and-disk-clone-by-state" resultMap="DeviceAndDiskCloneMap" parameterType="map">
+		SELECT * FROM ( 
+			SELECT * FROM 
+			(
+				SELECT 
+				  <include refid="device-column"></include>,
+				  t_diskclone.diskclone_id,
+				  t_diskclone.device_id AS deviceId,
+				  t_diskclone.diskclone_uuid,
+				  t_diskclone.diskclone_is_online,
+				  t_diskclone.diskclone_state,
+				  t_diskclone.diskclone_work_state,
+				  t_diskclone.diskclone_synchr_interval_type,
+				  t_diskclone.diskclone_snap_interval_value,
+				  t_diskclone.diskclone_synchr_interval_value,
+				  t_diskclone.diskclone_create_time
+				 FROM t_device 
+				  LEFT JOIN t_diskclone 
+				ON t_device.device_id = t_diskclone.device_id 
+				WHERE t_device.device_id IN
+					 (SELECT device_id FROM t_device_and_group 
+					 	WHERE group_id = #{groupId}
+					 )
+				ORDER BY t_diskclone.diskclone_create_time DESC
+			) temp  
+		GROUP BY temp.deviceId ORDER BY temp.diskclone_create_time DESC ) n
+		LEFT JOIN 
+		(
+			SELECT 
+				device_id,
+				GROUP_CONCAT(diskclone_target_path) AS diskclone_target_path
+			FROM t_diskclone
+			WHERE diskclone_target_path IS NOT NULL 
+			AND  diskclone_target_path != '' 
+			GROUP BY  device_id 
+		) m 
+		ON n.device_id = m.device_id
+	</select>
+	
+	<select id="select-device-count-by-device-ip" parameterType="String" resultType="int">
+		select 
+		     count(device_id)
+		from 
+			t_device
+		where 
+			device_ip = #{ip}
+	</select>
+	
+	<update id="update-device-client-state-on-upgrade" parameterType="int">
+            update t_device 
+            <set>
+                device_client_upgrade_state = 1
+            </set>  
+            where device_id = #{deviceId}
+    </update>
+    
+   	<update id="update-device-identity-by-deviceid" parameterType="list">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+	        update 
+	        	t_device
+	        <set>
+	            device_cluster_identity=#{item.clusterIdentity},
+	            device_standby_model = #{item.standbyModel}
+	        </set>
+	        where 
+	        	device_id = #{item.deviceId}
+	    </foreach>      
+	</update>
+   	<update id="update-device-master-to-slaver-by-list" parameterType="list">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+	        update 
+	        	t_device
+	        <set>
+	            device_standby_model=#{item.standbyModel}
+	        </set>
+	        where 
+	        	device_id = #{item.deviceId}
+	    </foreach>      
+	</update>
+	
+	<update id="update-devicegroup-to-selectGroup" parameterType="Map">
+        update 
+        	t_device_and_group 
+		<set>
+			group_id = #{selectGroup}
+		</set>	
+         	where device_id = #{deviceId}
+	</update>
+	
+	<update id="set-device-to-master-or-slaver" parameterType="Map">
+        update 
+        	t_device 
+		<set>
+			device_standby_model = #{type}
+		</set>	
+         	where device_id = #{deviceId}
+	</update>
+	
+	<select id="select-group-devices-by-deviceId" parameterType="int" resultMap="DeviceMap">
+		SELECT 
+		c.device_id,
+		c.device_ip,
+		c.device_standby_model,
+		c.device_client_computer_name
+		FROM 
+		t_device_and_group a,
+		t_device_and_group b,
+		t_device c 
+		WHERE 
+		a.device_id = #{deviceId} 
+		AND a.group_id = b.group_id 
+		AND b.device_id = c.device_id
+	</select>
+		
+	<select id="select-groupid-by-deviceid" parameterType="int" resultType="int">
+		SELECT 
+		group_id 
+		FROM 
+		t_device_and_group 
+		WHERE 
+		device_id =#{deviceId}
+	</select>
+		
+	<select id="select-devices-by-diskcloneids" parameterType="Map" resultMap="DeviceMap">
+	SELECT 
+	<include refid="device-column" />
+	FROM 
+	t_device 
+	WHERE 
+	device_id IN
+	<foreach collection="diskCloneList" index="index" item="item" open="(" separator="," close=")">  
+          	#{item.deviceId}   
+    </foreach> 
+	</select>
+	
+	<select id="select-device-by-id" parameterType="String" resultMap="DeviceMap">
+	SELECT 
+	<include refid="device-column" />
+	FROM 
+	t_device 
+	WHERE 
+	device_id =#{deviceId}
+	</select>
+	
+	<select id="select-devices-by-type"  parameterType="String" resultMap="DeviceMap">
+	SELECT 
+	<include refid="device-column" />
+	FROM 
+	t_device 
+	WHERE 
+	devic_type =#{type}
+	</select>
+	
+	<select id="select-devices-by-groupid" parameterType="int" resultMap="DeviceMap">
+		SELECT
+		*
+		FROM 
+		t_device_and_group ,t_device 
+		WHERE 
+		t_device_and_group.group_id = 1 
+		AND 
+		t_device_and_group.device_id = t_device.device_id
+	</select>
+		
+</mapper>

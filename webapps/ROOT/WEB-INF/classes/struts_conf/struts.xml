@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "struts-2.1.dtd">
+<struts>
+     <!-- 设置Web应用的默认编码集为 -->
+	<constant name="struts.i18n.encoding" value="utf-8"/>
+	<!-- 设置Struts2默认的ObjectFactory为spring -->
+	<constant name="struts.objectFactory" value="spring" />
+	<!-- 设置Struts2应用是否处于开发模式，通常在开发调试阶段设为true,正式上线后可设为false -->
+	<constant name="struts.devMode" value="false" />
+	<!-- 设置Struts2的默认主题为simple -->
+	<constant name="struts.ui.theme" value="simple" />
+	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
+	<constant name="struts.action.excludePattern" value="/api/.*" />
+	
+	 <package name="struts-base" extends="json-default" namespace="/"  abstract="true">
+	 	 
+	 	<interceptors>         
+            <interceptor name="authority" class="com.datasure.websure.utils.util.filter.AuthorityInterceptor" />          
+            <interceptor-stack name="andefault">
+                <interceptor-ref name="defaultStack" />
+                <interceptor-ref name="authority" />
+            </interceptor-stack>
+        </interceptors>
+        <!-- 定义默认拦截器 -->
+        <default-interceptor-ref name="andefault" />
+                
+        
+		<!-- 定义全局result -->
+		<global-results>
+			<!-- 定义名为exception的全局result -->
+			<result name="redirect" type="redirect">${returnPageURL}</result>
+			<result name="dispatcher" type="dispatcher">${returnPageURL}</result>
+			<result name="redirectAction" type="redirectAction">${returnPageURL}</result>
+		    <result name="exception">/exception.jsp</result>
+		    <result name="login">/login.jsp</result>
+		    <result name="loginOut">/login.jsp</result>
+		    <result name="fail">/login.jsp</result>
+		    <result name="returnJson" type="json">
+	              <param name="root">dataMap</param>
+	         </result>
+	         <result type="json" name="ieReturn"> 	         	 
+                <param name="contentType">text/html;charset=utf-8</param> 
+                <param name="root">dataMap</param>                     
+            </result>  
+	         
+	         <result name="download" type="stream"> 
+				<param name="contentType">application/octet-stream;charset=ISO-8859-1</param>				
+				<param name="inputName">downloadMysqlRar</param>
+				<param name="contentDisposition">attachment;filename="${fileName}"</param> 							
+				<param name="bufferSize">4096</param> 
+		     </result> 
+		     
+		      <result name="downloadUSBKey" type="stream"> 
+				<param name="contentType">application/octet-stream;charset=ISO-8859-1</param>				
+				<param name="inputName">downloadUSBKeyControl</param>
+				<param name="contentDisposition">attachment;filename="${fileName}"</param> 							
+				<param name="bufferSize">4096</param> 
+		     </result> 
+		     
+		      <result name="downloadLicense" type="stream"> 
+				<param name="contentType">application/octet-stream;charset=ISO-8859-1</param>				
+				<param name="inputName">offlineDownload</param>
+				<param name="contentDisposition">attachment;filename="${fileName}"</param> 							
+				<param name="bufferSize">4096</param> 
+		     </result> 
+		     
+		     <!-- OEM 导出模版 -->
+			<result name="exportOemFile" type="stream">
+				<param name="contentType">application/octet-stream;charset=ISO-8859-1</param>
+				<param name="inputName">exportOemFile</param>
+				<param name="contentDisposition">attachment;filename="${fileName}"</param>
+				<param name="bufferSize">4096</param>
+			</result>
+		</global-results>
+
+		<!-- 定义全局异常映射 --><!--
+		<global-exception-mappings>
+			   捕捉到Exception异常(所有异常)时跳转到exception所命名的视图上
+			<exception-mapping exception="java.lang.Exception" result="exception"/>
+		</global-exception-mappings>	
+	-->
+	</package>
+	
+	<!-- 备份信息模块 -->
+	<include file="com/datasure/websure/backup/struts-backup.xml" />
+	
+	<!-- 系统配置模块 -->
+	<include file="com/datasure/websure/config/struts-config.xml"/>
+	<!-- 应急接管模块 -->
+	<include file="com/datasure/websure/emergency/struts-emergency.xml" />
+	<!-- 恢复存储模块 -->
+	<include file="com/datasure/websure/recovery/struts-recovery.xml"/>
+	<!-- 权限模块 -->
+	<include file="com/datasure/websure/authorities/struts-authority.xml"/>
+	<!-- 初始化 -->
+	<include file="com/datasure/websure/initialization/struts-initialization.xml" />	
+	<!-- 日志模块 -->
+	<include file="com/datasure/websure/log/struts-syslog.xml" />
+	<!-- 预警模块 -->
+	<include file="com/datasure/websure/warning/struts-warning.xml" />	
+	<!-- 账户操作模块-->
+	<include file="com/datasure/websure/admin/struts-admin.xml" />
+	<!-- 消息中心模块 -->
+	<include file="com/datasure/websure/msgcenter/struts-notify.xml" />
+	  
+</struts>    

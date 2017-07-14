@@ -1,0 +1,13 @@
+Ext.define("acesure.emergency.model.ComputeNodesNameModel",{
+	extend:"Ext.data.Model",
+	alias:"widget.ComputeNodesNameModel",
+	fields:[
+	        {name:"id",type:"string"},
+	        {name:"name",type:"string"},
+	        {name:"systype",type:"string"},
+	        {name:"logicCpu",type:"int"},
+	        {name:"coreCpu",type:"int"},
+	        {name:"memSize",type:"int"},
+	        {name:"authorized",type:"int"}
+	]
+});

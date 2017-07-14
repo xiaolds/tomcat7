@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "struts-2.1.dtd">
+<struts>
+
+	<package name="struts-emergency"  extends="struts-base"  namespace="/emergency">
+          <action name="tovmManager"  class="vmManagerAction"  />
+          <action name="tovmManagerNic" class="vmManagerNicAction" />
+          <action name="tocomputeNodes"  class="computeNodesAction"/>
+          <action name="tocomputeNodesNic"  class="computeNodesNicAction"/>
+          <action name="toclusterVmimg"  class="clusterVmimgAction"/>
+    </package> 
+	
+</struts>    

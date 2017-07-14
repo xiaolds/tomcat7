@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure.emergency">
+	<resultMap id="clutserDiskCloneInfoMap"  type="clutserDiskCloneInfo">
+		<id property="ClusterDiskCloneInfoId" column="cluster_diskclone_info_id" />
+		<result property="clusterId" column="cluster_id"/>
+		<result property="clusterDiskCloneUUIDs" column="cluster_diskclone_uuid"/>
+		<result property="shareDiskIdSet" column="sharedisk_set"/>
+		<result property="createTime" column="create_time"/>
+	</resultMap>
+
+	<sql id="clutserDiskCloneInfo_fields">
+		cluster_diskclone_info_id,
+		cluster_id,
+		cluster_diskclone_uuid,
+		sharedisk_set,
+		create_time
+	</sql>
+	
+	<select id="find-all-info-by-diskcloneid" parameterType="int" resultMap="clutserDiskCloneInfoMap">
+	SELECT
+	<include refid="clutserDiskCloneInfo_fields"/>
+	FROM 
+	t_diskclone a,
+	t_device_and_group b,
+	t_cluster_diskclone_info c 
+	WHERE 
+	a.diskclone_id = #{diskCloneId}
+	AND b.device_id = a.device_id 
+	AND b.group_id = c.cluster_id
+	</select>
+	
+	<select id="select-cluster-diskclone-info-by-diskcloneuuid" parameterType="string" resultMap="clutserDiskCloneInfoMap">
+	    SELECT
+	    <include refid="clutserDiskCloneInfo_fields"/>
+	    FROM 
+	    t_cluster_diskclone_info
+	    where cluster_diskclone_uuid
+	    like CONCAT('%',#{diskCloneUUID},'%')  
+    </select>
+    
+    <select id="find-all-info-by-clusterId" parameterType="int" resultMap="clutserDiskCloneInfoMap">
+    SELECT 
+    <include refid="clutserDiskCloneInfo_fields"/>
+    FROM 
+    t_cluster_diskclone_info
+    WHERE 
+    cluster_id = #{clusterId}
+    ORDER BY create_time ASC
+    </select>
+    
+    <select id="select-now-sharedisk-set-by-clusterid" parameterType="int" resultType="string">
+    	SELECT 
+    	sharedisk_set 
+    	FROM 
+    	t_cluster_diskclone_info 
+    	WHERE 
+    	create_time = 
+    	(SELECT MAX(create_time) 
+    	FROM t_cluster_diskclone_info 
+    	WHERE cluster_id = #{clusterId})
+    </select>
+    
+    <select id="select--sharedisk-name-by-params" parameterType="Map" resultType="string">
+   		 SELECT cluster_sharedisk_alias 
+   		 FROM 
+   		 t_cluster_sharedisk a,
+   		 t_cluster_harddisk b 
+   		 WHERE a.cluster_sharedisk_id IN 
+   		 <foreach item="item" index="index" collection="shareDiskid" open="(" separator="," close=")">  
+			  	#{item}  
+		</foreach>
+   		 AND a.cluster_id = b.cluster_id 
+   		 AND a.cluster_sharedisk_index = b.shared_harddisk_index
+		 AND b.device_id = #{deviceId}
+		 AND b.harddisk_index = #{diskIndex}
+		 LIMIT 0,1
+    </select>
+
+</mapper>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="deviceLogSystemMap" type="deviceLogSystem">
+		<id property="deviceSystemLogId"  column="device_system_log_id"/>            
+		<result property="deviceId"  column="device_id"/>     
+		<result property="deviceLogData"  column="device_log_data"/>         
+		<result property="deviceLogTime"  column="device_log_time"/>      
+		<result property="deviceEvent"  column="device_event"/>          
+		<result property="deviceType"  column="device_type"/>           
+		<result property="deviceSource" column="device_source"/> 
+		<result property="deviceUser" column="device_user"/> 
+		<result property="devicePcname" column="device_pcname"/> 
+		<result property="deviceDescription" column="device_description"/> 
+		<result property="deviceEventId" column="device_event_id"/> 
+		<result property="deviceTime" column="device_time"/> 
+		<result property="type" column="type"/> 
+	</resultMap>
+	
+	<sql id="device-log-system-column">
+	    device_id,         
+	    device_log_data,             
+	    device_log_time,              
+	    device_event,            
+	    device_type,       
+	    device_source,        
+	    device_user,        
+	    device_pcname,    
+	    device_description,    
+	    device_event_id,    
+	    device_time 
+	</sql>
+	
+	<!-- 查询预警日志总条数(三表联查) -->
+	<select id="select-device-log-system-all-split-page-count" parameterType="map" resultType="int">
+		SELECT COUNT(device_id) FROM
+		(
+			SELECT 
+				<include refid="device-log-system-column"/>
+			FROM t_device_log_sysytem 
+			UNION ALL 
+			SELECT 
+				<include refid="device-log-system-column"/>
+			FROM t_device_log_safety
+			UNION ALL 
+			SELECT  
+				<include refid="device-log-system-column"/>
+			FROM t_device_log_app 
+		 ) device_log 
+		 	WHERE 1=1
+		<if test="deviceId != 0 and deviceId !='' "  >
+			 AND device_id = #{deviceId}
+		</if>
+		<if test="beginDate !=null and beginDate !='' and endDate == null or endDate == '' "  >
+			 AND device_log.device_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate == null or beginDate == '' "  >
+			 AND device_log.device_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND DATE_FORMAT(device_log.device_time,'%Y-%m-%d') &gt;=  #{beginDate}
+			AND DATE_FORMAT(device_log.device_time,'%Y-%m-%d') &lt;=  #{endDate}
+		</if> 	
+	
+	</select>
+	
+	<!-- 查询预警日志(分页+三表联查) -->
+	<select id="select-device-log-system-all-split-page" parameterType="map" resultMap="deviceLogSystemMap">
+		SELECT * FROM
+		(
+			SELECT 
+				<include refid="device-log-system-column"/>
+			FROM t_device_log_sysytem 
+			UNION ALL 
+			SELECT 
+				<include refid="device-log-system-column"/>
+			FROM t_device_log_safety
+			UNION ALL 
+			SELECT  
+				<include refid="device-log-system-column"/>
+			FROM t_device_log_app
+		 ) device_log 
+			WHERE 1=1
+		<if test="deviceId != 0 and deviceId != '' "  >
+			 AND device_id = #{deviceId}
+		</if>
+		<if test="beginDate !=null and beginDate !='' and endDate == null or endDate == ''  "  >
+			 AND device_log.device_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate == null or beginDate == ''  "  >
+			 AND device_log.device_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND DATE_FORMAT(device_log.device_time,'%Y-%m-%d') &gt;=  #{beginDate}
+			AND DATE_FORMAT(device_log.device_time,'%Y-%m-%d') &lt;=  #{endDate}
+		</if>
+		ORDER BY device_log.device_time DESC
+		<if test="firstResult != null and maxResult != null">
+			limit  #{firstResult},#{maxResult} 
+		</if>
+	</select>
+	
+	<!-- 查询预警日志总条数(单表查询) -->
+	<select id="select-device-log-system-one-split-page-count" parameterType="map" resultType="int">
+		SELECT count(*) FROM
+		  t_device_log_sysytem 
+		<if test="deviceId != 0 and deviceId != '' "  >
+			 WHERE device_id = #{deviceId}
+		</if>
+		  
+	</select>
+	
+	<!-- 查询预警日志(分页+单表查询) -->
+	<select id="select-device-log-system-one-split-page">
+		SELECT 
+		  device_system_log_id,
+		  <include refid="device-log-system-column"/>
+		FROM
+		  t_device_log_sysytem 
+		<if test="deviceId != 0 and deviceId != '' "  >
+			 WHERE device_id = #{deviceId}
+		</if>
+		ORDER BY device_time DESC
+		<if test="firstResult != null and maxResult != null">
+			limit  #{firstResult},#{maxResult} 
+		</if>
+	</select>
+	
+	<!-- 预警日志根据类型分组 (三表联查) -->
+	<select id="select-device-log-system-type-more" parameterType="map" resultMap="deviceLogSystemMap">
+		SELECT 
+			device_type,
+  			COUNT(device_type) AS type
+		FROM
+		(
+			SELECT 
+				<include refid="device-log-system-column"/>
+			FROM t_device_log_sysytem 
+			UNION ALL 
+			SELECT 
+				<include refid="device-log-system-column"/>
+			FROM t_device_log_safety
+			UNION ALL 
+			SELECT  
+				<include refid="device-log-system-column"/>
+			FROM t_device_log_app
+		 ) device_log 
+		 <if test="deviceId != 0 "  >
+			 WHERE device_id = #{deviceId}
+		</if>
+		 GROUP BY device_type
+		 
+	</select>
+	
+	<!-- 预警日志根据类型分组  (单表查询) -->
+	<select id="select-device-log-system-type-one" parameterType="map" resultMap="deviceLogSystemMap">
+		SELECT 
+			device_type,
+  			COUNT(device_type) AS type
+		FROM t_device_log_sysytem
+		 <if test="deviceId != 0 "  >
+			 WHERE device_id = #{deviceId}
+		</if>
+		 GROUP BY device_type
+		 
+	</select>
+	
+	<select id="select-device-log-system-by-mac-for-window" parameterType="map" resultMap="deviceLogSystemMap">
+		SELECT * FROM
+		(
+			SELECT 
+				<include refid="device-log-system-column"/>
+			FROM t_device_log_sysytem 
+			UNION ALL 
+			SELECT 
+				<include refid="device-log-system-column"/>
+			FROM t_device_log_safety
+			UNION ALL 
+			SELECT  
+				<include refid="device-log-system-column"/>
+			FROM t_device_log_app
+		 ) device_log 
+			WHERE  
+				device_id = (SELECT 
+				    device_id
+				  FROM
+				    t_device_main 
+				  WHERE 
+				  	device_unique_id = #{deviceMac} 
+		)
+	</select>
+	
+	<select id="select-device-log-system-by-mac-for-linux" parameterType="map" resultMap="deviceLogSystemMap">
+			SELECT 
+				<include refid="device-log-system-column"/>
+			FROM t_device_log_sysytem 
+			WHERE  
+				device_id = (
+					SELECT 
+				    	device_id
+				  	FROM
+				    	t_device_main 
+				  	WHERE 
+				  		device_unique_id = #{deviceMac} 
+			)
+	</select>
+	
+</mapper>

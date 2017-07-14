@@ -1,0 +1,65 @@
+[{
+		text: "统计报表",
+		expanded: true, 
+		iconCls: 'no-icon', 
+		id: 'systemLogReportId',
+		children : [{
+			text: "性能报表", 
+			leaf: true, 
+			icon: '/images/log/report_system.png', 
+			id: 'reportlog_report_viewperform'   
+		}, {
+			text: "故障报表", 
+			leaf: true, 
+			icon: '/images/log/report_fault.png',    
+			id: 'reportlog_report_viewfault'
+		}, {
+			text: "备份报表", 
+			leaf: true, 
+			icon: '/images/log/report_all.png',    
+			id: 'reportlog_report_viewbackup'
+		}]
+}, {
+		text: "日志", 
+		expanded: true, 
+		iconCls: 'no-icon', 
+		id: 'sysLogId', 
+		children : [{
+			text: "功能日志",
+			expanded: true,   
+			icon:'/images/log/log_system.png',    
+			id: 'functionLogId',
+			children : [{
+				text: "备份日志",   
+				leaf: true,  
+				icon:'/images/log/log_emergency.png', 
+				id: 'reportlog_log_viewbackup'
+			},{
+				text: "预警日志",   
+				leaf: true,  
+				icon:'/images/log/log_warn.png',      
+				id: 'reportlog_log_viewwarning'
+			},{
+				text: "应急日志",   
+				leaf: true,  
+				icon:'/images/log/log_emergency.png', 
+				id: 'reportlog_log_viewemergency'
+			},{
+				text: "恢复存储日志",   
+				leaf: true,  
+				icon:'/images/log/log_emergency.png', 
+				id: 'reportlog_log_viewrecovery'
+			}]
+		},{
+			text: "系统日志", 
+			leaf: true,  
+			icon:'/images/log/log_system.png',    
+			id: 'reportlog_log_viewsystem'
+		},{
+			text: "运维日志", 
+			leaf: true,  
+			icon:'/images/log/log_client.png',    
+			id: 'reportlog_log_viewoperation'
+		}]
+}]
+

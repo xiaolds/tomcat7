@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="BackupDBLogMap" type="BackupDBLog">
+		<id property="backupDBId"  column="backup_db_id"/>            
+		<result property="backupDBDeviceId"  column="backup_db_device_id"/>     
+		<result property="backupDBUserName"  column="backup_db_user_name"/>     
+		<result property="backupDBContent"  column="backup_db_content"/>         
+		<result property="backupDBEventId"  column="backup_db_event_id"/>      
+		<result property="backupDBIp"  column="backup_db_ip"/>          
+		<result property="backupDBLevel"  column="backup_db_level"/>          
+		<result property="backupDBType"  column="backup_db_type"/>          
+		<result property="backupDBInsertTime"  column="backup_db_insert_time"/>           
+		<result property="backupDBRemark" column="backup_db_remark"/> 
+	</resultMap>
+	
+	<resultMap id="BackupDBLogAndDeviceMap" type="BackupDBLog" extends="BackupDBLogMap">
+		<result property="device.mac"  column="device_mac"/> 
+		<result property="device.ip"  column="device_ip"/> 
+		<result property="device.computerName"  column="device_client_computer_name"/> 
+	</resultMap>
+	
+	<sql id="backup-db-log-column">
+		t_backup_db_log.backup_db_id,
+		t_backup_db_log.backup_db_device_id,  
+		t_backup_db_log.backup_db_user_name,  
+		t_backup_db_log.backup_db_content,
+		t_backup_db_log.backup_db_event_id,   
+		t_backup_db_log.backup_db_ip,         
+		t_backup_db_log.backup_db_level,      
+		t_backup_db_log.backup_db_type,      
+		t_backup_db_log.backup_db_insert_time,      
+		t_backup_db_log.backup_db_remark     
+	</sql>
+	
+	<!-- 查询数据库备份日志总条数 -->
+	<select id="select-backup-db-log-all-split-page-count" parameterType="map" resultType="int">
+		SELECT COUNT(backup_db_id) FROM t_backup_db_log
+			WHERE 1=1
+		<if test="backupDBLevel != 0 and backupDBLevel != null "  >
+			 AND backup_db_level = #{backupDBLevel}
+		</if>
+		<if test="beginDate !=null and beginDate !='' and endDate == null or endDate == '' "  >
+			 AND backup_db_insert_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate == null or beginDate == '' "  >
+			 AND backup_db_insert_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND DATE_FORMAT(backup_db_insert_time,'%Y-%m-%d') &gt;=  #{beginDate}
+			AND DATE_FORMAT(backup_db_insert_time,'%Y-%m-%d') &lt;=  #{endDate}
+		</if>
+	</select>
+	
+	<select id="select-backup-db-log-count" resultType="int">
+		SELECT COUNT(backup_db_id) FROM t_backup_db_log
+	</select>
+	
+	<!-- 查询数据库备份日志(分页) -->
+	<select id="select-backup-db-log-all-split-page" parameterType="map" resultMap="BackupDBLogMap">
+		SELECT 
+		   <include refid="backup-db-log-column"/>
+		FROM
+		  t_backup_db_log 
+		WHERE 1=1
+		<if test="backupDBLevel != 0 and backupDBLevel != null "  >
+			 AND backup_db_level = #{backupDBLevel}
+		</if>
+		<if test="beginDate !=null and beginDate !='' and endDate == null or endDate == '' "  >
+			 AND backup_db_insert_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate == null or beginDate == '' "  >
+			 AND backup_db_insert_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+		</if>
+		<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND DATE_FORMAT(backup_db_insert_time,'%Y-%m-%d') &gt;=  #{beginDate}
+			AND DATE_FORMAT(backup_db_insert_time,'%Y-%m-%d') &lt;=  #{endDate}
+		</if>
+		ORDER BY backup_db_insert_time DESC
+		<if test="firstResult != null and maxResult != null">
+			limit  #{firstResult},#{maxResult} 
+		</if>
+	</select>
+	
+	<!-- 查询数据库备份日志 -->
+	<select id="select-backup-db-log-all" resultMap="BackupDBLogMap">
+		SELECT 
+			<include refid="backup-db-log-column"/>
+		FROM t_backup_db_log
+	</select>
+	
+	<!-- 添加数据库备份日志 -->
+	<insert id="insert-backup-db-log" parameterType="BackupDBLog">
+		INSERT INTO t_backup_db_log
+            (
+             backup_db_device_id,
+             backup_db_user_name,
+             backup_db_content,
+             backup_db_event_id,
+             backup_db_ip,
+             backup_db_level,
+             backup_db_type,
+             backup_db_insert_time,
+             backup_db_remark)
+		VALUES (
+		        #{backupDBDeviceId},
+		        #{backupDBUserName},
+		        #{backupDBContent},
+		        #{backupDBEventId},
+		        #{backupDBIp},
+		        #{backupDBLevel},
+		        #{backupDBType},
+		        now(),
+		        #{backupDBRemark}
+		     )
+		<selectKey resultType="int" keyProperty="backupDBId" >
+			select @@IDENTITY as id 
+		</selectKey>
+	</insert>
+	
+	
+	<!-- 删除数据库备份日志  -->
+	<delete id="delete-backup-db-log-by-time" parameterType="string">
+		DELETE FROM
+			t_backup_db_log
+		WHERE backup_db_insert_time &lt;= #{delDate}
+	</delete>
+	
+</mapper>

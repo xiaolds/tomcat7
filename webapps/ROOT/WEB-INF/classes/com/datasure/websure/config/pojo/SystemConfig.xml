@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="SystemConfigMap" type="SystemConfig">
+		<id property="serverConfigId"  column="server_config_id"/>            										
+		<result property="initFlag"  column="server_config_init_flag"/> 		                                 
+		<result property="isStartLoginErroLimit"  column="server_config_is_start_login_erro_limit"/>             
+		<result property="interroLoginCount"  column="server_config_erro_login_count"/>                          
+		<result property="erroDateTime"  column="server_config_erro_date_time"/>                                 
+		<result property="isStartIpLimit"  column="server_config_is_start_ip_limit"/>                            
+		<result property="limitIp" column="server_config_limit_ip"/> 		                                                  
+		<result property="pwdIsExpired"  column="server_config_pwd_is_expired"/>                                 
+		<result property="pwdIsExpiredDateTime"  column="server_config_pwd_is_expired_date_time"/>               
+		<result property="isPwdCheck"  column="server_config_is_pwd_check"/>
+		<result property="pwdCheckType"  column="server_config_pwd_check_type"/>
+		<result property="pwdStrength"  column="server_config_pwd_strength"/> 
+		                                         
+		<result property="lockBackupsetDir"  column="server_config_lock_backupset_dir"/>                         
+		<result property="isStartEmailEeport"  column="server_config_is_start_email_report"/>                    
+		<result property="mailId"  column="server_config_mail_id"/>                                              
+		<result property="isStartSmsReport"  column="server_config_is_start_sms_report"/>                        
+		<result property="smsId"  column="server_config_sms_id"/>                                              
+		<result property="systemVersion"  column="server_config_system_version"/>                                
+		<result property="createTime"  column="server_config_create_time"/> 
+		<result property="updateTime"  column="server_config_update_time"/> 
+		                                                  
+		<result property="serverHostIP"  column="server_config_server_lan_ip"/>                                        
+		<result property="serverBackupIP"  column="server_config_server_net_ip"/>		                                                  
+		<result property="webPort"  column="server_config_web_port"/>                                                 
+		<result property="msgPort"  column="server_config_msg_port"/>
+		                                                  
+		<result property="reportContent"  column="server_config_report_content"/>                                     
+		<result property="reportPlanType"  column="server_config_report_plan_type"/>                                  
+		<result property="reportDay"  column="server_config_report_day"/>                                             
+		<result property="reportTime"  column="server_config_report_time"/>                                    
+		<result property="emailWarning"  column="server_config_email_warning"/>
+		                                                    
+		<result property="warningStorage"  column="server_config_warning_storage"/>                            
+		<result property="warningDiskcloneServer"  column="server_config_warning_diskclone_server"/> 
+		          
+		<result property="isStartAutoCleanLog"  column="server_config_is_start_auto_clean_log"/> 		                                           
+		<result property="autoCleanSystemLog"  column="server_config_auto_clean_system_log"/>                  
+		<result property="autoCleanFunctionLog"  column="server_config_auto_clean_function_log"/>                      
+		<result property="autoCleanOperationLog"  column="server_config_auto_clean_operation_log"/>
+		                                              
+		<result property="lastExportTime"  column="server_config_last_export_time"/> 
+		                          
+		<result property="filePort"  column="server_config_file_port"/>                                        
+		<result property="broadcastPort"  column="server_config_broadcast_port"/>                              
+		<result property="remark"  column="user_remark"/>
+				
+		<result property="vncProxy"  column="server_config_vnc_proxy"/>
+		<result property="serverConfigManagerMode"  column="server_config_manager_mode"/>
+		
+		<result property="isBackupDB"  column="server_config_is_start_db_backup"/> 
+		<result property="backupDBPath"  column="server_config_db_backup_path"/>        
+		                                                      		                           		                                             		                                                      
+		<result property="reserver1"  column="server_config_remark"/>                                          
+		<result property="reserver2"  column="server_config_reserver2"/>                                       
+		<result property="reserver3"  column="server_config_reserver3"/>                                       
+		<result property="reserver4"  column="server_config_reserver4"/>                                       
+	</resultMap>                                                                                               
+	                                                                                                           
+	<sql id="server-config-column">
+           t_server_config.server_config_id,
+		   t_server_config.server_config_init_flag,
+		   t_server_config.server_config_is_start_login_erro_limit,
+		   t_server_config.server_config_erro_login_count,
+		   t_server_config.server_config_erro_date_time,
+		   t_server_config.server_config_is_start_ip_limit,
+		   t_server_config.server_config_limit_ip,
+		   t_server_config.server_config_pwd_is_expired,
+		   t_server_config.server_config_pwd_is_expired_date_time,
+		   t_server_config.server_config_is_pwd_check,
+		   t_server_config.server_config_pwd_check_type,
+		   t_server_config.server_config_pwd_strength,
+		   t_server_config.server_config_lock_backupset_dir,
+		   t_server_config.server_config_is_start_email_report,
+		   t_server_config.server_config_mail_id,
+		   t_server_config.server_config_is_start_sms_report,
+		   t_server_config.server_config_sms_id,
+		   t_server_config.server_config_system_version,
+		   t_server_config.server_config_create_time,
+		   t_server_config.server_config_update_time,
+		   t_server_config.server_config_server_lan_ip,
+		   t_server_config.server_config_server_net_ip,
+		   t_server_config.server_config_web_port,
+		   t_server_config.server_config_msg_port,
+		   t_server_config.server_config_report_content,
+		   t_server_config.server_config_report_plan_type,
+		   t_server_config.server_config_report_day,
+		   t_server_config.server_config_report_time,
+		   t_server_config.server_config_email_warning,
+		   t_server_config.server_config_warning_storage,
+		   t_server_config.server_config_warning_diskclone_server,
+		   t_server_config.server_config_is_start_auto_clean_log,
+		   t_server_config.server_config_auto_clean_system_log,
+		   t_server_config.server_config_auto_clean_function_log,
+		   t_server_config.server_config_auto_clean_operation_log,
+		   t_server_config.server_config_last_export_time,
+		   t_server_config.server_config_file_port,
+		   t_server_config.server_config_broadcast_port,
+		   t_server_config.server_config_manager_mode,
+		   t_server_config.server_config_db_backup_path,
+		   t_server_config.server_config_is_start_db_backup, 
+		   t_server_config.server_config_remark
+	</sql>
+	
+	
+	<update id="update-system-server-config-by-id" parameterType="SystemConfig">
+		update t_server_config set
+			server_config_server_lan_ip	 = #{serverHostIP},
+			<if test="webPort != 0">  
+        		server_config_web_port = #{webPort},	
+   			</if>  
+			<if test="msgPort != 0">  
+        		server_config_msg_port = #{msgPort},	
+   			</if>  
+   			<if test="warningStorage != 0">  
+                server_config_warning_storage = #{warningStorage},    
+            </if>
+			server_config_server_net_ip = #{serverBackupIP}
+			
+		where server_config_id = #{serverConfigId}
+	</update>
+	
+	<update id="update-default-log-clean-config" parameterType="SystemConfig">
+		update t_server_config set	
+		   server_config_is_start_auto_clean_log = #{isStartAutoCleanLog},
+		   server_config_auto_clean_system_log = #{autoCleanSystemLog},
+		   server_config_auto_clean_function_log = #{autoCleanFunctionLog},
+		   server_config_auto_clean_operation_log = #{ autoCleanOperationLog}					
+	</update>
+	
+	<update id="update-default-system-safety-config" parameterType="SystemConfig">
+		update t_server_config set	
+		   server_config_is_start_ip_limit = #{isStartIpLimit},
+		   server_config_limit_ip = #{limitIp},
+		   server_config_is_start_login_erro_limit = #{isStartLoginErroLimit},
+		   server_config_erro_login_count = #{interroLoginCount},
+		   server_config_erro_date_time = #{erroDateTime},
+		   server_config_pwd_is_expired = #{pwdIsExpired},
+		   server_config_pwd_is_expired_date_time = #{pwdIsExpiredDateTime},
+		   server_config_is_pwd_check = #{isPwdCheck},
+		   server_config_pwd_check_type = #{pwdCheckType},
+		   server_config_pwd_strength = #{pwdStrength}	
+		limit 1				
+	</update>
+	
+	<select id="select-all-system-config-info-by-id" parameterType="int" resultMap="SystemConfigMap">
+		SELECT 
+			<include refid="server-config-column"></include>
+		 FROM t_server_config where server_config_id = #{id} 
+	</select>
+	
+	<select id="select-default-system-config-info" resultMap="SystemConfigMap">
+		SELECT 
+			<include refid="server-config-column"></include>
+		 FROM t_server_config limit 0,1 
+	</select>
+	
+	<update id="update-init-pwd-strength-msg-ip-by-id" parameterType="SystemConfig">
+		update t_server_config set
+			server_config_pwd_strength	= #{pwdStrength},
+			server_config_is_pwd_check = #{isPwdCheck},
+			server_config_pwd_check_type = #{pwdCheckType},
+			server_config_server_lan_ip	= #{serverHostIP},
+			server_config_server_net_ip	= #{serverBackupIP},
+			server_config_update_time = now()
+		where server_config_id = #{serverConfigId}
+	</update>
+	
+	
+	<update id="update-server-init-flag" parameterType="int">
+		update t_server_config set
+			server_config_init_flag	= #{serverInitFlag}
+		limit 1
+	</update>
+			
+	<update id="update-server-last-export-database-time">
+		update t_server_config set
+			server_config_last_export_time = now()
+		limit 1
+	</update>
+	
+	<update id="update-server-auto-export-database-path" parameterType="map">
+		update t_server_config set
+			server_config_is_start_db_backup = #{switchon},
+			server_config_db_backup_path = #{path}
+		limit 1
+	</update>
+	
+</mapper>

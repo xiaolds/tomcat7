@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="EntireWarningMap" type="EntireWarning">
+		<id property="id"  column="id"/>            
+		<result property="deviceId"  column="device_id"/>     
+		<result property="deviceName"  column="device_name"/>      
+		<result property="warningType"  column="warning_type"/>         
+		<result property="deviceTime"  column="device_time"/>      
+		<result property="warningSource"  column="warning_source"/>          
+		<result property="usedsize"  column="usedrate"/>           
+		<result property="threshold" column="threshold"/> 
+		<result property="sourceCount" column="source_count"/> 
+		<result property="scriptName" column="script_name"/> 
+	</resultMap>
+	
+	<sql id="entire-warning-column">
+		t_warning_view.id,
+		t_warning_view.device_id,
+		t_warning_view.warning_type,
+		t_warning_view.device_time,
+		t_warning_view.usedrate,
+		t_warning_view.device_name
+	</sql>
+	
+	<!-- 创建视图语句
+	CREATE VIEW t_warning_view AS 
+		SELECT device_cpu_id AS id,device_id,RIGHT(device_hw_cpu_rate,3) AS usedrate,device_time,1 AS warning_type FROM t_device_hw_cpu_info 
+		UNION ALL
+		SELECT device_hw_diskinfo_id AS id,device_id,device_disk_userrate,device_time,4 AS warning_type FROM t_device_hw_disk_info 
+		UNION ALL
+		SELECT device_hw_meminfo_id AS id,device_id,device_mem_usedrate,device_time,2 AS warning_type FROM t_device_hw_mem_info
+		UNION ALL
+		SELECT device_netinfo_id AS id,device_id,device_net_UsedRate,device_time,3 AS warning_type FROM t_device_hw_net_info
+		UNION ALL
+		SELECT device_script_result_id AS id,device_id,device_result,device_time,5 AS warning_type FROM t_device_script_result
+		
+	更新视图语句 	
+	DROP VIEW IF EXISTS t_warning_view;
+
+		CREATE VIEW t_warning_view AS 
+		SELECT device_cpu_id AS id,device_id,RIGHT(device_hw_cpu_rate,3) AS usedrate,device_time,1 AS warning_type,NULL AS device_name FROM t_device_hw_cpu_info 
+		UNION ALL
+		SELECT device_hw_diskinfo_id AS id,device_id,device_disk_userrate,device_time,4 AS warning_type,device_disk_name AS device_name FROM t_device_hw_disk_info 
+		UNION ALL
+		SELECT device_hw_meminfo_id AS id,device_id,device_mem_usedrate,device_time,2 AS warning_type,NULL AS device_name FROM t_device_hw_mem_info
+		UNION ALL
+		SELECT device_netinfo_id AS id,device_id,device_net_UsedRate,device_time,3 AS warning_type,device_net_name AS device_name FROM t_device_hw_net_info
+		UNION ALL
+		SELECT device_script_result_id AS id,device_id,device_result,device_time,5 AS warning_type,NULL AS device_name FROM t_device_script_result;
+	 -->
+	
+	<!-- 查询故障警告总条数 -->
+	<select id="select-device-warning-split-page-count" parameterType="map" resultType="int">
+		SELECT count(*) FROM 
+		(
+			SELECT *, 
+			<![CDATA[
+			CASE
+			]]>
+			<if test="hdwSize > 0">
+				<![CDATA[
+				 WHEN usedrate >= #{cpuThresholdOne} AND usedrate < #{cpuThresholdTwo} AND warning_type = 1 THEN 3   
+				 WHEN usedrate >= #{cpuThresholdTwo} AND warning_type = 1 THEN 2 
+				 
+				 WHEN usedrate >= #{memThresholdOne} AND usedrate < #{memThresholdTwo} AND warning_type = 2 THEN 3   
+				 WHEN usedrate >= #{memThresholdTwo} AND warning_type = 2 THEN 2 
+				 
+				 WHEN usedrate >= #{netThresholdOne} AND usedrate < #{netThresholdTwo} AND warning_type = 3 THEN 3   
+				 WHEN usedrate >= #{netThresholdTwo} AND warning_type = 3 THEN 2
+				 
+				 WHEN usedrate >= #{diskThresholdOne} AND usedrate < #{diskThresholdTwo} AND warning_type = 4 THEN 3   
+				 WHEN usedrate >= #{diskThresholdTwo} AND warning_type = 4 THEN 2 
+			 	]]>
+			</if>
+			 
+			<![CDATA[
+				 WHEN usedrate = 0 AND warning_type = 5 THEN 2
+				 WHEN usedrate = 1 AND warning_type = 5 THEN 1
+				ELSE 1 END AS warning_source
+			]]>
+			FROM t_warning_view WHERE device_id = #{deviceId}
+			<if test="beginDate !=null and beginDate !='' and endDate == null or endDate == '' "  >
+			 	AND device_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+			</if>
+			<if test="endDate !=null and endDate !='' and beginDate == null or beginDate == '' "  >
+				 AND device_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+			</if>
+			<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+				AND device_time &gt;=  #{beginDate}
+				AND device_time &lt;=  #{endDate}
+			</if>
+		)t_warning_view WHERE warning_source != 1
+	</select>
+	
+	<!-- 查询故障警告信息(分页) -->
+	<select id="select-device-warning-split-page" parameterType="map" resultMap="EntireWarningMap">
+		SELECT * FROM 
+		(
+			SELECT *, 
+			<![CDATA[
+			CASE 
+			]]>
+			<if test="hdwSize > 0">
+				<![CDATA[
+				 WHEN usedrate >= #{cpuThresholdOne} AND usedrate < #{cpuThresholdTwo} AND warning_type = 1 THEN 3   
+				 WHEN usedrate >= #{cpuThresholdTwo} AND warning_type = 1 THEN 2 
+				 
+				 WHEN usedrate >= #{memThresholdOne} AND usedrate < #{memThresholdTwo} AND warning_type = 2 THEN 3   
+				 WHEN usedrate >= #{memThresholdTwo} AND warning_type = 2 THEN 2 
+				 
+				 WHEN usedrate >= #{netThresholdOne} AND usedrate < #{netThresholdTwo} AND warning_type = 3 THEN 3   
+				 WHEN usedrate >= #{netThresholdTwo} AND warning_type = 3 THEN 2
+				 
+				 WHEN usedrate >= #{diskThresholdOne} AND usedrate < #{diskThresholdTwo} AND warning_type = 4 THEN 3   
+				 WHEN usedrate >= #{diskThresholdTwo} AND warning_type = 4 THEN 2 
+				]]>
+			</if>
+			<![CDATA[
+				 WHEN usedrate = 0 AND warning_type = 5 THEN 2
+				 WHEN usedrate = 1 AND warning_type = 5 THEN 1
+				ELSE 1 END AS warning_source
+			]]>
+			FROM t_warning_view WHERE device_id = #{deviceId}
+			<if test="beginDate !=null and beginDate !='' and endDate == null or endDate == '' "  >
+			 	AND device_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+			</if>
+			<if test="endDate !=null and endDate !='' and beginDate == null or beginDate == '' "  >
+				 AND device_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+			</if>
+			<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+				AND device_time &gt;=  #{beginDate}
+				AND device_time &lt;=  #{endDate}
+			</if>
+		)t_warning_view WHERE warning_source != 1
+		ORDER BY device_time DESC
+		<if test="firstResult != null and maxResult != null">
+			limit  #{firstResult},#{maxResult} 
+		</if>
+	</select>
+	
+	<select id="select-device-warning-count-by-params"  parameterType="map" resultMap="EntireWarningMap" >
+		SELECT warning_source,COUNT(warning_source) AS source_count FROM 
+		(
+			SELECT *, 
+			<![CDATA[
+			CASE 
+			]]>
+			<if test="clientState == 1">
+				<![CDATA[
+				 WHEN usedrate >= #{cpuThresholdOne} AND usedrate < #{cpuThresholdTwo} AND warning_type = 1 THEN 3   
+				 WHEN usedrate >= #{cpuThresholdTwo} AND warning_type = 1 THEN 2 
+				 
+				 WHEN usedrate >= #{memThresholdOne} AND usedrate < #{memThresholdTwo} AND warning_type = 2 THEN 3   
+				 WHEN usedrate >= #{memThresholdTwo} AND warning_type = 2 THEN 2 
+				 
+				 WHEN usedrate >= #{netThresholdOne} AND usedrate < #{netThresholdTwo} AND warning_type = 3 THEN 3   
+				 WHEN usedrate >= #{netThresholdTwo} AND warning_type = 3 THEN 2
+				 
+				 WHEN usedrate >= #{diskThresholdOne} AND usedrate < #{diskThresholdTwo} AND warning_type = 4 THEN 3   
+				 WHEN usedrate >= #{diskThresholdTwo} AND warning_type = 4 THEN 2 
+				]]>
+			</if>
+			<if test="bcakupState == 1">
+				 <![CDATA[
+				 WHEN usedrate = 0 AND warning_type = 5 THEN 2
+				 WHEN usedrate = 1 AND warning_type = 5 THEN 1
+				]]>
+			</if>
+			 <![CDATA[
+			ELSE 1 END AS warning_source
+			]]>
+			FROM t_warning_view WHERE device_id = #{deviceId}
+		)t_warning_view WHERE warning_source != 1
+		GROUP BY warning_source
+	</select>
+	
+	<select id="select-warning-entire-by-params" parameterType="map" resultMap="EntireWarningMap">
+		SELECT * FROM 
+		(
+			SELECT *, 
+			<![CDATA[
+			CASE 
+			]]>
+			<if test="hdwSize > 0">
+				<![CDATA[
+				 WHEN usedrate >= #{cpuThresholdOne} AND usedrate < #{cpuThresholdTwo} AND warning_type = 1 THEN 3   
+				 WHEN usedrate >= #{cpuThresholdTwo} AND warning_type = 1 THEN 2 
+				 
+				 WHEN usedrate >= #{memThresholdOne} AND usedrate < #{memThresholdTwo} AND warning_type = 2 THEN 3   
+				 WHEN usedrate >= #{memThresholdTwo} AND warning_type = 2 THEN 2 
+				 
+				 WHEN usedrate >= #{netThresholdOne} AND usedrate < #{netThresholdTwo} AND warning_type = 3 THEN 3   
+				 WHEN usedrate >= #{netThresholdTwo} AND warning_type = 3 THEN 2
+				 
+				 WHEN usedrate >= #{diskThresholdOne} AND usedrate < #{diskThresholdTwo} AND warning_type = 4 THEN 3   
+				 WHEN usedrate >= #{diskThresholdTwo} AND warning_type = 4 THEN 2 
+				]]>
+			</if>
+			<![CDATA[
+				 WHEN usedrate = 0 AND warning_type = 5 THEN 2
+				 WHEN usedrate = 1 AND warning_type = 5 THEN 1
+				ELSE 1 END AS warning_source
+			]]>
+			FROM t_warning_view WHERE device_id = #{deviceId}
+			<if test="deviceTime != null and deviceTime != '' ">
+				AND device_time >= #{deviceTime}
+			</if>
+		)t_warning_view WHERE warning_source != 1
+		
+	</select>
+	
+	<select id="select-warning-entire-by-cpu-and-mem" parameterType="map" resultMap="EntireWarningMap">
+		SELECT * FROM 
+		(
+			SELECT *, 
+			<![CDATA[
+			CASE 
+			]]>
+			<if test="hdwSize > 0">
+				<![CDATA[
+				 WHEN usedrate >= #{cpuThresholdOne} AND usedrate < #{cpuThresholdTwo} AND warning_type = 1 THEN 3   
+				 WHEN usedrate >= #{cpuThresholdTwo} AND warning_type = 1 THEN 2 
+				 
+				 WHEN usedrate >= #{memThresholdOne} AND usedrate < #{memThresholdTwo} AND warning_type = 2 THEN 3   
+				 WHEN usedrate >= #{memThresholdTwo} AND warning_type = 2 THEN 2 
+				 
+				 WHEN usedrate >= #{netThresholdOne} AND usedrate < #{netThresholdTwo} AND warning_type = 3 THEN 3   
+				 WHEN usedrate >= #{netThresholdTwo} AND warning_type = 3 THEN 2
+				 
+				 WHEN usedrate >= #{diskThresholdOne} AND usedrate < #{diskThresholdTwo} AND warning_type = 4 THEN 3   
+				 WHEN usedrate >= #{diskThresholdTwo} AND warning_type = 4 THEN 2 
+				]]>
+			</if>
+			<![CDATA[
+				 WHEN usedrate = 0 AND warning_type = 5 THEN 2
+				 WHEN usedrate = 1 AND warning_type = 5 THEN 1
+				ELSE 1 END AS warning_source
+			]]>
+			FROM t_warning_view WHERE device_id = #{deviceId}
+			<if test="deviceTime != null and deviceTime != '' ">
+				AND device_time >= #{deviceTime}
+			</if>
+			AND warning_type IN (1,2)
+		)t_warning_view WHERE warning_source != 1
+	</select>
+	
+	<select id="select-warning-entire-by-params-and-time" parameterType="map" resultMap="EntireWarningMap">
+		SELECT * FROM 
+		(
+			SELECT *, 
+			<![CDATA[
+			CASE 
+			]]>
+			<if test="hdwSize > 0">
+				<![CDATA[
+				 WHEN usedrate >= #{cpuThresholdOne} AND usedrate < #{cpuThresholdTwo} AND warning_type = 1 THEN 3   
+				 WHEN usedrate >= #{cpuThresholdTwo} AND warning_type = 1 THEN 2 
+				 
+				 WHEN usedrate >= #{memThresholdOne} AND usedrate < #{memThresholdTwo} AND warning_type = 2 THEN 3   
+				 WHEN usedrate >= #{memThresholdTwo} AND warning_type = 2 THEN 2 
+				 
+				 WHEN usedrate >= #{netThresholdOne} AND usedrate < #{netThresholdTwo} AND warning_type = 3 THEN 3   
+				 WHEN usedrate >= #{netThresholdTwo} AND warning_type = 3 THEN 2
+				 
+				 WHEN usedrate >= #{diskThresholdOne} AND usedrate < #{diskThresholdTwo} AND warning_type = 4 THEN 3   
+				 WHEN usedrate >= #{diskThresholdTwo} AND warning_type = 4 THEN 2 
+				]]>
+			</if>
+			<if test="sort == 0">
+			<![CDATA[
+				 WHEN usedrate = 0 AND warning_type = 5 THEN 2
+				 WHEN usedrate = 1 AND warning_type = 5 THEN 1
+			]]>
+			</if>
+			<![CDATA[
+				ELSE 1 END AS warning_source
+			]]>
+			FROM t_warning_view WHERE device_id = #{deviceId}
+			<if test="sort != 0">
+				AND warning_type != 5
+			</if>
+			<if test="beginDate !=null and beginDate !='' and endDate == null or endDate == '' "  >
+			 	AND device_time LIKE CONCAT(CONCAT('%', #{beginDate}),'%')  
+			</if>
+			<if test="endDate !=null and endDate !='' and beginDate == null or beginDate == '' "  >
+				 AND device_time LIKE CONCAT(CONCAT('%', #{endDate}),'%')  
+			</if>
+			<if test="endDate !=null and endDate !='' and beginDate != null and beginDate != '' "  >
+				AND device_time &gt;=  #{beginDate}
+				AND device_time &lt;=  #{endDate}
+			</if>
+		)t_warning_view WHERE warning_source != 1
+		
+	</select>
+	
+	<select id="select-warning-view-by-group-by-time" parameterType="map" resultMap="EntireWarningMap">
+		SELECT * FROM (
+			SELECT *, 
+			<![CDATA[
+				CASE 
+			]]>
+			<![CDATA[
+				 WHEN usedrate >= #{cpuThresholdOne} AND usedrate < #{cpuThresholdTwo} AND warning_type = 1 THEN 3   
+				 WHEN usedrate >= #{cpuThresholdTwo} AND warning_type = 1 THEN 2 
+				 
+				 WHEN usedrate >= #{memThresholdOne} AND usedrate < #{memThresholdTwo} AND warning_type = 2 THEN 3   
+				 WHEN usedrate >= #{memThresholdTwo} AND warning_type = 2 THEN 2 
+				 
+				 WHEN usedrate >= #{netThresholdOne} AND usedrate < #{netThresholdTwo} AND warning_type = 3 THEN 3   
+				 WHEN usedrate >= #{netThresholdTwo} AND warning_type = 3 THEN 2
+				 
+				 WHEN usedrate >= #{diskThresholdOne} AND usedrate < #{diskThresholdTwo} AND warning_type = 4 THEN 3   
+				 WHEN usedrate >= #{diskThresholdTwo} AND warning_type = 4 THEN 2 
+				 
+				ELSE 1 END AS warning_source
+			]]>
+			FROM 
+				(SELECT 
+					    t_warning_view.id,
+						t_warning_view.device_id,
+						t_warning_view.warning_type,
+						t_warning_view.device_time,
+					    FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(device_time) / #{timeInterval} / 60) * 60 * #{timeInterval}) AS times,
+					    MIN(usedrate) AS usedrate,
+					    t_warning_view.device_name
+					FROM  t_warning_view 
+					WHERE warning_type != 5 
+					AND device_id = #{deviceId}
+					GROUP BY times,warning_type,device_name
+					ORDER BY warning_type,device_time
+				) t_warning_view
+				WHERE 1 = 1
+				<if test="endDate != null and endDate !='' and beginDate != null and beginDate != '' "  >
+					AND device_time &gt;=  #{beginDate}
+					AND device_time &lt;=  #{endDate}
+				</if>
+			)t_warning_view
+			WHERE warning_source != 1
+			
+	</select>
+	
+	<select id="select-warning-view-by-group-by-time-and-script-count" parameterType="map" resultType="int">
+		select count(*) from (
+			SELECT * FROM (
+			SELECT *, 
+			<![CDATA[
+				CASE 
+			]]>
+			<![CDATA[
+				 WHEN usedrate >= #{cpuThresholdOne} AND usedrate < #{cpuThresholdTwo} AND warning_type = 1 THEN 3   
+				 WHEN usedrate >= #{cpuThresholdTwo} AND warning_type = 1 THEN 2 
+				 
+				 WHEN usedrate >= #{memThresholdOne} AND usedrate < #{memThresholdTwo} AND warning_type = 2 THEN 3   
+				 WHEN usedrate >= #{memThresholdTwo} AND warning_type = 2 THEN 2 
+				 
+				 WHEN usedrate >= #{netThresholdOne} AND usedrate < #{netThresholdTwo} AND warning_type = 3 THEN 3   
+				 WHEN usedrate >= #{netThresholdTwo} AND warning_type = 3 THEN 2
+				 
+				 WHEN usedrate >= #{diskThresholdOne} AND usedrate < #{diskThresholdTwo} AND warning_type = 4 THEN 3   
+				 WHEN usedrate >= #{diskThresholdTwo} AND warning_type = 4 THEN 2 
+				 
+				ELSE 1 END AS warning_source
+			]]>
+		
+			FROM 
+				(SELECT 
+					    t_warning_view.id,
+						t_warning_view.device_id,
+						t_warning_view.warning_type,
+						t_warning_view.device_time,
+					    FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(device_time) / #{timeInterval} / 60) * 60 * #{timeInterval}) AS times,
+					    MIN(usedrate) AS usedrate
+					FROM  t_warning_view 
+					WHERE warning_type != 5
+					and device_id = #{deviceId}
+					GROUP BY times,warning_type
+					ORDER BY warning_type,device_time
+				) t_warning_view
+				WHERE 1 = 1
+				<if test="endDate != null and endDate !='' and beginDate != null and beginDate != '' "  >
+					AND device_time &gt;=  #{beginDate}
+					AND device_time &lt;=  #{endDate}
+				</if>
+			)t_warning_view
+
+			WHERE warning_source != 1
+		
+		UNION ALL
+					
+		SELECT 
+			device_script_result_id,
+			device_id,
+			5 AS warning_type,
+			device_time,
+			device_time AS times,
+			device_result,
+			2 AS warning_source
+		 FROM t_device_script_result
+		WHERE device_result = 0 AND device_id = #{deviceId}
+		<if test="endDate != null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND device_time &gt;=  #{beginDate}
+			AND device_time &lt;=  #{endDate}
+		</if>
+		) as warning_table
+		
+	</select>
+	
+	<select id="select-warning-view-by-group-by-time-and-script" parameterType="map" resultMap="EntireWarningMap">
+		SELECT *,
+			NULL AS script_name 
+		FROM (
+			SELECT *, 
+			<![CDATA[
+				CASE 
+			]]>
+			<![CDATA[
+				 WHEN usedrate >= #{cpuThresholdOne} AND usedrate < #{cpuThresholdTwo} AND warning_type = 1 THEN 3   
+				 WHEN usedrate >= #{cpuThresholdTwo} AND warning_type = 1 THEN 2 
+				 
+				 WHEN usedrate >= #{memThresholdOne} AND usedrate < #{memThresholdTwo} AND warning_type = 2 THEN 3   
+				 WHEN usedrate >= #{memThresholdTwo} AND warning_type = 2 THEN 2 
+				 
+				 WHEN usedrate >= #{netThresholdOne} AND usedrate < #{netThresholdTwo} AND warning_type = 3 THEN 3   
+				 WHEN usedrate >= #{netThresholdTwo} AND warning_type = 3 THEN 2
+				 
+				 WHEN usedrate >= #{diskThresholdOne} AND usedrate < #{diskThresholdTwo} AND warning_type = 4 THEN 3   
+				 WHEN usedrate >= #{diskThresholdTwo} AND warning_type = 4 THEN 2 
+				 
+				ELSE 1 END AS warning_source
+			]]>
+		
+			FROM 
+				(SELECT 
+					    t_warning_view.id,
+						t_warning_view.device_id,
+						t_warning_view.warning_type,
+						t_warning_view.device_time,
+					    FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(device_time) / #{timeInterval} / 60) * 60 * #{timeInterval}) AS times,
+					    MIN(usedrate) AS usedrate
+					FROM  t_warning_view 
+					WHERE warning_type != 5
+					and device_id = #{deviceId}
+					GROUP BY times,warning_type
+					ORDER BY warning_type,device_time
+				) t_warning_view
+				WHERE 1 = 1
+				<if test="endDate != null and endDate !='' and beginDate != null and beginDate != '' "  >
+					AND device_time &gt;=  #{beginDate}
+					AND device_time &lt;=  #{endDate}
+				</if>
+			)t_warning_view
+
+			WHERE warning_source != 1
+		
+		UNION ALL
+					
+		SELECT 
+			device_script_result_id,
+			device_id,
+			5 AS warning_type,
+			device_time,
+			device_time AS times,
+			device_result,
+			2 AS warning_source,
+			device_script_name
+		 FROM t_device_script_result
+		WHERE device_result = 0 AND device_id = #{deviceId}
+		<if test="endDate != null and endDate !='' and beginDate != null and beginDate != '' "  >
+			AND device_time &gt;=  #{beginDate}
+			AND device_time &lt;=  #{endDate}
+		</if>
+		
+		ORDER BY device_time DESC
+		<if test="firstResult != null and maxResult != null">
+			limit  #{firstResult},#{maxResult} 
+		</if>
+	</select>
+	
+</mapper>

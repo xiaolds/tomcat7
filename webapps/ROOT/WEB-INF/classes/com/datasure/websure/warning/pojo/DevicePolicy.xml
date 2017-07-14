@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="devicePolicyMap" type="devicePolicy">
+		<id property="devicePolicyId"  column="device_policy_id"/>            
+		<result property="deviceId"  column="device_id"/>     
+		<result property="deviceIntervalTime"  column="device_interval_time"/>     
+		<result property="deviceCycle"  column="device_cycle"/>     
+		<result property="devicePolicyMinvalue"  column="device_policy_minvalue"/>     
+		<result property="devicePolicyMaxvalue"  column="device_policy_maxvalue"/>         
+		<result property="devicePolicyType"  column="device_policy_type"/>      
+		<result property="devicePolicyLogBegintime"  column="device_policy_log_begintime"/>      
+		<result property="deviceReserver2"  column="device_reserver2"/>      
+		<result property="deviceReserver3"  column="device_reserver3"/>      
+		<result property="deviceReserver4"  column="device_reserver4"/>      
+	</resultMap>
+	
+	<select id="select-device-policy-by-device-id" parameterType="devicePolicy" resultMap="devicePolicyMap">
+		SELECT
+		  device_policy_id,
+		  device_id,
+		  device_interval_time,
+		  device_cycle,
+		  device_policy_minvalue,
+		  device_policy_maxvalue,
+		  device_policy_type,
+		  device_policy_log_begintime,
+		  device_reserver2,
+		  device_reserver3,
+		  device_reserver4
+		FROM t_device_policy
+		WHERE device_id = #{deviceId}
+			AND device_policy_type = #{devicePolicyType}
+	</select>
+	
+	<update id="update-device-policy-by-device-id" parameterType="devicePolicy">
+		UPDATE t_device_policy
+			<set>
+				<if test="deviceIntervalTime != 0 and deviceIntervalTime != null">
+					device_interval_time = #{deviceIntervalTime},
+				</if>
+				<if test="deviceCycle != 0 and deviceCycle != null">
+					device_cycle = #{deviceCycle},
+				</if>
+				<if test="devicePolicyMinvalue != 0 and devicePolicyMinvalue != null">
+					device_policy_minvalue = #{devicePolicyMinvalue},
+				</if>
+				<if test="devicePolicyMaxvalue != 0 and devicePolicyMaxvalue != null">
+					device_policy_maxvalue = #{devicePolicyMaxvalue},
+				</if>
+				<if test="devicePolicyLogBegintime != 0 and devicePolicyLogBegintime != null">
+					device_policy_log_begintime = #{devicePolicyLogBegintime}
+				</if>
+				<if test="deviceReserver2 != '' and deviceReserver2 != null">
+					device_reserver2 = #{deviceReserver2}
+				</if>
+			</set>
+		WHERE device_id = #{deviceId} 
+			AND device_policy_type in (0,2)
+	</update>
+	
+	<update id="update-device-policy-by-device-id-and-type" parameterType="devicePolicy">
+		UPDATE t_device_policy
+			<set>
+				<if test="deviceIntervalTime != 0 and deviceIntervalTime != null">
+					device_interval_time = #{deviceIntervalTime},
+				</if>
+				<if test="deviceCycle != 0 and deviceCycle != null">
+					device_cycle = #{deviceCycle},
+				</if>
+				<if test="devicePolicyMinvalue != 0 and devicePolicyMinvalue != null">
+					device_policy_minvalue = #{devicePolicyMinvalue},
+				</if>
+				<if test="devicePolicyMaxvalue != 0 and devicePolicyMaxvalue != null">
+					device_policy_maxvalue = #{devicePolicyMaxvalue},
+				</if>
+				<if test="devicePolicyLogBegintime != 0 and devicePolicyLogBegintime != null">
+					device_policy_log_begintime = #{devicePolicyLogBegintime}
+				</if>
+				<if test="deviceReserver2 != '' and deviceReserver2 != null">
+					device_reserver2 = #{deviceReserver2}
+				</if>
+			</set>
+		WHERE device_id = #{deviceId} 
+			AND device_policy_type = #{devicePolicyType}
+	</update>
+	
+	<insert id="insert-device-policy" parameterType="devicePolicy">
+		INSERT INTO t_device_policy
+            (
+             device_id,
+             device_interval_time,
+             device_cycle,
+             device_policy_minvalue,
+             device_policy_maxvalue,
+             device_policy_type,
+             device_policy_log_begintime,
+             device_reserver2,
+             device_reserver3,
+             device_reserver4)
+		VALUES (
+		        #{deviceId},
+		        #{deviceIntervalTime},
+		        #{deviceCycle},
+		        #{devicePolicyMinvalue},
+		        #{devicePolicyMaxvalue},
+		        #{devicePolicyType},
+		        #{devicePolicyLogBegintime},
+		        #{deviceReserver2},
+		        #{deviceReserver3},
+		        #{deviceReserver4})
+		<selectKey resultType="int" keyProperty="devicePolicyId" >
+			select @@IDENTITY as id 
+		</selectKey>
+	</insert>
+	
+	<delete id="delete-device-policy-by-params" parameterType="devicePolicy">
+		DELETE FROM t_device_policy
+		WHERE device_id = #{deviceId}
+			AND device_policy_type = #{devicePolicyType}
+	</delete>
+</mapper>

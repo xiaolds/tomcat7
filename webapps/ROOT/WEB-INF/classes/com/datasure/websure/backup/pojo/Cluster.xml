@@ -1,0 +1,747 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.datasure.websure">
+	<resultMap id="ClusterDetailMap" type="Cluster">
+		<id property="clusterId" column="cluster_id"/>
+		<result property="clusterType" column="cluster_type"/>
+		<result property="clusterCapicity" column="cluster_capicity"/>
+		<result property="clusterCurrentSize" column="cluster_current_size"/>
+		<result property="clusterState" column="cluster_state"/>
+		<result property="clusterWorkState" column="cluster_work_state"/>
+		<result property="clusterStorageSymbol" column="cluster_storage_symbol"/>
+		<result property="clusterStoragePath" column="cluster_storage_path"/>
+		<result property="clusterSynchrEnable" column="cluster_synchr_enable"/>
+		<result property="clusterLanFree" column="cluster_LANFREE"/>
+		<result property="clusterSyntimeCycleSwitch" column="cluster_syntime_cycle_switch"/>
+		<result property="clusterSyntimeCycleType" column="cluster_syntime_cycle_type"/>
+		<result property="clusterSyntimeCycleValue" column="cluster_syntime_cycle_value"/>
+		<result property="clusterSyntimeRangeSwitch" column="cluster_syntime_range_switch"/>
+		<result property="clusterSyntimeRangeValue" column="cluster_syntime_range_value"/>
+		<result property="clusterLimiteSwitch" column="cluster_limite_switch"/>
+		<result property="clusterLimiteValue" column="cluster_limite_value"/>
+		<result property="clusterSnapCycleType" column="cluster_snap_cycle_type"/>
+		<result property="clusterSnapCycleValue" column="cluster_snap_cycle_value"/>
+		<result property="clusterSnapRangeSwitch" column="cluster_snap_range_switch"/>
+		<result property="clusterSnapRangeValue" column="cluster_snap_range_value"/>
+		<result property="clusterKeepSnapType" column="cluster_keep_snap_type"/>
+		<result property="clusterDataSize" column="cluster_data_size"/>
+		<result property="clusterMaxSnapSet" column="cluster_max_snap_set"/>
+		<result property="clusterSnapPersistDay" column="cluster_snap_persist_day"/>
+		<result property="clusterCreateTime" column="cluster_create_time"/>
+		<result property="clusterUpdateTime" column="cluster_update_time"/>
+		<result property="clusterOpration" column="cluster_opration"/>
+		<result property="clusterIsParticlesData" column="cluster_is_particles_data"/>
+		<result property="clusterRemark" column="cluster_remark"/>
+	</resultMap>
+	
+	<resultMap id="ClusterHardDiskDetailMap" type="ClusterHardDisk">
+		<id property="id" column="id"/>
+		<result property="clusterId" column="cluster_id"/>
+		<result property="sharedHarddiskIndex" column="shared_harddisk_index"/>
+		<result property="deviceId" column="device_id"/>
+		<result property="harddiskIndex" column="harddisk_index"/>
+		<result property="harddiskIndexIdentity" column="harddisk_index_identity"/>
+	</resultMap>
+	
+	<resultMap id="ClustershareDiskDetailMap" type="ClusterShareDisk">
+		<id property="sharediskId" column="cluster_sharedisk_id"/>
+		<result property="sharediskAlias" column="cluster_sharedisk_alias"/>
+		<result property="clusterId" column="cluster_id"/>
+		<result property="clusterSharediskIndex" column="cluster_sharedisk_index"/>
+		<result property="sharediskDelFlag" column="sharedisk_del_flag"/>
+		<result property="createTime" column="create_time"/>
+	</resultMap>
+	
+	<sql id="cluster-column">
+		cluster_id,
+		cluster_type,
+		cluster_capicity,
+		cluster_current_size,
+		cluster_state,
+		cluster_work_state,
+		cluster_storage_symbol,
+		cluster_storage_path,
+		cluster_synchr_enable,
+		cluster_LANFREE,
+		cluster_syntime_cycle_switch,
+		cluster_syntime_cycle_type,
+		cluster_syntime_cycle_value,
+		cluster_syntime_range_switch,
+		cluster_syntime_range_value,
+		cluster_limite_switch,
+		cluster_limite_value,
+		cluster_snap_cycle_type,
+		cluster_snap_cycle_value,
+		cluster_snap_range_switch,
+		cluster_snap_range_value,
+		cluster_keep_snap_type,
+		cluster_data_size,
+		cluster_max_snap_set,
+		cluster_snap_persist_day,
+		cluster_create_time,
+		cluster_update_time,
+		cluster_opration,
+		cluster_is_particles_data,
+		cluster_remark
+	</sql>
+	
+	<sql id="cluster-harddisk-column">
+		id,
+		cluster_id,
+		shared_harddisk_index,
+		device_id,
+		harddisk_index,
+		harddisk_index_identity
+	</sql>
+	
+	<sql id="cluster-sharedisk-column">
+		cluster_sharedisk_id,
+		cluster_sharedisk_alias,
+		cluster_id,
+		cluster_sharedisk_index,
+		sharedisk_del_flag,
+		create_time
+	</sql>
+	
+	<insert id="insert-cluster-info" parameterType="Cluster">
+		INSERT INTO t_cluster
+            (
+            cluster_id,
+			cluster_type,
+			cluster_capicity,
+			cluster_current_size,
+			cluster_state,
+			cluster_work_state,
+			cluster_storage_symbol,
+			cluster_storage_path,
+			cluster_synchr_enable,
+			cluster_LANFREE,
+			cluster_syntime_cycle_switch,
+			cluster_syntime_cycle_type,
+			cluster_syntime_cycle_value,
+			cluster_syntime_range_switch,
+			cluster_syntime_range_value,
+			cluster_limite_switch,
+			cluster_limite_value,
+			cluster_snap_cycle_type,
+			cluster_snap_cycle_value,
+			cluster_snap_range_switch,
+			cluster_snap_range_value,
+			cluster_keep_snap_type,
+			cluster_data_size,
+			cluster_max_snap_set,
+			cluster_snap_persist_day,
+			cluster_create_time,
+			cluster_update_time,
+			cluster_opration,
+			cluster_is_particles_data,
+			cluster_remark
+            )
+		VALUES (
+			#{clusterId},
+		    #{clusterType},
+			#{clusterCapicity},
+			#{clusterCurrentSize},
+			#{clusterState},
+			#{clusterWorkState},
+			#{clusterStorageSymbol},
+			#{clusterStoragePath},
+			#{clusterSynchrEnable},
+			#{clusterLanFree},
+			#{clusterSyntimeCycleSwitch},
+			#{clusterSyntimeCycleType},
+			#{clusterSyntimeCycleValue},
+			#{clusterSyntimeRangeSwitch},
+			#{clusterSyntimeRangeValue},
+			#{clusterLimiteSwitch},
+			#{clusterLimiteValue},
+			#{clusterSnapCycleType},
+			#{clusterSnapCycleValue},
+			#{clusterSnapRangeSwitch},
+			#{clusterSnapRangeValue},
+			#{clusterKeepSnapType},
+			#{clusterDataSize},
+			#{clusterMaxSnapSet},
+			#{clusterSnapPersistDay},
+			now(),
+			now(),
+			#{clusterOpration},
+			#{clusterIsParticlesData},
+			#{clusterRemark}
+		      )
+	</insert>
+	
+	<insert id="insert-sharedisk-info" parameterType="ClusterShareDisk">
+		INSERT INTO t_cluster_sharedisk
+            (
+            cluster_sharedisk_alias,
+			cluster_id,
+			cluster_sharedisk_index,
+			sharedisk_del_flag,
+			create_time
+            )
+		VALUES (
+			#{sharediskAlias},
+		    #{clusterId},
+			#{clusterSharediskIndex},
+			#{sharediskDelFlag},
+			now()
+		      )
+	</insert>
+	
+	<select id="select-cluster-state-by-cluster-id" parameterType="int" resultType="int">
+		select
+			cluster_state
+		from 
+			t_cluster 
+		where 
+			cluster_id=#{clusterId}
+		limit 0,1
+	</select>
+	
+	<select id="select-max-cluster-share-index" parameterType="int" resultType="int">
+		SELECT 
+		  cluster_sharedisk_index 
+		FROM
+		  t_cluster_sharedisk 
+		WHERE cluster_id = #{clusterId}
+		ORDER BY cluster_sharedisk_index DESC 
+		LIMIT 0, 1 
+	</select>
+	
+	<select id="select-cluster-info-by-cluster-id" parameterType="int" resultMap="ClusterDetailMap">
+		select
+			<include refid="cluster-column"></include>
+		from 
+			t_cluster
+		where 
+			cluster_id=#{clusterId}
+	</select>
+	
+	<delete id="delete-cluster-by-clusterid" parameterType="int">
+	     DELETE 
+	     	FROM 
+				t_cluster 
+		 WHERE 
+		 	cluster_id=#{clusterId}
+	</delete>
+	
+	<select id="select-device-count-by-clusterid" parameterType="int" resultType="int">
+		select 
+			count(*)
+		from 
+			t_group
+		where 
+			group_id = #{item}
+	</select>
+	 
+	<select id="select-sharename-by-harddisk" parameterType="map" resultType="String">
+		SELECT 
+  			cluster_sharedisk_alias 
+		FROM
+  			t_cluster_sharedisk 
+		WHERE 
+			cluster_id = #{clusterId} 
+		AND
+			sharedisk_del_flag = 1
+  		AND 
+  			cluster_sharedisk_index in 
+  			(SELECT 
+				shared_harddisk_index 
+  			FROM
+    			t_cluster_harddisk 
+  			WHERE 
+  				cluster_id = #{clusterId}
+    		AND 
+    			device_id = #{deviceId} 
+    		AND 
+    			harddisk_index = #{hardDiskIndex}
+    		)
+	</select> 
+	
+	<select id="select-sharedisk-by-cluster-device-harddisk-index" parameterType="map" resultMap="ClustershareDiskDetailMap">
+        SELECT 
+           <include refid="cluster-sharedisk-column"></include>
+        FROM
+            t_cluster_sharedisk 
+        WHERE 
+            cluster_id = #{clusterId} 
+        AND 
+            cluster_sharedisk_index in 
+            (SELECT 
+                shared_harddisk_index 
+            FROM
+                t_cluster_harddisk 
+            WHERE 
+                cluster_id = #{clusterId}
+            AND 
+                device_id = #{deviceId} 
+            AND 
+                harddisk_index = #{hardDiskIndex}
+            )
+    </select> 
+	
+	<select id="select-sharename-is-exist" parameterType="map" resultType="int">
+		SELECT 
+		  COUNT(*) 
+		FROM
+		  t_cluster_sharedisk t 
+		WHERE 
+			t.cluster_id = #{clusterId}
+		AND
+			t.sharedisk_del_flag = 1
+		AND 
+		    t.cluster_sharedisk_alias = #{shareName} 
+	</select> 
+	
+	<select id="select-sharedisk-max-index-by-clusterid" parameterType="int" resultType="int">
+		SELECT 
+			t.cluster_sharedisk_index 
+		FROM 
+			t_cluster_sharedisk t 
+		WHERE 
+			t.cluster_id = #{item} 
+		ORDER BY 
+			cluster_sharedisk_index DESC 
+		LIMIT 0,1
+	</select> 
+	
+	<select id="select-cluster-harddisk-by-clusterid" parameterType="int" resultMap="ClusterHardDiskDetailMap">
+		SELECT 
+			<include refid="cluster-harddisk-column"></include>
+		FROM 
+			t_cluster_harddisk t 
+		WHERE 
+			t.cluster_id = #{item} 
+	</select> 
+	
+	<select id="select-cluster-harddisk-by-param" parameterType="int" resultMap="ClusterHardDiskDetailMap">
+		SELECT 
+			<include refid="cluster-harddisk-column"></include>
+		FROM 
+			t_cluster_harddisk t 
+		WHERE 
+			t.cluster_id = #{clusterId} 
+		AND
+			t.shared_harddisk_index = #{clusterSharediskIndex}
+	</select> 
+	
+	<select id="select-cluster-sharedisk-by-clusterid" parameterType="int" resultMap="ClustershareDiskDetailMap">
+		SELECT 
+			<include refid="cluster-sharedisk-column"></include>
+		FROM 
+			t_cluster_sharedisk t 
+		WHERE 
+			t.cluster_id = #{item} 
+		AND
+			t.sharedisk_del_flag = 1
+	</select>
+	
+	<!-- 通过 DeviceID 查询共享磁盘alias   begin -->
+	<select id="select-cluster-sharedisk-alias-by-deviceid-and-hIndex" parameterType="int" resultMap="ClustershareDiskDetailMap">
+            SELECT 
+			  <include refid="cluster-sharedisk-column"></include>
+			FROM
+			  t_cluster_sharedisk 
+			WHERE cluster_sharedisk_index = 
+			  (SELECT 
+			    t_cluster_harddisk.shared_harddisk_index 
+			  FROM
+			    t_cluster_harddisk 
+			  WHERE harddisk_index = #{hIndex}
+			    AND device_id = #{deviceId} 
+			  ORDER BY id DESC 
+			  LIMIT 1)
+			AND
+			  cluster_id = 
+			  (
+			  SELECT 
+                t_cluster_harddisk.cluster_id
+              FROM
+                t_cluster_harddisk 
+              WHERE harddisk_index = #{hIndex}
+                AND device_id = #{deviceId} 
+              ORDER BY id DESC 
+              LIMIT 1) ;
+
+    </select>
+    <!-- 通过 DeviceID 查询共享磁盘alias   end -->
+	 
+	<select id="select-cluster-master-online-count" parameterType="int" resultType="int">
+		SELECT 
+		  COUNT(device_id) 
+		FROM
+		  t_device t 
+		WHERE t.device_id IN 
+		  (SELECT 
+		    device_id 
+		  FROM
+		    t_device_and_group 
+		  WHERE group_id = #{clusterId}
+		  ) 
+		  AND device_standby_model = 1 
+		  AND device_state = 1 	
+	</select> 
+	
+    <select id="select-cluster-device-share-harddisk-index-by-param" parameterType="Map" resultType="int">
+        SELECT 
+          harddisk_index 
+        FROM
+          t_cluster_harddisk 
+        WHERE cluster_id = #{clusterId}  
+          AND shared_harddisk_index = #{clusterSharediskIndex}  
+          AND device_id = #{deviceId}  
+    </select> 
+    
+    <select id="select-cluster-share-disk-by-id" parameterType="int" resultMap="ClustershareDiskDetailMap">
+        SELECT 
+            <include refid="cluster-sharedisk-column"/>
+        FROM 
+            t_cluster_sharedisk t 
+        WHERE 
+            t.cluster_sharedisk_id = #{shareDiskId} 
+    </select> 	
+    
+    <!-- 根据集群类型查询相应的集群个数 -->
+    <select id="select-cluster-count-by-cluster-type" parameterType="int" resultType="int">
+	    SELECT 
+		  COUNT(*) 
+		FROM
+		  t_cluster 
+		WHERE cluster_type = #{clusterType}
+    </select>
+    
+	<update id="update-device-count-by-clusterid" parameterType="map" >
+	  update t_cluster 
+			<set>
+				cluster_current_size = #{count}
+			</set>	
+          	where 
+          		cluster_id = #{clusterId}
+	</update>
+	
+	<update id="update-cluster-current-size" parameterType="int" >
+		UPDATE
+			t_cluster t
+		<set>
+			t.cluster_current_size = 
+				(
+					SELECT 
+						COUNT(id) 
+					FROM 
+						t_device_and_group 
+					WHERE 
+						group_id = #{item}
+				)
+		</set>
+		WHERE 
+			t.cluster_id = #{item}
+	</update>
+	
+	<update id="update-cluster-info" parameterType="Cluster"> 
+        UPDATE 
+        	t_cluster 
+			<set> 
+				<if test="null != clusterType">  
+	            	cluster_type = #{clusterType},
+	        	</if>
+	        	<if test="null != clusterCapicity">  
+	            	cluster_capicity = #{clusterCapicity},
+	        	</if>
+	        	<if test="null != clusterCurrentSize">  
+	            	cluster_current_size = #{clusterCurrentSize},
+	        	</if> 
+	        	<if test="null != clusterState">  
+	            	cluster_state = #{clusterState},
+	        	</if>
+	        	<if test="null != clusterWorkState">  
+	            	cluster_work_state = #{clusterWorkState},
+	        	</if>   
+	        	<if test="null != clusterStorageSymbol and '' != clusterStorageSymbol">
+				 	 cluster_storage_symbol = #{clusterStorageSymbol},
+				</if>
+	        	<if test="null != clusterStoragePath and '' != clusterStoragePath">
+				 	 cluster_storage_path = #{clusterStoragePath},
+				</if>
+	        	<if test="null != clusterSynchrEnable">
+				 	 cluster_synchr_enable = #{clusterSynchrEnable},
+				</if>
+	        	<if test="null != clusterLanFree">
+				 	 cluster_LANFREE = #{clusterLanFree},
+				</if>
+	        	<if test="null != clusterSyntimeCycleSwitch">
+				 	 cluster_syntime_cycle_switch = #{clusterSyntimeCycleSwitch},
+				</if>
+	        	<if test="null != clusterSyntimeCycleType">
+				 	 cluster_syntime_cycle_type = #{clusterSyntimeCycleType},
+				</if>
+	        	<if test="null != clusterSyntimeCycleValue">
+				 	 cluster_syntime_cycle_value = #{clusterSyntimeCycleValue},
+				</if>
+	        	<if test="null != clusterSyntimeRangeSwitch">
+				 	 cluster_syntime_range_switch = #{clusterSyntimeRangeSwitch},
+				</if>
+	        	<if test="null != clusterSyntimeRangeValue and '' != clusterSyntimeRangeValue">
+				 	 cluster_syntime_range_value = #{clusterSyntimeRangeValue},
+				</if>
+	        	<if test="null != clusterLimiteSwitch">
+				 	 cluster_limite_switch = #{clusterLimiteSwitch},
+				</if>
+	        	<if test="null != clusterLimiteValue">
+				 	 cluster_limite_value = #{clusterLimiteValue},
+				</if>
+	        	<if test="null != clusterSnapCycleType">
+				 	 cluster_snap_cycle_type = #{clusterSnapCycleType},
+				</if>
+	        	<if test="null != clusterSnapCycleValue">
+				 	 cluster_snap_cycle_value = #{clusterSnapCycleValue},
+				</if>
+	        	<if test="null != clusterSnapRangeSwitch">
+				 	 cluster_snap_range_switch = #{clusterSnapRangeSwitch},
+				</if>
+	        	<if test="null != clusterSnapRangeValue">
+				 	 cluster_snap_range_value = #{clusterSnapRangeValue},
+				</if>
+	        	<if test="null != clusterKeepSnapType">
+				 	 cluster_keep_snap_type = #{clusterKeepSnapType},
+				</if>
+	        	<if test="null != clusterDataSize">
+				 	 cluster_data_size = #{clusterDataSize},
+				</if>
+	        	<if test="null != clusterMaxSnapSet and 0 != clusterMaxSnapSet">
+				 	 cluster_max_snap_set = #{clusterMaxSnapSet},
+				</if>
+	        	<if test="null != clusterSnapPersistDay and 0 != clusterSnapPersistDay">
+				 	 cluster_snap_persist_day = #{clusterSnapPersistDay},
+				</if>
+	        	<if test="null != clusterCreateTime">
+				 	 cluster_create_time = #{clusterCreateTime},
+				</if>
+	        	<if test="null != clusterOpration">
+				 	 cluster_opration = #{clusterOpration},
+				</if>
+	        	<if test="null != clusterIsParticlesData and 0 != clusterIsParticlesData">
+				 	 cluster_is_particles_data = #{clusterIsParticlesData},
+				</if>
+	        	<if test="null != clusterRemark and '' != clusterRemark">
+				 	 cluster_remark = #{clusterRemark},
+				</if>
+			  	cluster_update_time = now()
+	       </set>
+         WHERE 
+         	cluster_id = #{clusterId}
+	  </update>
+	  
+	  <update id="reset-cluster-info" parameterType="Cluster"> 
+        UPDATE 
+        	t_cluster 
+			<set> 
+				cluster_state = #{clusterState},
+				cluster_work_state = #{clusterWorkState},
+				cluster_storage_symbol = #{clusterStorageSymbol},
+				cluster_storage_path = #{clusterStoragePath},
+				cluster_synchr_enable = #{clusterSynchrEnable},
+				cluster_LANFREE = #{clusterLanFree},
+				cluster_syntime_cycle_switch = #{clusterSyntimeCycleSwitch},
+				cluster_syntime_cycle_type = #{clusterSyntimeCycleType},
+				cluster_syntime_cycle_value = #{clusterSyntimeCycleValue},
+				cluster_syntime_range_switch = #{clusterSyntimeRangeSwitch},
+				cluster_syntime_range_value = #{clusterSyntimeRangeValue},
+				cluster_limite_switch = #{clusterLimiteSwitch},
+				cluster_limite_value = #{clusterLimiteValue},
+				cluster_snap_cycle_type = #{clusterSnapCycleType},
+				cluster_snap_cycle_value = #{clusterSnapCycleValue},
+				cluster_snap_range_switch = #{clusterSnapRangeSwitch},
+				cluster_snap_range_value = #{clusterSnapRangeValue},
+				cluster_keep_snap_type = #{clusterKeepSnapType},
+				cluster_data_size = #{clusterDataSize},
+				cluster_max_snap_set = #{clusterMaxSnapSet},
+				cluster_snap_persist_day = #{clusterSnapPersistDay},
+				cluster_create_time = now(),
+				cluster_update_time = now(),
+				cluster_opration = #{clusterOpration},
+				cluster_is_particles_data = #{clusterIsParticlesData},
+				cluster_remark = #{clusterRemark}
+	       </set>
+         WHERE 
+         	cluster_id = #{clusterId}
+	  </update>
+	  
+	  <update id="update-device-to-slaver" parameterType="int"> 
+        UPDATE 
+        	t_device 
+			set
+				device_standby_model = 2
+         WHERE 
+         	device_id in (
+         		select 
+         			device_id
+         		from 
+         			t_device_and_group
+         		where 
+         			group_id = #{clusterId}
+         	)
+	  </update>
+	  
+	  <update id="update-device-to-master" parameterType="list">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+	        update 
+	        	t_device
+	        <set>
+	            device_standby_model = 1
+	        </set>
+	        where 
+	        	device_id = #{item}
+	    </foreach>      
+	</update>
+	
+	  <update id="update-sharedisk-to-slaver" parameterType="int"> 
+        UPDATE 
+        	t_cluster_harddisk 
+		set
+			harddisk_index_identity = 2
+         WHERE 
+         	cluster_id = #{clusterId}
+	  </update>
+	  
+	  <update id="update-sharedisk-to-master" parameterType="list">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+	        update 
+	        	t_cluster_harddisk
+	        <set>
+	            harddisk_index_identity = 1
+	        </set>
+	        where 
+	        	device_id = #{item}
+	    </foreach>      
+	</update>
+	
+	<delete id="delete-sharedisk-info-by-clusterId"  parameterType="int">
+               delete 
+               	from 
+               		t_cluster_sharedisk
+               	where 
+               cluster_id = #{item}
+    </delete> 
+    
+	<delete id="delete-harddisk-info-by-clusterid"  parameterType="int">
+               delete 
+               	from 
+               		t_cluster_harddisk
+               	where 
+               		cluster_id = #{item}
+    </delete> 
+    
+	<delete id="delete-harddisk-info-by-deviceId"  parameterType="int">
+               delete 
+               	from 
+               		t_cluster_harddisk
+               	where 
+               		device_id = #{item}
+    </delete> 
+    
+   	<update id="set-share-disk-to-master-or-slaver" parameterType="Map">
+       update 
+       		t_cluster_harddisk 
+		<set>
+			harddisk_index_identity = #{type}
+		</set>	
+        	where device_id = #{deviceId}
+	</update>
+	
+	<insert id="save-info-to-cluster-harddisk" parameterType="java.util.Map">
+		<foreach collection="clusterHardDiskList" item="item" index="index" open="" close="" separator=";">
+	      INSERT INTO t_cluster_harddisk (
+			  cluster_id,
+			  shared_harddisk_index,
+			  device_id,
+			  harddisk_index,
+			  harddisk_index_identity
+			) 
+			VALUES
+			  (
+			    #{item.clusterId},
+			    #{item.sharedHarddiskIndex},
+			    #{item.deviceId},
+			    #{item.harddiskIndex},
+			    #{item.harddiskIndexIdentity}
+			  )
+         </foreach>
+	</insert>
+	
+	<update id="update-cluster-state-by-cluster-id" parameterType="Cluster">
+		update 
+			t_cluster
+		set
+			cluster_state=#{clusterState}
+		where 
+			
+			cluster_id = #{clusterId}
+	</update>
+	
+	<update id="update-diskclone-state-by-diskclone-list" parameterType="list">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+	       update 
+				t_diskclone 
+			set
+				diskclone_state=#{item.state}
+			where 
+				diskclone_is_online=1
+			and
+				device_id = #{item.deviceId}
+         </foreach>
+	</update>
+	
+	<delete id="delete-harddisk-info-by-clusterid-and-share-index" parameterType="Map">
+	     DELETE 
+	     	FROM 
+				t_cluster_harddisk 
+		 WHERE 
+		 	cluster_id=#{clusterId}
+		 AND
+		 	shared_harddisk_index = #{clusterSharediskIndex}
+	</delete>
+	
+	<delete id="delete-sharedisk-info-by-clusterId-and-share-index" parameterType="Map">
+	     DELETE 
+	     	FROM 
+				t_cluster_sharedisk 
+		 WHERE 
+		 	cluster_id=#{clusterId}
+		 AND
+		 	cluster_sharedisk_index = #{clusterSharediskIndex}
+	</delete>
+	
+	<update id="update-cluster-sharedisk-info-by-clusterid-for-tombstone" parameterType="int" >
+		UPDATE
+			t_cluster_sharedisk t
+		<set>
+			t.sharedisk_del_flag = 2
+		</set>
+		WHERE 
+			t.cluster_id = #{item}
+	</update>
+	
+	<select id="select-all-cluster" resultMap="ClusterDetailMap">
+		select
+			<include refid="cluster-column"></include>
+		from 
+		t_cluster
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

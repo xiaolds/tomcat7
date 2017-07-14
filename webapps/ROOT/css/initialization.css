@@ -1,0 +1,136 @@
+/*
+*初始化
+*/
+body{
+	background:#f5f8fa;
+}
+.x-body {
+    background:#f5f8fa;
+}
+.wrap{
+	width:960px;
+	margin:0 auto;
+}
+.content{
+	box-shadow: 3px  3px 8px  #e8eaec;
+}
+.x-grid-body {
+    border-color: #eef2f4;
+}
+.x-grid-body, .x-grid-header-ct {
+    border-color: #eef2f4;
+}
+.btn_first, .btn_sec, .btn_sec_gray{
+	background:none;
+	border:2px solid #12b0b0;
+	border-radius:30px
+}
+#initializationListId .x-btn-default-small-over{
+	border:2px solid #12b0b0;
+	background:#00aaaa;
+}
+#initializationListId  .x-btn-default-small-over .x-btn-inner{
+	color:#fff;
+}
+.btn_sec_gray{
+	border:2px solid #A29A9A;
+}
+.btn_first.x-btn-default-small .x-btn-inner.x-btn-inner-center{
+	font-size:20px;
+	color:#00aaaa;
+}
+.btn_sec.x-btn-default-small .x-btn-inner.x-btn-inner-center{
+	font-size:14px;
+}
+.btn_sec_gray.x-btn-default-small .x-btn-inner.x-btn-inner-center{
+	font-size:14px;
+	color:#666;
+}
+/*top logo*/
+.install_header{
+	height:138px;
+	background:url(/oem/logo_install.png) no-repeat left  60px;
+	font-size:32px;
+	line-height:174px;
+	color:#777;
+	text-indent:267px;
+}
+/*middle*/
+/*进度条*/
+.pro{
+	width:160px;
+	height:110%;
+	border-right:1px solid #e0e7e9;
+	background:#fafbfc;
+	padding-top:5px;
+	font-size:16px;
+	color:#999;
+	text-align:right;
+	line-height:70px;
+	padding-right:20px;
+}
+.pro span{
+	color:#4cc1b6;
+	position:relative;
+}
+.pro span:after{
+	content:'';
+	position:absolute;
+	left:79px;
+	top:7px;
+	width:10px;
+	height:10px;
+	border-radius:50%;
+	background:#4cc1b6;
+}
+.pro2 span:after{
+	left:95px;
+}
+.x-progress-default {
+    background-color: #eee;
+}
+.x-progress-default .x-progress-bar-default {
+	background-color: #26b6b6;
+}
+.x-progress-default .x-progress-text {
+	text-align: left;
+	line-height: 25px;
+	margin-left: 340px;
+}
+/*ie8 btn 兼容性*/
+.x-nbr  .x-btn-default-small{
+	border-width:2px!important;
+}
+.x-btn-ml,
+.x-btn-mr,
+.x-btn-mc,
+.x-btn-tc,
+.x-btn-tl,
+.x-btn-tr,
+.x-btn-bl,
+.x-btn-bc,
+.x-btn-br
+{
+	background:none;
+	}
+.x-btn-default-small-over .x-frame-mr,
+.x-btn-default-small-over .x-frame-ml,
+.x-btn-default-small-over .x-frame-mc,
+.x-btn-default-small-over .x-frame-tl,
+.x-btn-default-small-over .x-frame-tc,
+.x-btn-default-small-over .x-frame-tr,
+.x-btn-default-small-over .x-frame-bl,
+.x-btn-default-small-over .x-frame-bc,
+.x-btn-default-small-over .x-frame-br{
+	background:#00aaaa;
+}
+.x-btn-default-small-over .x-frame-mc .x-btn-inner{
+	color:#fff!important;
+}
+/*bottom*/
+.cpr{
+	margin-top:23px;
+	font-size:12px;
+	color:#bbb;
+	text-align:center;
+}

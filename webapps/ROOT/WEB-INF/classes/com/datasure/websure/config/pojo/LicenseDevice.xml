@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datasure.websure">
+
+	<resultMap id="LicenseDeviceMap" type="LicenseDevice">
+		<id property="id"  column="id"/>            										
+		<result property="deviceId"  column="lcs_flag"/>                                          
+		<result property="lcsEmergency"  column="lcs_emergency"/>             
+		<result property="lcsEmulation"  column="lcs_emulation"/>
+		<result property="lcsBackup"  column="lcs_backup"/>                           
+		<result property="createTime"  column="create_time"/> 
+		<result property="updateTime"  column="update_time"/> 
+		<result property="desc"  column="`desc`"/> 
+		<result property="remark"  column="remark"/>                                  
+	</resultMap>                                                                                               
+	                                                                                                           
+	<sql id="license-device-column">
+		t_lcs.id,
+		t_lcs.lcs_flag,
+		t_lcs.lcs_emergency,
+		t_lcs.lcs_emulation,
+		t_lcs.lcs_backup,
+		t_lcs.create_time,
+		t_lcs.update_time,
+		t_lcs.`desc`,
+		t_lcs.remark
+	</sql>
+	
+	<select id="select-all-license-device" resultMap="LicenseDeviceMap">
+		SELECT 
+			<include refid="license-device-column"></include>
+		 FROM t_lcs
+	</select>
+	
+	<select id="select-license-device-by-deviceid" parameterType="string" resultMap="LicenseDeviceMap">
+		SELECT 
+			<include refid="license-device-column"></include>
+		 FROM t_lcs 
+		 WHERE lcs_flag = #{deviceId}
+	</select>
+	
+	<select id="select-license-device-by-lcsemergency" parameterType="map" resultMap="LicenseDeviceMap">
+		SELECT 
+			<include refid="license-device-column"></include>
+		 FROM t_lcs 
+		 WHERE lcs_emergency = #{lcsEmergency} and lcs_emulation = #{lcsEmulation}
+	</select>
+	
+	<select id="select-license-device-by-lcsemulation" parameterType="map" resultMap="LicenseDeviceMap">
+		SELECT 
+			<include refid="license-device-column"></include>
+		 FROM t_lcs 
+		 WHERE lcs_emulation = #{lcsEmulation} and (lcs_emergency != #{lcsEmergency} or lcs_emergency is null)
+	</select>
+	
+	<select id="select-license-device-by-lcsbackup" parameterType="string" resultMap="LicenseDeviceMap">
+		SELECT 
+			<include refid="license-device-column"></include>
+		 FROM t_lcs 
+		 WHERE lcs_backup = #{lcsBackup}
+	</select>
+		
+	<insert id="insert-license-device"  parameterType="LicenseDevice" >
+		insert 
+			into 
+		t_lcs(                                     
+			  lcs_flag,         
+			  lcs_emergency,             
+			  lcs_emulation,
+			  lcs_backup,              
+			  create_time,            
+			  update_time,       
+			  `desc`,    
+			  remark          
+			)values(
+			  #{deviceId},
+			  #{lcsEmergency},
+		      #{lcsEmulation},
+		      #{lcsBackup},
+			  now(),
+			  now(),
+			  #{desc},			 
+			  #{remark}
+			)
+		<selectKey resultType="int" keyProperty="id" >
+			select @@IDENTITY as id 
+		</selectKey>
+	</insert>
+	
+	<update id="update-license-device" parameterType="LicenseDevice">
+		update t_lcs
+		set
+			<if test="lcsEmergency != null and '' != lcsEmergency"> 		 
+				lcs_emergency =  #{lcsEmergency},
+			</if>
+			<if test="lcsEmulation != null and '' != lcsEmulation"> 		 
+				lcs_emulation = #{lcsEmulation},
+			</if>
+			<if test="lcsBackup != null and '' != lcsBackup"> 		 
+				lcs_backup = #{lcsBackup},
+			</if>			
+			update_time = now()
+		where lcs_flag = #{deviceId}
+	</update>
+	
+	<delete id="delete-device-license-by-encry-uuid">
+		DELETE 
+			FROM
+			  t_lcs 
+		WHERE lcs_flag = #{lcsFlag}
+	</delete>
+	
+	
+</mapper>
